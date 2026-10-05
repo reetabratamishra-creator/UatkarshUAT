@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Polymer - Excluded</label>
+    <protected>false</protected>
+    <values>
+        <field>Department__c</field>
+        <value xsi:type="xsd:string">Polymer</value>
+    </values>
+    <values>
+        <field>Is_Excluded__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Is_Relevant__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Matched_Negative_Keywords__c</field>
+        <value xsi:type="xsd:string">Installation, Commissioning, Replacement, Shifting, REPAIR,REPAIR AND Maintenance, Construction and Maintenance, pump, Pump House, Relaying, laying, submersible Pump, REPAIR AND REPLACEMENT , School, Supply and installation, Overhauling, reinforcement,RCC work,pumping, Maintenance, Operation, Ball valve, Elbow, nipple, Reducer,Fittings, Rubber Gaskets, Sleeve Couplings, Sleeve, Pump, Sinking, Old , Damaged, Renewal, Upgradation,Toilet, Nala, Drain, RCC Road,Building , Building construction,Medical,Cement works,construction, Renovation,Manhole, Annual Maintenance, Dismantling, Sinking, Repairing, flanges, battery charging, HOSE, HOSE PIPING, INJECTOR NOZZLE, Facility, Services, Gram, House, Boring, Nirman, Nala Nirmal, Road Nirman,Concrete road, HDPE Fittings, Borewell creation,Air conditioner , Library,Hospital , LED Fitting, Drilling of Bore, 355 mm , 400 mm , 450 mm , Nut - Bolt, Facility, Services, JAL GRAHAN KOOP NIRMAN, lab, Gram, House, Call,Panchayath, trenching,backfilling,laying jointing and commissioning, jointing and commissioning,Rig. Method ,Laying of HDPE Pipeline ,Drilling of borewell, Grampanchayat ,Drainage System, Mahatma Gandhi National Rural Employment Guarantee Scheme,Installation of tank,Public Toilet,GI Pipe, SOAK PIT,source of drinking water,Laying of Pipe Line,Rennovation,C. C. ROAD NIRMAN , street light poles,COMMUNITY SOAK PIT,PANCHAYAT OFFICE BUILDING,Electrical Installation,Service Connection,Flood protection,Passage and Drainage ,Water rejuvenation,solar Drinking water tank ,Construction of Office Building,Widening  of road,Sewage Treatment Plant ( STP ),TRANSFORMER ,Laying of distribution line,GI PIPELINE WORK,Local Nalla,Solid Waste Management,Installation and Commissioning of IP Camera ,Erection, DWC hdpe pipe.</value>
+    </values>
+    <values>
+        <field>Matched_Positive_Keywords__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Schema_Prompt__c</field>
+        <value xsi:type="xsd:string">Analyze if this document is related to Polymer.
+Check for presence of positive keywords and absence of negative keywords. 
+Return confidence score based on how many positive keywords are found.</value>
+    </values>
+</CustomMetadata>

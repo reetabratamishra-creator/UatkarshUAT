@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Data Recive Type --></label>
+    <name>Data_Recive_Type__c</name>
+    <picklistValues>
+        <masterLabel>All</masterLabel>
+        <translation><!-- All --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Morning</masterLabel>
+        <translation><!-- Morning --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Noon</masterLabel>
+        <translation><!-- Noon --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

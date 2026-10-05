@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>High Mast &amp; Polygonal Pole - Relevant</label>
+    <protected>false</protected>
+    <values>
+        <field>Department__c</field>
+        <value xsi:type="xsd:string">High Mast &amp; Polygonal Pole</value>
+    </values>
+    <values>
+        <field>Is_Excluded__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Relevant__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Matched_Negative_Keywords__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Matched_Positive_Keywords__c</field>
+        <value xsi:type="xsd:string">High mast , Stadium mast, GI Octagonal pole, Conical pole, Camera pole, LCLM, High Mast Lighting Systems, Polygonal Poles, Octagonal Poles, 30 MTR HIGH MAST LIGHT, 30 meter Octagonal High Mast, HIGH MAST; OCTAGONAL POLES TYPE PF2 9M HEIGHT GALVANIZED; OCTAGONAL POLES TYPE PS1 9M HEIGHT GALVANIZED, Supply Of Poles &amp; Mast-Lighitng Mast Octagonal Shape, Type LM30; Supply Of Poles &amp; Mast-Fixtures For Mast, Lighitng Mast Octagonal shape, 16 Meter High-Mast with luminaires and accessories, Octagonal Pole with Single Arm or Double Arm Brackets (V2) (Q3), High Mast Lighting Towers , High Mast Lighting Towers, OCTAGONAL POLES TYPE PS1 GALVANIZED, High Mast Lighting Octagonal Tower</value>
+    </values>
+    <values>
+        <field>Schema_Prompt__c</field>
+        <value xsi:type="xsd:string">Analyze if this document is related to Polymer.
+Check for presence of positive keywords and absence of negative keywords.
+Return confidence score based on how many positive keywords are found.</value>
+    </values>
+</CustomMetadata>

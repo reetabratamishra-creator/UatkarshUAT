@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rejected_Projects</fullName>
+    <columns>NAME</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Project_Stage__c</field>
+        <operation>equals</operation>
+        <value>Closed Lost</value>
+    </filters>
+    <label>Rejected Projects</label>
+    <sharedTo>
+        <group>Project_Accepted_and_Rejected_ListView</group>
+    </sharedTo>
+</ListView>

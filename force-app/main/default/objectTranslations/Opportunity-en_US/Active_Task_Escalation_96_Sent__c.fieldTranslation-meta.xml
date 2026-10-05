@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Active Task Escalation 96 Sent --></label>
+    <name>Active_Task_Escalation_96_Sent__c</name>
+</CustomFieldTranslation>

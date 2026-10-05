@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- This says that the opportunities assigned to you by some others --></help>
+    <label><!-- Assigned Opportunities --></label>
+    <name>Assigned_Opportunities__c</name>
+</CustomFieldTranslation>

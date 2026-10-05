@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>PEB - Relevant</label>
+    <protected>false</protected>
+    <values>
+        <field>Department__c</field>
+        <value xsi:type="xsd:string">PEB</value>
+    </values>
+    <values>
+        <field>Is_Excluded__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Relevant__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Matched_Negative_Keywords__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Matched_Positive_Keywords__c</field>
+        <value xsi:type="xsd:string">Pre-engineered Building, Pre-engineered Steel Building, Prefabricated Steel Building, Pre-engineered Steel Structure, Prefabricated Steel Structure, PEB Shed, PEB Structure, PEB Building, PEB Warehouse, PEB Factory Shed, PEB Godown, Prefab Shed, Prefabricated Shed, Prefabricated Building, Construction of PEB Grade A Warehouse , Prefabricated structure, Construction of PEB covered shed, Prefabricated Building Customizable, Construction of Pre Engineered Building</value>
+    </values>
+    <values>
+        <field>Schema_Prompt__c</field>
+        <value xsi:type="xsd:string">Analyze if this document is related to Polymer.
+Check for presence of positive keywords and absence of negative keywords.
+Return confidence score based on how many positive keywords are found.</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <layouts>
+        <layout>Dealer Opportunity</layout>
+        <sections>
+            <label><!-- Address Information --></label>
+            <section>Address Information</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Details --></label>
+            <section>Marketing Details</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Opportunity Layout</layout>
+        <sections>
+            <label><!-- Address Information --></label>
+            <section>Address Information</section>
+        </sections>
+        <sections>
+            <label><!-- Marketing Details --></label>
+            <section>Marketing Details</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Project Opportunity Layout</layout>
+        <sections>
+            <label><!-- Address Information --></label>
+            <section>Address Information</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Tender Opportunity Layout</layout>
+        <sections>
+            <label><!-- Address Information --></label>
+            <section>Address Information</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Add Bidder Opportunity --></label>
+        <name>Add_Bidder_Opportunity</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Award --></label>
+        <name>Award</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Award --></label>
+        <name>Award_Mobile</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Change Department --></label>
+        <name>Change_Department</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Change Stage --></label>
+        <name>Change_Stage</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create A Task --></label>
+        <name>Create_A_Task</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create A task --></label>
+        <name>Create_A_task_Mobile</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create New Case --></label>
+        <name>Create_New_Case</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create New case --></label>
+        <name>Create_New_case_Mobile</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create Product Category --></label>
+        <name>Create_Product_Category</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create Task --></label>
+        <name>Create_Task</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- L1 Bidder Declared --></label>
+        <name>L1BidderDeclared</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Mark as Closed Lost --></label>
+        <name>Mark_as_Closed_Lost</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- PO Upload --></label>
+        <name>PO_Upload</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Reopen Opportunity --></label>
+        <name>Re_Open_Opportunity</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Select Customer Journey --></label>
+        <name>Select_Customer_Journey</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Select Customer Journey --></label>
+        <name>Select_Customer_Journey_Mobile</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Send Quote to Customer --></label>
+        <name>Send_Quote_To_Customer</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Send Quote to Customer(Mobile) --></label>
+        <name>Send_Quote_to_Customer_Mobile</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Stage Change --></label>
+        <name>Stage_Change</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Update Address --></label>
+        <name>Update_Address</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Update Opportunity Source --></label>
+        <name>Update_Opportunity_Source</name>
+    </quickActions>
+    <recordTypes>
+        <label><!-- Dealer Opportunity --></label>
+        <name>Dealer_Opportunity</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Master Opportunity --></label>
+        <name>Master_Opportunity</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Project Opportunity --></label>
+        <name>Project_Opportunity</name>
+    </recordTypes>
+    <recordTypes>
+        <label><!-- Tender Opportunity --></label>
+        <name>Tender_Opportunity</name>
+    </recordTypes>
+    <validationRules>
+        <errorMessage><!-- Closed Opportunity can&apos;t be modified except Admins --></errorMessage>
+        <name>Closed_Opportunity_can_not_be_modified</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Customer Journey is mandatory in Nurture stage. Please choose before changing the stage. --></errorMessage>
+        <name>CustomerJourney_Mndt_in_nature_stage</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You have to select Customer Journey first to edit fields --></errorMessage>
+        <name>Customer_Journey_null_Validation</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Select Customer Journey First --></errorMessage>
+        <name>Lock_Opportunity_Until_Customer_Journey</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please fill Dealer filed with a Dealer account as Customer Journey is Refer to Delear --></errorMessage>
+        <name>Mandatory_Dealer_Account</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- PIN must contain only numeric values. --></errorMessage>
+        <name>PIN_cannot_be_a_text</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Its already Refer to the Dealer in the Customer Journey, Kindly fill Dealer field to move forward. --></errorMessage>
+        <name>Refer_to_Dealer_cant_move_to_Negotiation</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Set the Customer Journey on this Opportunity before making any other changes. Use the Customer Journey action. --></errorMessage>
+        <name>Require_Customer_Journey_To_Edit</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- This Opportunity can&apos;t be edited right now. Edits are only allowed while the record is new, or after the department is not changed. --></errorMessage>
+        <name>Restrict_Opportunity_Edit</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Bulk_Owner_Change --></label>
+        <name>Bulk_Owner_Change</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- New_Opportunity --></label>
+        <name>New_Opportunity</name>
+    </webLinks>
+</CustomObjectTranslation>

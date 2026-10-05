@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Status --></label>
+    <name>Tender_Stage__c</name>
+    <picklistValues>
+        <masterLabel>Closed Accepted</masterLabel>
+        <translation><!-- Closed Accepted --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Closed Rejected</masterLabel>
+        <translation><!-- Closed Rejected --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Open</masterLabel>
+        <translation><!-- Open --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sent for Approval</masterLabel>
+        <translation><!-- Sent for Approval --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

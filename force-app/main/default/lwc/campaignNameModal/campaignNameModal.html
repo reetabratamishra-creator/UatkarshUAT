@@ -1,0 +1,63 @@
+<template>
+    <template if:true={isOpen}>
+        <div class="journey-modal-overlay campaign-name-modal">
+            <div class="journey-modal-overlay__backdrop" onclick={handleCancel}></div>
+            <section
+                role="dialog"
+                tabindex="-1"
+                aria-modal="true"
+                class="journey-modal-overlay__dialog"
+                onclick={stopModalClick}
+            >
+                <div class="journey-modal__container">
+                    <header class="journey-modal__header">
+                        <div class="journey-modal__header-icon">
+                            <lightning-icon icon-name="standard:campaign" size="small" variant="inverse"></lightning-icon>
+                        </div>
+                        <div class="journey-modal__title-wrap">
+                            <h2 class="journey-modal__title">Campaign Name</h2>
+                            <p class="journey-modal__subtitle">
+                                Enter a campaign name. A Campaign record and Custom Campaign Member records will be created for successfully sent recipients.
+                            </p>
+                        </div>
+                        <button
+                            class="slds-button slds-button_icon journey-modal__close"
+                            title="Close"
+                            onclick={handleCancel}
+                            disabled={isSending}
+                        >
+                            <lightning-icon icon-name="utility:close" alternative-text="Close" size="x-small" variant="inverse"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                    </header>
+
+                    <div class="journey-modal__content">
+                        <lightning-input
+                            label="Campaign Name"
+                            value={campaignName}
+                            onchange={handleCampaignNameChange}
+                            required
+                            maxlength="255"
+                            disabled={isSending}
+                        ></lightning-input>
+                    </div>
+
+                    <footer class="journey-modal__footer">
+                        <lightning-button
+                            label="Cancel"
+                            onclick={handleCancel}
+                            disabled={isSending}
+                        ></lightning-button>
+                        <lightning-button
+                            variant="brand"
+                            label={sendButtonLabel}
+                            icon-name="utility:send"
+                            onclick={handleConfirm}
+                            disabled={isConfirmDisabled}
+                        ></lightning-button>
+                    </footer>
+                </div>
+            </section>
+        </div>
+    </template>
+</template>

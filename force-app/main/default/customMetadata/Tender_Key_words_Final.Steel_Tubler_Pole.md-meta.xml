@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Steel Tubler Pole - Relevant</label>
+    <protected>false</protected>
+    <values>
+        <field>Department__c</field>
+        <value xsi:type="xsd:string">Steel Tubler Pole</value>
+    </values>
+    <values>
+        <field>Is_Excluded__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Relevant__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Matched_Negative_Keywords__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Matched_Positive_Keywords__c</field>
+        <value xsi:type="xsd:string">Steel Tubular Pole, Street Lighting pole, Galvanized Steel Poles, MS Pole, MS Steel Tubular Pole, Swaged type Steel Tubular Pole, Manufacturing and supply of Steel tubular Pole, Supply of Steel Tubular Pole, Hot Dip Galvanized Steel Tubular Pole, Pole as per IS 2713, Long Steel Tubular Pole SP- 23, GI Steel Pole 410, Lighting Pole or Post and Hardware- Tubular Street Light Poles ( V2 ); Steel Tubular pole 11 Metre Long (With Cap), 11 AND 13 METER STEEL TUBULER POLE, 7 Meter Steel Tubular Swagged Pole, Steel Tubular Poles 410 SP- 33 for overhead power lines, Supply of 8 m long 540 SP-11 swaged type Galvanized steel tubular poles including base plate, 13 MTR. STEEL TUBULAR POLES (Swaged Type 410-SP-72), Procurement of steel tubular pole, STEEL TUBULAR SWAGED POLE, LENGTH-9 METER,COATING-GALVANISED IRON, IS:2713(PART1,11,&amp;I):1980 TYPE:410 SP-31,  ISI Certified Tubular Poles, Lohe ka Khamba, Flood lighting Pole, Flange type Pole, Swan Neck Pole, Distribution Pole, Substation Structure Pole, Cantilever Poles, CCTV Steel Poles, Viaduct Poles, Utility Poles, Customized Steel Poles, Steel Utility Poles, Switch Yard Poles, J Type Poles, Signage Poles, Signal Poles, Traffic Poles, Metal Pole.</value>
+    </values>
+    <values>
+        <field>Schema_Prompt__c</field>
+        <value xsi:type="xsd:string">Analyze if this document is related to Steel Tubular Poles. 
+Check for presence of positive keywords and absence of negative keywords. 
+Return confidence score based on how many positive keywords are found.</value>
+    </values>
+</CustomMetadata>

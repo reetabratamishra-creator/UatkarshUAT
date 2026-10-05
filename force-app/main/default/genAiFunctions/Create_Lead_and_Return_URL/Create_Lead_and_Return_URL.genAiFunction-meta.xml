@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Creates a Lead record and returns its direct Lightning view URL string</description>
+    <developerName>Create_Lead_and_Return_URL</developerName>
+    <invocationTarget>CreateLeadFromChatBot</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+    <localDeveloperName>Create_Lead_and_Return_URL</localDeveloperName>
+    <masterLabel>Create Lead and Return URL</masterLabel>
+</GenAiFunction>

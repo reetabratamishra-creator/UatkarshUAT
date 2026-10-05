@@ -1,0 +1,17 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "CreatedNewLead" : {
+      "title" : "CreatedNewLead",
+      "description" : "The newly created Lead record, including its Id.",
+      "lightning:type" : "lightning__recordInfoType",
+      "lightning:sObjectInfo" : {
+        "apiName" : "Lead"
+      },
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

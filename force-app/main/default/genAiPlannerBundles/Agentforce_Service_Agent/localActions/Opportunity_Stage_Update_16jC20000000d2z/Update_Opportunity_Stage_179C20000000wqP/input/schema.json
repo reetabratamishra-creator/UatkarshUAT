@@ -1,0 +1,51 @@
+{
+  "required" : [ "OppId", "StageName" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "ClosureDate" : {
+      "title" : "ClosureDate",
+      "description" : "Pass a proper date value\n",
+      "lightning:type" : "lightning__dateType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "CustomerJourney" : {
+      "title" : "CustomerJourney",
+      "description" : "Pass the Customer Journey selected by user",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "ExpectedDealValue" : {
+      "title" : "ExpectedDealValue",
+      "description" : "Pass Expected Deal Value given by user\n",
+      "multipleOf" : 1.0E-34,
+      "lightning:type" : "lightning__numberType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "LostReason" : {
+      "title" : "LostReason",
+      "description" : "Pass Lost Reason Value given by user\n",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "OppId" : {
+      "title" : "OppId",
+      "description" : "Pass Opportunity Id stored by you\n",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "StageName" : {
+      "title" : "StageName",
+      "description" : "Pass the stage name given by user\n",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType",
+  "lightning:textIndexed" : true
+}

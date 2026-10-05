@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The UI display label for the root picklist field that appears immediately when this accordion tab is opened --></help>
+    <label><!-- First Field Label --></label>
+    <name>First_Field_Label__c</name>
+</CustomFieldTranslation>

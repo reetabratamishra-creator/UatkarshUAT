@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Next Action --></label>
+    <name>Next_Action__c</name>
+    <picklistValues>
+        <masterLabel>Drawing or credential approval</masterLabel>
+        <translation><!-- Drawing or credential approval --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Future prospect</masterLabel>
+        <translation><!-- Future prospect --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lost</masterLabel>
+        <translation><!-- Lost --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Quote</masterLabel>
+        <translation><!-- Quote --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

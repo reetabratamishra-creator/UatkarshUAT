@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Creates an Account and Opportunity record from captured fields</description>
+    <developerName>Create_Opportunity</developerName>
+    <invocationTarget>OpportunityCaptureAction</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>Create_Opportunity</localDeveloperName>
+    <masterLabel>Create Opportunity</masterLabel>
+    <progressIndicatorMessage>Creating Lead........</progressIndicatorMessage>
+</GenAiFunction>

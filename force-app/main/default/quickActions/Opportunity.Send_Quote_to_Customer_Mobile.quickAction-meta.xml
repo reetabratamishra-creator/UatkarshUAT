@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>For Mobile</description>
+    <flowDefinition>Send_Quotation_to_Customer_Mobile</flowDefinition>
+    <label>Send Quote to Customer(Mobile)</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>

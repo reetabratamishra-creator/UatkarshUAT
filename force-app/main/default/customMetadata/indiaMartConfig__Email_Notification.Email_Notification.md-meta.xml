@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Email_Notification</label>
+    <protected>true</protected>
+    <values>
+        <field>indiaMartConfig__Email_Address__c</field>
+        <value xsi:type="xsd:string">indiateam+utkarshuat@halsaglobal.io</value>
+    </values>
+    <values>
+        <field>indiaMartConfig__email_notification__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

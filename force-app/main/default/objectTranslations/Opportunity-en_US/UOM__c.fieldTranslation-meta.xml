@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- UOM --></label>
+    <name>UOM__c</name>
+    <picklistValues>
+        <masterLabel>Alternative Unit</masterLabel>
+        <translation><!-- Alternative Unit --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Bundle</masterLabel>
+        <translation><!-- Bundle --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>KM</masterLabel>
+        <translation><!-- KM --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Kgs</masterLabel>
+        <translation><!-- Kgs --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Meter</masterLabel>
+        <translation><!-- Meter --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Metric Ton</masterLabel>
+        <translation><!-- Metric Ton --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pcs</masterLabel>
+        <translation><!-- Pcs --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Roll</masterLabel>
+        <translation><!-- Roll --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Set</masterLabel>
+        <translation><!-- Set --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

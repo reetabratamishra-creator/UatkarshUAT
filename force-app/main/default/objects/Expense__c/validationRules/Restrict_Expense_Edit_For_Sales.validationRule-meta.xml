@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Restrict_Expense_Edit_For_Sales</fullName>
+    <active>false</active>
+    <description>Prevent edit of an expense by a Sales user after it has been submitted for approval.</description>
+    <errorConditionFormula>AND(
+    $Profile.Name = &quot;Utkarsh Sales&quot;,
+    NOT(ISNEW()),
+    OR(
+        ISCHANGED(Subject__c),
+        ISCHANGED(Travel_Start_Date__c),
+        ISCHANGED(Travel_End_Date__c),
+        ISCHANGED(Purpose__c),
+        ISCHANGED(Submitted_Date__c),
+        ISCHANGED(Remark__c)
+    )
+)</errorConditionFormula>
+    <errorMessage>You are not allowed to edit an expense.</errorMessage>
+</ValidationRule>

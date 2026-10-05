@@ -1,0 +1,50 @@
+.table-container {
+    max-height: 600px;
+    overflow: auto;
+    border: 1px solid #d8dde6;
+}
+
+.custom-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.custom-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f3f3f3;
+    z-index: 10;
+    font-weight: 600;
+}
+
+.custom-table th,
+.custom-table td {
+    vertical-align: top;
+    padding: 8px;
+}
+
+/* Kill Salesforce truncation globally */
+.custom-table .slds-truncate,
+.custom-table span,
+.custom-table div {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+}
+
+.cell-content {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+}
+
+/* Column widths — total = 100% */
+.col-file    { width: 18%; }
+.col-dept    { width: 12%; }
+.col-keyword { width: 12%; }
+.col-page    { width: 80%; }
+.col-section { width: 24%; }
+.col-text    { width: 20%; }

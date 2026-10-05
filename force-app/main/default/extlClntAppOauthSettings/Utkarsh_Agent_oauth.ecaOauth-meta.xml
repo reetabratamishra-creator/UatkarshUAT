@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtlClntAppOauthSettings xmlns="http://soap.sforce.com/2006/04/metadata">
+    <commaSeparatedOauthScopes>Api, RefreshToken, Chatbot, SFApiPlatform</commaSeparatedOauthScopes>
+    <externalClientApplication>Utkarsh_Agent</externalClientApplication>
+    <isFirstPartyAppEnabled>false</isFirstPartyAppEnabled>
+    <label>Utkarsh_Agent_oauth</label>
+    <oauthLink>00DC2000003CoP7:888C20000002LLJ</oauthLink>
+</ExtlClntAppOauthSettings>

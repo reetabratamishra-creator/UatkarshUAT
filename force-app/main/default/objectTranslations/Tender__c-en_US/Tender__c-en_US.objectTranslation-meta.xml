@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Tender</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Tenders</value>
+    </caseValues>
+    <layouts>
+        <layout>Tender Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Document Details --></label>
+            <section>Document Details</section>
+        </sections>
+        <sections>
+            <label><!-- Location --></label>
+            <section>Location</section>
+        </sections>
+        <sections>
+            <label><!-- Result Details --></label>
+            <section>Result Details</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Add Account --></label>
+        <name>Add_Account</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Approve/Reject --></label>
+        <name>Approve_Reject</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Approve or Reject --></label>
+        <name>Approve_or_Reject</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Change Department --></label>
+        <name>Change_Department</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Change Owner --></label>
+        <name>Change_Owner</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create Bidder --></label>
+        <name>Create_Bidder</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Generate PDF --></label>
+        <name>Generate_PDF</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Reopen Tender --></label>
+        <name>Reopen_Tender</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Send for Approval --></label>
+        <name>Send_for_Approval</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Send for Approval/Rejection --></label>
+        <name>Send_for_Approval_Rejection</name>
+    </quickActions>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Closed Tender can&apos;t be modified except Admins --></errorMessage>
+        <name>Closed_Tender_can_not_be_modified</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- View_AI_Summary --></label>
+        <name>View_AI_Summary</name>
+    </webLinks>
+</CustomObjectTranslation>

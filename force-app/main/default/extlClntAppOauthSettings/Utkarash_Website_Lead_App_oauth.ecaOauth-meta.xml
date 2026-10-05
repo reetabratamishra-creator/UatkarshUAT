@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtlClntAppOauthSettings xmlns="http://soap.sforce.com/2006/04/metadata">
+    <commaSeparatedOauthScopes>Api, Full, RefreshToken</commaSeparatedOauthScopes>
+    <externalClientApplication>Utkarash_Website_Lead_App</externalClientApplication>
+    <isFirstPartyAppEnabled>false</isFirstPartyAppEnabled>
+    <label>Utkarash_Website_Lead_App_oauth</label>
+    <oauthLink>00DC2000003CoP7:888C20000002IAX</oauthLink>
+</ExtlClntAppOauthSettings>

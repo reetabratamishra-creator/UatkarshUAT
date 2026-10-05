@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IndiaMART_Leads</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.COMPANY</columns>
+    <columns>Department_Name__c</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>Campaign_Name__c</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <columns>Lead_SourceFormula__c</columns>
+    <columns>Lead_Owner__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.LEAD_SOURCE</field>
+        <operation>equals</operation>
+        <value>INDIAMART V2,INDIAMART</value>
+    </filters>
+    <filters>
+        <field>LEAD.CREATED_DATE</field>
+        <operation>equals</operation>
+        <value>8/10/2026 12:00 AM</value>
+    </filters>
+    <label>IndiaMART Leads</label>
+    <sharedTo>
+        <group>Utkarsh_Admins</group>
+    </sharedTo>
+</ListView>

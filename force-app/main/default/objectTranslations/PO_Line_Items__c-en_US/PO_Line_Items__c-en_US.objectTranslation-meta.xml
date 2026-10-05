@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>PO Line Items</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>PO Line Items</value>
+    </caseValues>
+    <layouts>
+        <layout>PO Line Items Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Json Response --></label>
+            <section>Json Response</section>
+        </sections>
+        <sections>
+            <label><!-- PO Details --></label>
+            <section>PO Details</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

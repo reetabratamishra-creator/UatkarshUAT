@@ -1,0 +1,268 @@
+<template>
+    <div class="form-shell slds-is-relative">
+        <template if:true={isSaving}>
+            <lightning-spinner alternative-text="Saving lead" size="medium"></lightning-spinner>
+        </template>
+
+        <template if:true={contextError}>
+            <div class="slds-box slds-theme_error slds-m-around_medium">{contextError}</div>
+        </template>
+
+        <template if:true={ctx}>
+
+            <!-- ============ HEADER ============ -->
+            <div class="page-head slds-p-around_medium">
+                <h1 class="slds-text-heading_medium">New Lead</h1>
+                <p class="slds-text-body_small slds-text-color_weak">
+                    {ctx.userName} &middot; {ctx.profileName}
+                </p>
+            </div>
+
+            <!-- ============ PERSONAL DETAILS ============ -->
+            <section class="slds-card section-card slds-m-horizontal_medium slds-m-bottom_medium">
+                <h2 class="section-title slds-p-horizontal_medium slds-p-top_medium">Personal Details</h2>
+                <div class="slds-p-around_medium slds-grid slds-wrap slds-gutters_small">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input label="Name" data-field="name" required
+                            value={lead.name} onchange={handleLeadChange}
+                            field-level-help="First and last name will be split automatically">
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="email" label="Email" data-field="email" required
+                            value={lead.email} onchange={handleLeadChange}></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input type="tel" label="Phone" data-field="phone" required
+                            value={lead.phone} onchange={handleLeadChange}></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input label="Company Name" data-field="companyName"
+                            value={lead.companyName} onchange={handleLeadChange}
+                            field-level-help="If left blank, the contact name is used as Company">
+                        </lightning-input>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ LEAD DETAILS ============ -->
+            <section class="slds-card section-card slds-m-horizontal_medium slds-m-bottom_medium">
+                <h2 class="section-title slds-p-horizontal_medium slds-p-top_medium">Lead Details</h2>
+                <div class="slds-p-around_medium slds-grid slds-wrap slds-gutters_small">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox label="Lead Stage" data-field="status"
+                            value={lead.status} options={statusOptions}
+                            onchange={handleLeadChange}></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox label="Lead Source" data-field="leadSource" required
+                            value={lead.leadSource} options={leadSourceOptions}
+                            onchange={handleLeadChange}></lightning-combobox>
+                    </div>
+
+                    <template if:true={showPreviousSource}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <lightning-combobox label="Previous Source" data-field="previousSource" required
+                                value={lead.previousSource} options={previousSourceOptions}
+                                onchange={handleLeadChange}></lightning-combobox>
+                        </div>
+                    </template>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox label="Rating" data-field="rating"
+                            value={lead.rating} options={ratingOptions}
+                            onchange={handleLeadChange}></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox label="Industry" data-field="industry"
+                            value={lead.industry} options={industryOptions}
+                            onchange={handleLeadChange}></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox label="Department" data-field="departmentName" required
+                            value={lead.departmentName} options={departmentOptions}
+                            onchange={handleLeadChange}></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox label="Customer Category" data-field="customerCategory"
+                            value={lead.customerCategory} options={customerCategoryOptions}
+                            onchange={handleLeadChange}></lightning-combobox>
+                    </div>
+                </div>
+
+                <!-- doc requirement hint, live as soon as source is picked -->
+                <template if:true={isDocRequired}>
+                    <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+                        <div class="doc-banner slds-p-around_x-small">
+                            <lightning-icon icon-name="utility:attach" size="x-small"
+                                class="slds-m-right_x-small"></lightning-icon>
+                            A supporting document is <strong>required</strong> for this Lead Source.
+                        </div>
+                    </div>
+                </template>
+            </section>
+
+            <!-- ============ PRODUCT CATEGORIES ============ -->
+            <template if:true={showProductSection}>
+                <section class="slds-card section-card slds-m-horizontal_medium slds-m-bottom_medium">
+                    <div class="slds-grid slds-grid_align-spread slds-p-horizontal_medium slds-p-top_medium">
+                        <h2 class="section-title">Product Categories</h2>
+                        <lightning-input type="toggle" label="Add Product Category"
+                            checked={addProductCategory} variant="label-hidden"
+                            message-toggle-active="" message-toggle-inactive=""
+                            onchange={handleToggleProducts}></lightning-input>
+                    </div>
+
+                    <template if:true={showProductRows}>
+                        <div class="slds-p-around_medium">
+                            <template for:each={productRowsDisplay} for:item="row">
+                                <div key={row.key} class="product-row slds-box slds-m-bottom_small">
+                                    <div class="slds-grid slds-grid_align-spread slds-m-bottom_x-small">
+                                        <span class="row-badge">#{row.index}</span>
+                                        <lightning-button-icon icon-name="utility:delete"
+                                            alternative-text="Remove row" variant="border-filled"
+                                            data-key={row.key} disabled={row.removeDisabled}
+                                            onclick={handleRemoveRow}></lightning-button-icon>
+                                    </div>
+                                    <div class="slds-grid slds-wrap slds-gutters_small">
+                                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                            <lightning-combobox label="Department" required
+                                                data-key={row.key} data-field="department"
+                                                value={row.department} options={pcDepartmentOptions}
+                                                onchange={handleRowChange}></lightning-combobox>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                            <lightning-combobox label="Product Category" required
+                                                data-key={row.key} data-field="category"
+                                                value={row.category} options={row.categoryOptions}
+                                                onchange={handleRowChange}></lightning-combobox>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2">
+                                            <lightning-combobox label="UOM"
+                                                data-key={row.key} data-field="uom"
+                                                value={row.uom} options={uomOptions}
+                                                onchange={handleRowChange}></lightning-combobox>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2">
+                                            <lightning-input type="number" label="Quantity" step="any"
+                                                data-key={row.key} data-field="quantity"
+                                                value={row.quantity}
+                                                onchange={handleRowChange}></lightning-input>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                            <lightning-button label="Add another category" icon-name="utility:add"
+                                onclick={handleAddRow}></lightning-button>
+                        </div>
+                    </template>
+                </section>
+            </template>
+
+            <!-- ============ LEAD OWNER ============ -->
+            <template if:true={showOwnerSection}>
+                <section class="slds-card section-card slds-m-horizontal_medium slds-m-bottom_medium">
+                    <h2 class="section-title slds-p-horizontal_medium slds-p-top_medium">Lead Owner</h2>
+                    <div class="slds-p-around_medium">
+                        <lightning-combobox label="Choose Lead owner" required
+                            value={ownerId} options={ownerOptions}
+                            placeholder="Users in the selected department"
+                            onchange={handleOwnerChange}></lightning-combobox>
+                    </div>
+                </section>
+            </template>
+            <template if:true={ownerSummary}>
+                <div class="slds-m-horizontal_medium slds-m-bottom_medium slds-text-body_small slds-text-color_weak">
+                    {ownerSummary}
+                </div>
+            </template>
+
+            <!-- ============ ADDRESS ============ -->
+            <section class="slds-card section-card slds-m-horizontal_medium slds-m-bottom_medium">
+                <h2 class="section-title slds-p-horizontal_medium slds-p-top_medium">Address Details</h2>
+                <div class="slds-p-around_medium slds-grid slds-wrap slds-gutters_small">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox label="Zone" data-field="zone"
+                            value={lead.zone} options={zoneOptions}
+                            onchange={handleLeadChange}></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox label="Country" data-field="country"
+                            value={lead.country} options={countryOptions}
+                            onchange={handleLeadChange}></lightning-combobox>
+                    </div>
+                    <template if:true={showState}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                            <lightning-combobox label="State" data-field="state"
+                                value={lead.state} options={stateOptions}
+                                onchange={handleLeadChange}></lightning-combobox>
+                        </div>
+                    </template>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-textarea label="Street" data-field="street"
+                            value={lead.street} onchange={handleLeadChange}></lightning-textarea>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2">
+                        <lightning-input label="City" data-field="city"
+                            value={lead.city} onchange={handleLeadChange}></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2">
+                        <lightning-input label="PIN" data-field="pin"
+                            value={lead.pin} onchange={handleLeadChange}></lightning-input>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============ DOCUMENTS (blocking when required) ============ -->
+            <template if:true={showFileSection}>
+                <section class="slds-card section-card slds-m-horizontal_medium slds-m-bottom_medium">
+                    <h2 class="section-title slds-p-horizontal_medium slds-p-top_medium">
+                        Supporting Document
+                        <span class="required-star">*</span>
+                    </h2>
+                    <div class="slds-p-around_medium">
+                        <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+                            Max file size 3.5 MB per file.
+                        </p>
+                        <label class="upload-drop">
+                            <input type="file" multiple onchange={handleFileSelected}
+                                class="upload-input" />
+                            <lightning-icon icon-name="utility:upload" size="small"></lightning-icon>
+                            <span class="slds-m-left_x-small">Tap to upload files</span>
+                        </label>
+                        <template if:true={isUploading}>
+                            <div class="slds-m-top_small">
+                                <lightning-spinner alternative-text="Uploading" size="small"></lightning-spinner>
+                            </div>
+                        </template>
+                        <template if:true={hasUploadedFiles}>
+                            <ul class="slds-m-top_small">
+                                <template for:each={uploadedFiles} for:item="file">
+                                    <li key={file.contentDocumentId}
+                                        class="file-pill slds-m-bottom_x-small">
+                                        <lightning-icon icon-name="doctype:attachment" size="x-small"
+                                            class="slds-m-right_x-small"></lightning-icon>
+                                        <span class="file-name">{file.fileName}</span>
+                                        <lightning-button-icon icon-name="utility:close" size="small"
+                                            alternative-text="Remove file" variant="bare"
+                                            data-docid={file.contentDocumentId}
+                                            onclick={handleRemoveFile}></lightning-button-icon>
+                                    </li>
+                                </template>
+                            </ul>
+                        </template>
+                    </div>
+                </section>
+            </template>
+
+            <!-- ============ ACTION BAR ============ -->
+            <div class="action-bar">
+                <span class="submit-btn">
+                    <lightning-button variant="brand" label="Create Lead"
+                        disabled={submitDisabled} onclick={handleSubmit}></lightning-button>
+                </span>
+            </div>
+
+        </template>
+    </div>
+</template>

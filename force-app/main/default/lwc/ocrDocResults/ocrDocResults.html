@@ -1,0 +1,171 @@
+<!-- <template>
+    <lightning-card title="Document Analysis Results" icon-name="standard:document">
+
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+            <template if:true={hasResults}>
+                <div class="slds-m-around_medium">
+                    <template for:each={results} for:item="res">
+                        <div key={res.Id} class="slds-box slds-m-bottom_small">
+
+                            <p><b>📄 File:</b> {res.File_Name__c}</p>
+                            <p><b>🏷️ Department:</b>
+                                {res.Matched_Department__c}</p>
+                            <p><b>🔑 Matched Keywords:</b>
+                                {res.Matched_Keywords__c}</p>
+
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template if:false={hasResults}>
+                <p class="slds-m-around_medium">
+                    No results yet.
+                </p>
+            </template>
+        </template>
+
+    </lightning-card>
+</template> -->
+<!-- <template>
+
+    <lightning-card title="Document Analysis Results"
+                    icon-name="standard:document">
+
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading">
+            </lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+
+            <template if:true={hasResults}>
+
+                <div class="table-container">
+
+                    <table class="slds-table slds-table_bordered slds-table_striped custom-table">
+
+                        <thead>
+                            <tr>
+                                <th class="file-column" scope="col">
+                                    File Name
+                                </th>
+
+                                <th class="dept-column" scope="col">
+                                    Department
+                                </th>
+
+                                <th class="keyword-column" scope="col">
+                                    Matched Keywords
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <template for:each={results} for:item="res">
+                                <tr key={res.Id}>
+
+                                    <td class="file-column">
+                                        <div class="cell-content">
+                                            {res.File_Name__c}
+                                        </div>
+                                    </td>
+
+                                    <td class="dept-column">
+                                        <div class="cell-content">
+                                            {res.Matched_Department__c}
+                                        </div>
+                                    </td>
+
+                                    <td class="keyword-column">
+                                        <div class="cell-content">
+                                            {res.Matched_Keywords__c}
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            </template>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </template>
+
+            <template if:false={hasResults}>
+                <div class="slds-p-around_medium slds-text-align_center">
+                    No results yet.
+                </div>
+            </template>
+
+        </template>
+
+    </lightning-card>
+</template> 
+-->
+
+<template>
+    <lightning-card title="Document Analysis Results" icon-name="standard:document">
+
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
+
+        <template if:false={isLoading}>
+
+            <template if:true={hasResults}>
+                <div class="table-container">
+                    <table class="slds-table slds-table_bordered slds-table_striped custom-table">
+                        <thead>
+                            <tr>
+                                <th class="col-file" scope="col">File Name</th>
+                                <th class="col-dept" scope="col">Department</th>
+                                <th class="col-keyword" scope="col">Keyword</th>
+                                <th class="col-page" scope="col">Page</th>
+                                <th class="col-section" scope="col">Section</th>
+                                <th class="col-text" scope="col">Matched Text</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={flatRows} for:item="row">
+                                <tr key={row.rowKey}>
+                                    <td class="col-file">
+                                        <div class="cell-content">{row.fileName}</div>
+                                    </td>
+                                    <td class="col-dept">
+                                        <div class="cell-content">{row.department}</div>
+                                    </td>
+                                    <td class="col-keyword">
+                                        <div class="cell-content">{row.keyword}</div>
+                                    </td>
+                                    <td class="col-page">
+                                        <div class="cell-content">{row.page}</div>
+                                    </td>
+                                    <td class="col-section">
+                                        <div class="cell-content">{row.section}</div>
+                                    </td>
+                                    <td class="col-text">
+                                        <div class="cell-content">{row.matchedText}</div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+
+            <template if:false={hasResults}>
+                <div class="slds-p-around_medium slds-text-align_center">
+                    No results yet.
+                </div>
+            </template>
+
+        </template>
+
+    </lightning-card>
+</template>

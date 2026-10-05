@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Valid_website</fullName>
+    <active>false</active>
+    <description>https://example.com
+http://example.com
+www.example.com
+example.com
+example.co.in
+https://example.com/page
+
+Blocks:
+abc
+example
+http:/wrong.com
+example@com</description>
+    <errorConditionFormula>AND(
+  NOT(ISBLANK(Website)),
+  NOT(
+    REGEX(
+      Website,
+      &quot;^(https?:\\/\\/)?(www\\.)?[a-zA-Z0-9-]+(\\.[a-zA-Z]{2,})+(\\/.*)?$&quot;
+    )
+  )
+)</errorConditionFormula>
+    <errorDisplayField>Website</errorDisplayField>
+    <errorMessage>Please put valid website</errorMessage>
+</ValidationRule>

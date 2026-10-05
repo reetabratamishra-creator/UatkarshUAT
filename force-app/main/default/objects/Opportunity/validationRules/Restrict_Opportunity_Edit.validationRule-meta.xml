@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Restrict_Opportunity_Edit</fullName>
+    <active>false</active>
+    <description>Creation is always allowed. Edits are allowed while the record is still new (isFirstUpdate__c = false), or once isFirstUpdate__c = true only while isDepartmentChanged__c = false. The edit is blocked only when both isFirstUpdate__c and isDepartmentChange</description>
+    <errorConditionFormula>AND(
+    isFirstUpdate__c,
+    ISBLANK(TEXT(Customer_Journey__c)),
+    NOT(ISCHANGED(Customer_Journey__c))
+)</errorConditionFormula>
+    <errorMessage>This Opportunity can&apos;t be edited right now. Edits are only allowed while the record is new, or after the department is not changed.</errorMessage>
+</ValidationRule>

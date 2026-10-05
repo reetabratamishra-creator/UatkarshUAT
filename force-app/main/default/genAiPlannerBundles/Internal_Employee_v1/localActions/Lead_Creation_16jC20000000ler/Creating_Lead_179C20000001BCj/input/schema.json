@@ -1,0 +1,42 @@
+{
+  "required" : [ "Department", "LeadSource", "leadName", "leadPhone" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "Department" : {
+      "title" : "Department",
+      "description" : "Collect Department from User and store into this variable",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "LeadSource" : {
+      "title" : "LeadSource",
+      "description" : "Collect LeadSource from User and store into this variable",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "PreviousSource" : {
+      "title" : "PreviousSource",
+      "description" : "If LeadSource is exactly \"CRM RESOURCE\": collect PreviousSource from user, otherwise pass null.",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "leadName" : {
+      "title" : "leadName",
+      "description" : "Collect leadName from User and store into this variable",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "leadPhone" : {
+      "title" : "leadPhone",
+      "description" : "Collect leadPhone from User and store into this variable",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

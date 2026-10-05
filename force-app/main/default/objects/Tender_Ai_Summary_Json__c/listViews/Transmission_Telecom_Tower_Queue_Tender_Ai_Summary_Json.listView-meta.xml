@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Transmission_Telecom_Tower_Queue_Tender_Ai_Summary_Json</fullName>
+    <filterScope>Queue</filterScope>
+    <label>Transmission &amp; Telecom Tower Queue</label>
+    <queue>Transmission_Telecom_Tower_Queue</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

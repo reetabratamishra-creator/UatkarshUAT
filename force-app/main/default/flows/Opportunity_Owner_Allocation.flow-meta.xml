@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>OpptyDeptName_Assignment</name>
+        <label>OpptyDeptName Assignment</label>
+        <locationX>855</locationX>
+        <locationY>432</locationY>
+        <assignmentItems>
+            <assignToReference>DepartmentName</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Department_Name__c</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>getUserRole</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Check_with_user_with_Dept_City</name>
+        <label>Check with user with Dept&amp;City</label>
+        <locationX>855</locationX>
+        <locationY>864</locationY>
+        <defaultConnector>
+            <targetReference>get_User_with_Dept_State</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Available</defaultConnectorLabel>
+        <rules>
+            <name>Available_with_Dept_City</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>get_User_with_Dept_City</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Opportunity_with_Owner</targetReference>
+            </connector>
+            <label>Available with Dept&amp;City</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_with_user_with_Dept_State</name>
+        <label>Check with user with Dept&amp;State</label>
+        <locationX>1053</locationX>
+        <locationY>1080</locationY>
+        <defaultConnectorLabel>Not Available</defaultConnectorLabel>
+        <rules>
+            <name>Available_with_Dept_State</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>get_User_with_Dept_State</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Opportunity_Owner_with_UserState</targetReference>
+            </connector>
+            <label>Available with Dept&amp;State</label>
+        </rules>
+    </decisions>
+    <description>schedulepath added</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>deptName_shortForm_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;High Mast Products&apos;) , &apos;HMS&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Steel Pipes Products&apos;) , &apos;SPP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Polygonal Products&apos;) , &apos;PGP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Crash Barrier Products&apos;) , &apos;CBP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Steel Tubular Poles Products&apos;) , &apos;STPP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;PVC Products&apos;) , &apos;PVC&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;HDPE Products&apos;) , &apos;HPP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Telecom Tower Products&apos;) , &apos;TETP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Transmission Tower Products&apos;) , &apos;TRTP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Railway Electrification Structure Products&apos;) , &apos;RESP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Pre Engineering Buildings Products&apos;) , &apos;PEBP&apos;,
+
+&apos;&apos;)))))))))))</expression>
+    </formulas>
+    <formulas>
+        <name>FormulaRoleName</name>
+        <dataType>String</dataType>
+        <expression>{!DepartmentName} &amp; &quot; Sales User&quot;</expression>
+    </formulas>
+    <interviewLabel>[Opportunity] Owner Allocation {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>[Opportunity] Owner Allocation</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>get_User_with_Dept_City</name>
+        <label>get User with Dept&amp;City</label>
+        <locationX>855</locationX>
+        <locationY>756</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_with_user_with_Dept_City</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>City</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getContactRole.Contact.MailingCity</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>UserRoleId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getUserRole.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>ProfileId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getProfile.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Department</field>
+            <operator>Contains</operator>
+            <value>
+                <elementReference>DepartmentName</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>get_User_with_Dept_State</name>
+        <label>get User with Dept&amp;State</label>
+        <locationX>1053</locationX>
+        <locationY>972</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_with_user_with_Dept_State</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Department</field>
+            <operator>Contains</operator>
+            <value>
+                <elementReference>DepartmentName</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>State</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Lead__r.State</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>UserRoleId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getUserRole.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>ProfileId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>getProfile.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>getContactRole</name>
+        <label>getContactRole</label>
+        <locationX>855</locationX>
+        <locationY>324</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>OpptyDeptName_Assignment</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>OpportunityId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>OpportunityContactRole</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>getProfile</name>
+        <label>getProfile</label>
+        <locationX>855</locationX>
+        <locationY>648</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>get_User_with_Dept_City</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Utkarsh Sales</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Profile</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>getUserRole</name>
+        <label>getUserRole</label>
+        <locationX>855</locationX>
+        <locationY>540</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>getProfile</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>FormulaRoleName</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>UserRole</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Opportunity_Owner_with_UserState</name>
+        <label>Update Opportunity Owner with UserState</label>
+        <locationX>921</locationX>
+        <locationY>1188</locationY>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>get_User_with_Dept_State.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Opportunity_with_Owner</name>
+        <label>Update Opportunity with Owner UserCity</label>
+        <locationX>657</locationX>
+        <locationY>972</locationY>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>get_User_with_Dept_City.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>498</locationX>
+        <locationY>48</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Department_Name__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Opportunity</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <scheduledPaths>
+            <name>after_creation</name>
+            <connector>
+                <targetReference>getContactRole</targetReference>
+            </connector>
+            <label>after creation</label>
+            <offsetNumber>1</offsetNumber>
+            <offsetUnit>Minutes</offsetUnit>
+            <recordField>CreatedDate</recordField>
+            <timeSource>RecordField</timeSource>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+    <variables>
+        <description>Department of Opportunity, because we can&apos;t add picklist in formula</description>
+        <name>DepartmentName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

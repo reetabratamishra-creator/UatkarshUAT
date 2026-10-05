@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Country Code --></label>
+    <name>countrycode__c</name>
+    <picklistValues>
+        <masterLabel>+1</masterLabel>
+        <translation><!-- +1 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+30</masterLabel>
+        <translation><!-- +30 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+33</masterLabel>
+        <translation><!-- +33 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+39</masterLabel>
+        <translation><!-- +39 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+44</masterLabel>
+        <translation><!-- +44 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+45</masterLabel>
+        <translation><!-- +45 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+46</masterLabel>
+        <translation><!-- +46 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+47</masterLabel>
+        <translation><!-- +47 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+49</masterLabel>
+        <translation><!-- +49 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+61</masterLabel>
+        <translation><!-- +61 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+64</masterLabel>
+        <translation><!-- +64 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+65</masterLabel>
+        <translation><!-- +65 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+7</masterLabel>
+        <translation><!-- +7 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+852</masterLabel>
+        <translation><!-- +852 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+86</masterLabel>
+        <translation><!-- +86 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+91</masterLabel>
+        <translation><!-- +91 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>+971</masterLabel>
+        <translation><!-- +971 --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_1</activeVersionIdentifier>
+    <developerName>IndiaMART_Lead_Keyword_Matcher</developerName>
+    <masterLabel>IndiaMART Lead Keyword Matcher</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>You are a lead classification assistant. 
+Lead Description:  {!$Input:Product_to_Purchase}
+Keyword Group Name: {!$Input:KeywordGroupName}
+Keyword List: {!$Input:KeywordList}
+
+Check if the Lead Description semantically matches any keyword in the Keyword List for this group. 
+Respond ONLY with strict JSON, no extra text, in this exact format: 
+{
+ &quot;isMatch&quot;: true or false, 
+ &quot;key&quot;: &quot;&lt;KeywordGroupName value&gt;&quot;, 
+ &quot;summary&quot;: &quot;&lt;1-2 line reasoning&gt;&quot;
+}
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>KeywordList</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>KeywordList</masterLabel>
+            <referenceName>Input:KeywordList</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>KeywordGroupName</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>KeywordGroupName</masterLabel>
+            <referenceName>Input:KeywordGroupName</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>Product_to_Purchase</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Product to Purchase</masterLabel>
+            <referenceName>Input:Product_to_Purchase</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_1</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Tower - Relevant</label>
+    <protected>false</protected>
+    <values>
+        <field>Department__c</field>
+        <value xsi:type="xsd:string">Tower</value>
+    </values>
+    <values>
+        <field>Is_Excluded__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Relevant__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Matched_Negative_Keywords__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Matched_Positive_Keywords__c</field>
+        <value xsi:type="xsd:string">Transmission Line Tower , transmission tower, pylon, electricity pylon, lattice tower, overhead power line, transmission towers, electrical substations, sub-transmission, distribution lines, suspension tower, dead-end tower, dead-end terminal tower, High voltage AC transmission towers, High voltage DC transmission towers, Suspension towers, Conventional Guyed Towers, suspension tower, dead-end terminal tower, tension tower, transposition tower, 220kV transmission lines towers, 132kV transmission lines towers, 400kV transmission lines towers, 765kV transmission lines towers, 500kV transmission lines towers, 320kV HVDC Transmission Line, 220kV transmission lines towers, 765kV transmission lines towers, Substation Structure, Water tower, Water structure, Tenders for Kavach, Kavach, LTE tender, LTE,  110kV transmission lines towers,  132kV transmission lines towers, 800kV transmission lines towers, LILO, POWER POOLING</value>
+    </values>
+    <values>
+        <field>Schema_Prompt__c</field>
+        <value xsi:type="xsd:string">Analyze if this document is related to Polymer.
+Check for presence of positive keywords and absence of negative keywords.
+Return confidence score based on how many positive keywords are found.</value>
+    </values>
+</CustomMetadata>

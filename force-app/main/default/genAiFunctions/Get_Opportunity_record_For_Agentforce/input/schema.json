@@ -1,0 +1,21 @@
+{
+  "required" : [ "OwnerID" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "OppName" : {
+      "title" : "OppName",
+      "description" : "Pass the Opportunity Name Given By User",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "OwnerID" : {
+      "title" : "OwnerID",
+      "description" : "Pass the Context variable",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

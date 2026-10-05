@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>admin@utkarshindialimited.in</contactEmail>
+    <description>External app API access for Utkarsh UAT.</description>
+    <label>External UAT Integration</label>
+    <oauthConfig>
+        <callbackUrl>https://www.google.com</callbackUrl>
+        <consumerKey>3MVG9jGfKGWHGQBVIcsTWf3OByrCDYhNM5tq3U.51e81p8.0JZ7ybOFNhW8MQX2NNzdNDr5aSHdyt8s0jl5YY</consumerKey>
+        <isAdminApproved>true</isAdminApproved>
+        <isClientCredentialEnabled>true</isClientCredentialEnabled>
+        <isCodeCredentialEnabled>true</isCodeCredentialEnabled>
+        <isCodeCredentialPostOnly>true</isCodeCredentialPostOnly>
+        <isConsumerSecretOptional>false</isConsumerSecretOptional>
+        <isIntrospectAllTokens>false</isIntrospectAllTokens>
+        <isNamedUserJwtEnabled>false</isNamedUserJwtEnabled>
+        <isPkceRequired>false</isPkceRequired>
+        <isRefreshTokenRotationEnabled>true</isRefreshTokenRotationEnabled>
+        <isSecretRequiredForRefreshToken>false</isSecretRequiredForRefreshToken>
+        <isSecretRequiredForTokenExchange>false</isSecretRequiredForTokenExchange>
+        <isTokenExchangeEnabled>false</isTokenExchangeEnabled>
+        <scopes>Api</scopes>
+        <scopes>RefreshToken</scopes>
+    </oauthConfig>
+    <oauthPolicy>
+        <ipRelaxation>BYPASS</ipRelaxation>
+        <isTokenExchangeFlowEnabled>false</isTokenExchangeFlowEnabled>
+        <refreshTokenPolicy>specific_inactivity:30:DAYS</refreshTokenPolicy>
+    </oauthPolicy>
+</ConnectedApp>

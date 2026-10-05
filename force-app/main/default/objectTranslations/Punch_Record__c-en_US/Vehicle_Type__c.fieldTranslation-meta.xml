@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Vehicle Type --></label>
+    <name>Vehicle_Type__c</name>
+    <picklistValues>
+        <masterLabel>Four Wheeler</masterLabel>
+        <translation><!-- Four Wheeler --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Two Wheeler</masterLabel>
+        <translation><!-- Two Wheeler --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

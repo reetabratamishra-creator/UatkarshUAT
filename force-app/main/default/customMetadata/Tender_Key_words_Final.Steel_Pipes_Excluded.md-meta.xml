@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Steel Pipes - Excluded</label>
+    <protected>false</protected>
+    <values>
+        <field>Department__c</field>
+        <value xsi:type="xsd:string">Steel Pipes</value>
+    </values>
+    <values>
+        <field>Is_Excluded__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Is_Relevant__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Matched_Negative_Keywords__c</field>
+        <value xsi:type="xsd:string">SEAMLESS, STAINLESS STEEL, M.S. COLUMN PIPES, Replacement, Shifting, REPAIR, RECANNING, REPAIR AND RECANNING, handpump, TURBINE INTEGRAL PIPING, TURBINE,Withdrawing Relaying, Relaying, laying, submersible motor, cable wire, REPAIR AND REPLACEMENT , Replacement, School, Providing and linking, Stainless steel pipe, Stainless, SS, Fixing,Chequered plates,  Angles, Sail, JSW, TATA, Overhauling, reinforcement,pumping, Maintenance, Operation, Ball valve, Elbow, nipple, Reducer, Aluminium, College, Fixation, Rubber Gaskets, Sleeve Couplings, Sleeve, Pump, Sinking, OLD, DAMAGED, copper refrigerant, Rotten Riser,  Renewal, Upgradation,Toilet, Hiring, Renovation, SLURRY, NEOPRENE RUBBER, Rubber, BEARING, Annual Maintenance, Dismantling, Sinking, COMPREHENSIVE REPAIR,RESTORATION, Repairing, Infiltration, flanges, PLUG, Portable, cabinet, Connector, battery charging, machine, wheel, Alloy steel, Ammonia, SS304, TOOTH PIN,PIN PIVOT, BUSHING WELD ON, V BELT FAN DRIVE,HOSE, HOSE FIP PIPING, HOSE PIPE TO FILTER, GASKET CYL HEAD COVER, WATER SEPARATOR, INJECTOR NOZZLE, AIR CLEANER, O RING LUBRICATING OIL PIPE, DUST INDICATOR, GASKET, VALVE INTAKE, OIL SEAL, FRONT HEAD LAMP, CUTTER BLADE, PLYWOOD, SILENCER EXHAUST BELLOWS, Facility, Services, JAL GRAHAN KOOP NIRMAN MEHARI PUROHITAN, lab, Gram, House, Call, ASTM</value>
+    </values>
+    <values>
+        <field>Matched_Positive_Keywords__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Schema_Prompt__c</field>
+        <value xsi:type="xsd:string">Analyze if this document is related to Polymer.
+Check for presence of positive keywords and absence of negative keywords.
+Return confidence score based on how many positive keywords are found.</value>
+    </values>
+</CustomMetadata>

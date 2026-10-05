@@ -1,0 +1,14 @@
+{
+  "required" : [ "jsonInput" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "jsonInput" : {
+      "title" : "JSON Payload",
+      "description" : "Raw JSON string from the chatbot",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

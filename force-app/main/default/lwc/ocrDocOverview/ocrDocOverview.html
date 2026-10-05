@@ -1,0 +1,51 @@
+<template>
+
+        <template if:true={dashboard}>
+
+            <div class="dashboard-container">
+
+                <div class="stats-grid">
+
+                    <div class="stat-card total">
+                        <div class="number">{dashboard.totalDocs}</div>
+                        <div class="label">Total Documents</div>
+                    </div>
+
+                    <div class="stat-card completed">
+                        <div class="number">{dashboard.completedDocs}</div>
+                        <div class="label">Completed</div>
+                    </div>
+
+                    <div class="stat-card processing">
+                        <div class="number">{dashboard.processingDocs}</div>
+                        <div class="label">Processing</div>
+                    </div>
+
+                    <div class="stat-card failed">
+                        <div class="number">{dashboard.failedDocs}</div>
+                        <div class="label">Failed</div>
+                    </div>
+
+                </div>
+
+                <div class="table-section">
+
+                    <h2 class="section-title">
+                        Recent OCR Documents
+                    </h2>
+
+                    <lightning-datatable
+                        key-field="Id"
+                        data={dashboard.recentDocs}
+                        columns={columns}
+                        hide-checkbox-column
+                        onrowaction={handleRowAction}>
+                    </lightning-datatable>
+
+                </div>
+
+            </div>
+
+        </template>
+
+</template>

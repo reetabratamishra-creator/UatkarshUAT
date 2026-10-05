@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Lost Reason --></label>
+    <name>Lost_Reason__c</name>
+    <picklistValues>
+        <masterLabel>Customer details not received</masterLabel>
+        <translation><!-- Customer details not received --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Existing Customer</masterLabel>
+        <translation><!-- Existing Customer --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Future Prospect</masterLabel>
+        <translation><!-- Future Prospect --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Internal Problem</masterLabel>
+        <translation><!-- Internal Problem --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lost to Competitor</masterLabel>
+        <translation><!-- Lost to Competitor --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Minimum Quantity not met</masterLabel>
+        <translation><!-- Minimum Quantity not met --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>No Budget / Lost Funding</masterLabel>
+        <translation><!-- No Budget / Lost Funding --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>No Decision / Non-Responsive</masterLabel>
+        <translation><!-- No Decision / Non-Responsive --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not responding</masterLabel>
+        <translation><!-- Not responding --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other</masterLabel>
+        <translation><!-- Other --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Out of Service Area</masterLabel>
+        <translation><!-- Out of Service Area --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Price</masterLabel>
+        <translation><!-- Price --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Price Enquiry</masterLabel>
+        <translation><!-- Price Enquiry --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Purchased from Other Brands</masterLabel>
+        <translation><!-- Purchased from Other Brands --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Rate Issue</masterLabel>
+        <translation><!-- Rate Issue --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Tender lost</masterLabel>
+        <translation><!-- Tender lost --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

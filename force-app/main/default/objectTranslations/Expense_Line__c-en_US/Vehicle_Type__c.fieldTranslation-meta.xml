@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Select the vehicle type for roadways or own vehicle expenses --></help>
+    <label><!-- Vehicle Type --></label>
+    <name>Vehicle_Type__c</name>
+    <picklistValues>
+        <masterLabel>2-Wheeler</masterLabel>
+        <translation><!-- 2-Wheeler --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>4-Wheeler</masterLabel>
+        <translation><!-- 4-Wheeler --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Auto</masterLabel>
+        <translation><!-- Auto --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Bus</masterLabel>
+        <translation><!-- Bus --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Car Rental</masterLabel>
+        <translation><!-- Car Rental --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>OLA/UBER/TAXI</masterLabel>
+        <translation><!-- OLA/UBER/TAXI --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

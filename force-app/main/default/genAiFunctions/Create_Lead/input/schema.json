@@ -1,0 +1,49 @@
+{
+  "required" : [ "company", "firstName", "lastName", "phone" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "company" : {
+      "title" : "Company",
+      "description" : "The company or organization name of the lead",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "email" : {
+      "title" : "Email",
+      "description" : "The email address of the lead (optional)",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "firstName" : {
+      "title" : "First Name",
+      "description" : "The first name of the lead",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "lastName" : {
+      "title" : "Last Name",
+      "description" : "The last name of the lead",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "ownerId" : {
+      "title" : "Owner Id",
+      "description" : "The Salesforce User Id of the agent user creating the lead",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "phone" : {
+      "title" : "Phone",
+      "description" : "The phone number of the lead",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

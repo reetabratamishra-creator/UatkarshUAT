@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Authorities Contact Details --></label>
+    <name>Authorities_Contact_Details__c</name>
+    <relationshipLabel><!-- Project (Project Authorities Contact Details) --></relationshipLabel>
+</CustomFieldTranslation>

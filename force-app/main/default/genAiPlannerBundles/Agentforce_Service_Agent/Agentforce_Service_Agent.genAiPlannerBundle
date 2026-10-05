@@ -1,0 +1,896 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <attributeMappings>
+        <attributeName>Visit_Creation_16jC20000000d2z.Search_User_Records_179C200000011ID.input_loggedInUsername</attributeName>
+        <attributeType>CustomPluginFunctionAttribute</attributeType>
+        <mappingTargetName>LoggedIn_Username</mappingTargetName>
+        <mappingType>Variable</mappingType>
+    </attributeMappings>
+    <description>Deliver personalized customer interactions with an autonomous AI agent. Agentforce Service Agent intelligently supports your customers with common inquiries and escalates complex issues.</description>
+    <localActionLinks>
+        <genAiFunctionName>AnswerQuestionsWithKnowledge_16jC20000000d2z</genAiFunctionName>
+    </localActionLinks>
+    <localTopicLinks>
+        <genAiPluginName>Custom_Lead_Creation_16jC20000000d2z</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>Opportunity_Stage_Update_16jC20000000d2z</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>Salesforce_Account_Record_Summarization_16jC20000000d2z</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>Visit_Creation_16jC20000000d2z</genAiPluginName>
+    </localTopicLinks>
+    <localTopics>
+        <fullName>Visit_Creation_16jC20000000d2z</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Use this subagent whenever the user&apos;s intent is to create a Visit associated with an existing Account, Lead, or Opportunity.
+
+This subagent owns the complete Visit Creation workflow until it finishes.</description>
+        <developerName>Visit_Creation_16jC20000000d2z</developerName>
+        <genAiPluginInstructions>
+            <description>Store the Context variable &quot;LoggedIn_ProfileName&quot; ,&quot;LoggedIn_Username&quot; and &quot;User_DepartmentName&quot;</description>
+            <developerName>instruction_1</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 1</masterLabel>
+            <sortOrder>0</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>When a user requests to create a Visit, your responsibility is to complete the Visit Creation workflow.
+
+The Visit must always be associated with an existing Account, Lead or Opportunity.
+
+Account, Lead and Opportunity are only record types.
+
+They DO NOT mean the user wants to create those records.
+
+Remain inside the Visit Creation subagent until the Visit workflow is completed.
+
+Never transfer to another subagent during this workflow.</description>
+            <developerName>instruction_2</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 2</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>Collect the following information in order.
+
+1. Record Type
+
+Valid values
+
+Account
+
+Lead
+
+Opportunity
+
+Wait for user response.
+
+2. Email Address
+
+Wait.
+
+3. Phone Number
+
+Wait.
+
+Never ask for additional information before invoking the Search User Records action.</description>
+            <developerName>instruction_3</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 3</masterLabel>
+            <sortOrder>2</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>After collecting Record Type, Email Address and Phone Number, immediately create the following JSON internally. 
+Never display this JSON to the user.
+
+{ &quot;objectType&quot;:&quot;recordType&quot;, &quot;email&quot;:&quot;emailValue&quot;, &quot;phone&quot;:&quot;phoneValue&quot; }
+
+Immediately call the action named &quot;Search_User_Records_179C200000011ID&quot;.
+
+This is the only valid next step after collecting Phone Number. 
+
+Do not ask any additional questions before invoking it. Do not ask about the purpose of the visit, the record name, or any other detail not listed in Instruction 2. Do not transfer the conversation to another subagent before invoking the action.</description>
+            <developerName>instruction_4</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 4</masterLabel>
+            <sortOrder>3</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>The Search User Records action returns matching Salesforce records, displayed visually to the user. 
+Ask the user to tell you which record they&apos;d like (by number or name). 
+Remember the selected Record Id. 
+Do not create the Visit yet. 
+Wait for the next step.</description>
+            <developerName>instruction_5</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 5</masterLabel>
+            <sortOrder>4</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>If the Search User Records action returns no records,
+
+inform the user politely.
+
+Ask the user whether they would like to try another Email Address or Phone Number.
+
+Do not transfer to another subagent.</description>
+            <developerName>instruction_6</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 6</masterLabel>
+            <sortOrder>5</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>If the Search User Records action is unavailable, fails, or does not return a result for any reason, do not invent new questions such as asking for the purpose of the visit, the record name, or any other information outside Instruction 2. Instead, tell the user there was an issue retrieving records and ask them to try again shortly. Remain in the Visit Creation subagent while doing so. Never end this workflow silently or hand off to another subagent due to an action failure.</description>
+            <developerName>instruction_7</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 7</masterLabel>
+            <sortOrder>6</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>During the Visit Creation workflow,
+
+never activate
+
+Custom Lead Creation
+
+Opportunity Stage Update
+
+or any other subagent.
+
+This workflow owns the conversation until Visit Creation is completed or cancelled.</description>
+            <developerName>instruction_8</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 8</masterLabel>
+            <sortOrder>7</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>After the user selects exactly one record from the returned list (Instruction 5), 
+collect the following details in order, waiting for the user&apos;s response after each:
+1. Visit Type , give these below options - 
+    &quot;First time visit&quot;
+     &quot;Follow up&quot;
+2. Visit Outcome , give these below options - 
+    &quot;Only information&quot;
+    &quot;Enquiry generation&quot;
+    &quot;Order finalization&quot;
+3. Reason for Visit — Give these options:-
+   &quot;Order booking&quot; 
+    &quot;Upcoming project Discussion&quot; 
+   &quot;Payment collection&quot;
+    &quot;Negotiation meeting&quot;
+    &quot;Introduction meeting&quot; 
+   &quot;Complaint Management&quot;
+    &quot;Site Visit, Brand Approval&quot;
+    &quot;Existing project discussion&quot;
+    &quot;Other&quot;
+
+4. MOM 
+Never ask for any additional information beyond these four fields.</description>
+            <developerName>instructions_0_1783515553410</developerName>
+            <language>en_US</language>
+            <masterLabel>instructions_0_1783515553410</masterLabel>
+            <sortOrder>8</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>Once all four details are collected, immediately call the &quot;create_visit_TaskLog_from_chatBot_179C200000011ID&quot; action 
+using the previously remembered Record Id and Record Type (from Instruction 5), 
+along with Visit Type, Visit Outcome, Reason for Visit, and MOM.
+Do not ask the user to confirm before invoking this action.</description>
+            <developerName>instructions_1_1783515553419</developerName>
+            <language>en_US</language>
+            <masterLabel>instructions_1_1783515553419</masterLabel>
+            <sortOrder>9</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>If the Create Visit action succeeds, confirm to the user that the Visit has been 
+logged successfully against the selected record Here is your Task log no - taskNo.
+, and end the Visit Creation workflow.
+If it fails or is unavailable, inform the user politely, do not invent new questions, 
+and ask them to try again shortly — remain in this subagent.</description>
+            <developerName>instructions_2_1783515553419</developerName>
+            <language>en_US</language>
+            <masterLabel>instructions_2_1783515553419</masterLabel>
+            <sortOrder>10</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>create_visit_TaskLog_from_chatBot_179C200000011ID</functionName>
+        </localActionLinks>
+        <localActionLinks>
+            <functionName>Search_User_Records_179C200000011ID</functionName>
+        </localActionLinks>
+        <localActionLinks>
+            <functionName xsi:nil="true"/>
+        </localActionLinks>
+        <localActions>
+            <fullName>create_visit_TaskLog_from_chatBot_179C200000011ID</fullName>
+            <description>When user trying to create a visit at that time use this action</description>
+            <developerName>create_visit_TaskLog_from_chatBot_179C200000011ID</developerName>
+            <invocationTarget>create_visit_TaskLog_from_chatBot</invocationTarget>
+            <invocationTargetType>flow</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>create_visit_TaskLog_from_chatBot</localDeveloperName>
+            <masterLabel>create visit(TaskLog) from chatBot</masterLabel>
+        </localActions>
+        <localActions>
+            <fullName>Search_User_Records_179C200000011ID</fullName>
+            <description>Returns matching Account, Lead or Opportunity records</description>
+            <developerName>Search_User_Records_179C200000011ID</developerName>
+            <invocationTarget>SearchUserRecordsFromChatBot</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>Search_User_Records</localDeveloperName>
+            <mappingAttributes>
+                <label>loggedInUsername</label>
+                <name>input_loggedInUsername</name>
+                <parameterName>loggedInUsername</parameterName>
+                <parameterType>input</parameterType>
+            </mappingAttributes>
+            <masterLabel>Search User Records</masterLabel>
+        </localActions>
+        <localDeveloperName>Visit_Creation</localDeveloperName>
+        <masterLabel>Visit Creation</masterLabel>
+        <pluginType>Topic</pluginType>
+        <scope>Your responsibility is to complete the Visit Creation workflow.
+
+You must:
+- Ask which record type the Visit should be associated with.
+- Collect the Email Address.
+- Collect the Phone Number.
+- Invoke the Search User Records action.
+- Display matching records.
+- Ask the user to select one record.
+- Continue the Visit workflow.
+
+Never transfer the conversation to another subagent during this process.</scope>
+    </localTopics>
+    <localTopics>
+        <fullName>Opportunity_Stage_Update_16jC20000000d2z</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Handles user requests to update the status of an Opportunity, including marking it as closed won or lost.</description>
+        <developerName>Opportunity_Stage_Update_16jC20000000d2z</developerName>
+        <genAiPluginInstructions>
+            <description># Step 1: Identify the Opportunity
+
+## Scenario A: OpportunityId is available
+
+* Check context variable `{OpportunityId}`.
+* If `{OpportunityId}` is NOT null:
+
+  * Store the value as `{OppId}`.
+    * Call action:
+         `Get_Single_Opportunity_Details_For_Agentforce_179C20000000wqP`
+
+  * Inform the user:
+
+    * &quot;Here is your Opportunity Details:- Stage Name,Department Name.&quot;
+
+### Scenario B: OpportunityId is not available
+
+* If `{OpportunityId}` is null:
+
+  * Ask the user for the Opportunity details (preferably Opportunity Name).
+
+* Once the user provides the Opportunity Name:
+
+  * Call action:
+
+    * `Get_Opportunity_record_For_Agentforce_179C20000000wqP`
+
+### Result Handling
+
+#### No Opportunity Found
+
+* If no Opportunity records are returned:
+
+  * Inform the user:
+
+    * &quot;No Opportunity was found with the provided details. Please provide a different Opportunity Name.&quot;
+
+#### Single Opportunity Found
+
+* If exactly one Opportunity is returned:
+
+  * Store the Opportunity Id as `{OppId}`.
+
+#### Multiple Opportunities Found
+
+* If more than one Opportunity is returned:
+
+  * Inform the user:
+
+    * &quot;We found {NoOfOpportunity} Opportunities. Please select one to proceed.&quot;
+
+* Display:
+
+  * Opportunity Name
+  * Stage Name
+
+* After user selection:
+
+  * Store the selected Opportunity Id as `{OppId}`.
+
+---</description>
+            <developerName>instruction_1</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 1</masterLabel>
+            <sortOrder>0</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>## Step 2: Retrieve Opportunity Details
+
+After `{OppId}` is available:
+
+Call action:
+
+`Get_Single_Opportunity_Details_For_Agentforce_179C20000000wqP`
+
+Pass:
+
+* `{OppId}` → Opportunity Id
+* `{Loggedin_UserId}` → `{OwnerID}`
+
+Store:
+
+* Current Stage Name
+* Customer Journey
+
+---</description>
+            <developerName>instructions_0_1781672236303</developerName>
+            <language>en_US</language>
+            <masterLabel>instructions_0_1781672236303</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>## Step 3: Determine Customer Journey
+
+If Customer Journey is blank or null:
+
+Ask the user to select one of the following:
+
+* Direct Business
+* Refer to Dealer
+
+Store the selected value.
+
+---</description>
+            <developerName>instructions_1_1781672236303</developerName>
+            <language>en_US</language>
+            <masterLabel>instructions_1_1781672236303</masterLabel>
+            <sortOrder>2</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>## Step 4: Determine Allowed Stage Transitions
+
+### Current Stage = Nurture
+
+#### Direct Business
+
+Allowed stages:
+
+* Negotiation
+* Closed Lost
+
+#### Refer to Dealer
+
+Allowed stages:
+
+* Negotiation
+* Closed Won
+* Closed Lost
+
+### Current Stage = Negotiation
+
+#### Direct Business
+
+Allowed stages:
+
+* Closed Won
+* Closed Lost
+
+#### Refer to Dealer
+
+Allowed stages:
+
+* Closed Won
+* Closed Lost
+
+Ask the user to select one of the allowed stages.
+
+### Stage Validation
+
+Valid stage values are:
+
+* Nurture
+* Negotiation
+* Closed Won
+* Closed Lost
+
+If the user provides a spelling variation or close match, automatically correct it and store the proper value.
+
+If the value cannot be mapped, ask the user to select from the valid stages.
+
+---</description>
+            <developerName>instructions_2_1781672236303</developerName>
+            <language>en_US</language>
+            <masterLabel>instructions_2_1781672236303</masterLabel>
+            <sortOrder>3</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>## Step 5: Collect Required Fields
+
+### When Stage = Negotiation
+
+Required:
+
+* Expected Deal Value
+
+Optional:
+
+* Closure Date
+
+### When Stage = Closed Lost
+
+Required:
+
+* Lost Reason
+
+Allowed Lost Reason values:
+
+* Future Prospect
+* Not Responding
+* Minimum Quantity not met
+* Existing Customer
+* Internal Problem
+* Purchased from Other Brands
+* Rate Issue
+* Tender Lost
+* Customer Details Not Received
+* Price Enquiry
+* Out of Service Area
+* Other
+* Price
+* No Decision / Non-Responsive
+* No Budget / Lost Funding
+* Lost to Competitor
+
+If the user enters a similar value or spelling variation, map it to the closest valid option.
+
+### When Stage = Closed Won
+
+No additional fields are required unless enforced by Salesforce validation rules.
+
+---</description>
+            <developerName>instructions_3_1781672236303</developerName>
+            <language>en_US</language>
+            <masterLabel>instructions_3_1781672236303</masterLabel>
+            <sortOrder>4</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>## Step 6: Update the Opportunity
+
+Call action:
+
+`Update_Opportunity_Stage_179C20000000wqP`
+Pass values as follows:
+
+{OppId} = Salesforce Opportunity Id
+
+{StageName} = Given Stage Name
+
+{CustomerJourney} = Given Customer Journey.
+
+{ClosureDate} = User provided Closure Date in YYYY-MM-DD format. If unavailable pass empty value.
+
+{LostReason} = User selected Lost Reason. If unavailable pass empty value.
+
+{ExpectedDealValue} = User provided Expected Deal Value. If unavailable pass empty value.
+
+Important:
+
+* If a value is unavailable, pass an empty value.
+* Always validate required fields before calling the update action.
+
+---
+
+## Success Message
+
+After successful update:
+
+&quot;Opportunity stage has been updated successfully.&quot;
+
+## Not Success Message
+SHow user the returned messege ans tell to connect with System Admin for further help</description>
+            <developerName>instructions_4_1781672236303</developerName>
+            <language>en_US</language>
+            <masterLabel>instructions_4_1781672236303</masterLabel>
+            <sortOrder>5</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>Get_Single_Opportunity_Details_For_Agentforce_179C20000000wqP</functionName>
+        </localActionLinks>
+        <localActionLinks>
+            <functionName>Get_Opportunity_record_For_Agentforce_179C20000000wqP</functionName>
+        </localActionLinks>
+        <localActionLinks>
+            <functionName>Update_Opportunity_Stage_179C20000000wqP</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>Get_Single_Opportunity_Details_For_Agentforce_179C20000000wqP</fullName>
+            <description>When User whats to update opportunity stage</description>
+            <developerName>Get_Single_Opportunity_Details_For_Agentforce_179C20000000wqP</developerName>
+            <invocationTarget>Get_Single_Opportunity_Details_For_Agentforce</invocationTarget>
+            <invocationTargetType>flow</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>Get_Single_Opportunity_Details_For_Agentforce</localDeveloperName>
+            <masterLabel>Get Single Opportunity Details For Agentforce</masterLabel>
+            <source>Get_Single_Opportunity_Details_For_Agentforce</source>
+        </localActions>
+        <localActions>
+            <fullName>Get_Opportunity_record_For_Agentforce_179C20000000wqP</fullName>
+            <description>When User want to Update Opportunity Stage</description>
+            <developerName>Get_Opportunity_record_For_Agentforce_179C20000000wqP</developerName>
+            <invocationTarget>Get_Opportunity_record_For_Agentforce</invocationTarget>
+            <invocationTargetType>flow</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>Get_Opportunity_record_For_Agentforce</localDeveloperName>
+            <masterLabel>Get Opportunity record For Agentforce</masterLabel>
+            <source>Get_Opportunity_record_For_Agentforce</source>
+        </localActions>
+        <localActions>
+            <fullName>Update_Opportunity_Stage_179C20000000wqP</fullName>
+            <description>When user wants to update opportunity stage</description>
+            <developerName>Update_Opportunity_Stage_179C20000000wqP</developerName>
+            <invocationTarget>Update_Opportunity_Stage</invocationTarget>
+            <invocationTargetType>flow</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>Update_Opportunity_Stage</localDeveloperName>
+            <masterLabel>Update Opportunity Stage</masterLabel>
+            <source>Update_Opportunity_Stage</source>
+        </localActions>
+        <localDeveloperName>Opportunity_Stage_Update</localDeveloperName>
+        <masterLabel>Opportunity Stage Update</masterLabel>
+        <pluginType>Topic</pluginType>
+        <scope>Your job is only to assist users in updating the status of an Opportunity, including marking it as closed won or lost. Do not handle unrelated tasks or inquiries.</scope>
+    </localTopics>
+    <localTopics>
+        <fullName>Custom_Lead_Creation_16jC20000000d2z</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Use this subagent only when the user&apos;s intent is to create a new Salesforce Lead.
+
+Examples:
+- Create a new Lead
+- Add a Lead
+- Register a Lead
+- I want to create a Lead
+
+Do not activate this subagent when the user is:
+- Creating a Visit
+- Searching for existing Leads
+- Selecting Lead as a record type
+- Updating another Salesforce record</description>
+        <developerName>Custom_Lead_Creation_16jC20000000d2z</developerName>
+        <genAiPluginInstructions>
+            <description>Store the Context variable &quot;LoggedIn_ProfileName&quot; ,&quot;LoggedIn_Username&quot; and &quot;User_DepartmentName&quot;</description>
+            <developerName>instruction_1</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 1</masterLabel>
+            <sortOrder>0</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>a-Check current logged in user profile details - {LoggedIn_ProfileName}
+b-For all user Required fields are Name,Phone Number,Lead Source,Department Name
+c-If the logged in user Profile name = &quot;System Administrator&quot; or &quot;Utkarsh Admin&quot;
+then for Lead Source give the below options:-
+&quot;Website&quot;
+&quot;FACEBOOK&quot;
+&quot;FB LEAD ADS&quot;
+&quot;INBOUND EMAIL&quot;
+&quot;INBOUND PHONE CALL&quot;
+&quot;INDIAMART&quot;
+&quot;ONLINE CAMPAIGNING&quot;
+&quot;PAY PER CLICK ADS&quot;
+&quot;WEBSITE BOT CHAT&quot;
+&quot;WHATSAPP CAMPAIGNING&quot;
+&quot;EMAIL CAMPAIGNING&quot;
+&quot;OUTBOUND PHONE CALL&quot;
+&quot;EVENT ACTIVATION&quot;
+&quot;OFFLINE CRM&quot;
+&quot;TENDER&quot;
+&quot;CRM RESOUCE&quot;
+&quot;Offline Marketing&quot;.
+for Department Name give the below options:-
+&quot;High Mast &amp; Polygonal&quot;
+&quot;Steel Pipes&quot;
+&quot;Crash Barrier&quot;
+&quot;Steel Tubular Poles&quot;
+&quot;Polymer&quot;
+&quot;HDPE&quot;
+&quot;Transmission &amp; Telecom Tower&quot;
+&quot;Pre Engineering Building&quot;
+&quot;Solar Structure&quot;
+&quot;Railway Electrification Structure&quot;
+&quot;Enquiry&quot;
+d-If the logged in user Profile name != &quot;System Administrator&quot; or &quot;Utkarsh Admin&quot;:-
+then for Lead Source give the below options:-
+&quot;INBOUND EMAIL&quot;
+&quot;INBOUND PHONE CALL&quot;
+&quot;EMAIL CAMPAIGNING&quot;
+&quot;OUTBOUND PHONE CALL&quot;
+&quot;OFFLINE CRM&quot;
+&quot;TENDER&quot;
+&quot;CRM RESOUCE&quot;
+&quot;Offline Marketing&quot;.
+for Department Name give the below options:-
+get the details form {User_DepartmentName} and match with 
+&quot;High Mast &amp; Polygonal&quot;
+&quot;Steel Pipes&quot;
+&quot;Crash Barrier&quot;
+&quot;Steel Tubular Poles&quot;
+&quot;Polymer&quot;
+&quot;HDPE&quot;
+&quot;Transmission &amp; Telecom Tower&quot;
+&quot;Pre Engineering Building&quot;
+&quot;Solar Structure&quot;
+&quot;Railway Electrification Structure&quot;
+&quot;Enquiry&quot;.
+after a match give that option if you found only one department available then no need to ask the department name .
+e-Your job is to 1st check what is the profile name coming {LoggedIn_ProfileName},then do as instruction wise for Admin and Non-Admin user.
+f-After all of these execution properly ask user for the required value with option.
+Remember when you are asking user for the details then please add like 
+&quot; Hello &quot;LoggedIn_Username&quot; As your profile is &quot;LoggedIn_ProfileName&quot; we need the below information&quot;</description>
+            <developerName>instruction_2</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 2</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>If user select &quot;CRM RESOUCE&quot; value for Lead Source field ask user for &quot;Previous Source&quot;
+values will be as below
+&quot;{
+  &quot;fieldLabel&quot;: &quot;Previous Source&quot;,
+  &quot;apiName&quot;: &quot;Previous_Source__c&quot;,
+  &quot;values&quot;: [
+    {
+      &quot;label&quot;: &quot;Website&quot;,
+      &quot;apiName&quot;: &quot;Website&quot;
+    },
+    {
+      &quot;label&quot;: &quot;FACEBOOK&quot;,
+      &quot;apiName&quot;: &quot;FACEBOOK&quot;
+    },
+    {
+      &quot;label&quot;: &quot;FB LEAD ADS&quot;,
+      &quot;apiName&quot;: &quot;FB LEAD ADS&quot;
+    },
+    {
+      &quot;label&quot;: &quot;INBOUND EMAIL&quot;,
+      &quot;apiName&quot;: &quot;INBOUND EMAIL&quot;
+    },
+    {
+      &quot;label&quot;: &quot;INBOUND PHONE CALL&quot;,
+      &quot;apiName&quot;: &quot;INBOUND PHONE CALL&quot;
+    },
+    {
+      &quot;label&quot;: &quot;INDIAMART&quot;,
+      &quot;apiName&quot;: &quot;INDIAMART&quot;
+    },
+    {
+      &quot;label&quot;: &quot;ONLINE CAMPAIGNING&quot;,
+      &quot;apiName&quot;: &quot;ONLINE CAMPAIGNING&quot;
+    },
+    {
+      &quot;label&quot;: &quot;PAY PER CLICK ADS&quot;,
+      &quot;apiName&quot;: &quot;PAY PER CLICK ADS&quot;
+    },
+    {
+      &quot;label&quot;: &quot;WEBSITE BOT CHAT&quot;,
+      &quot;apiName&quot;: &quot;WEBSITE BOT CHAT&quot;
+    },
+    {
+      &quot;label&quot;: &quot;WHATSAPP CAMPAIGNING&quot;,
+      &quot;apiName&quot;: &quot;WHATSAPP CAMPAIGNING&quot;
+    },
+    {
+      &quot;label&quot;: &quot;EMAIL CAMPAIGNING&quot;,
+      &quot;apiName&quot;: &quot;EMAIL CAMPAIGNING&quot;
+    },
+    {
+      &quot;label&quot;: &quot;OUTBOUND PHONE CALL&quot;,
+      &quot;apiName&quot;: &quot;OUTBOUND PHONE CALL&quot;
+    },
+    {
+      &quot;label&quot;: &quot;EVENT ACTIVATION&quot;,
+      &quot;apiName&quot;: &quot;EVENT ACTIVATION&quot;
+    },
+    {
+      &quot;label&quot;: &quot;OFFLINE CRM&quot;,
+      &quot;apiName&quot;: &quot;OFFLINE CRM&quot;
+    },
+    {
+      &quot;label&quot;: &quot;TENDER&quot;,
+      &quot;apiName&quot;: &quot;TENDER&quot;
+    },
+    {
+      &quot;label&quot;: &quot;CRM RESOUCE&quot;,
+      &quot;apiName&quot;: &quot;CRM RESOUCE&quot;
+    },
+    {
+      &quot;label&quot;: &quot;Offline Marketing&quot;,
+      &quot;apiName&quot;: &quot;Offline Marketing&quot;
+    }
+  ]
+}&quot;
+Make sure you are not showing the JSON to User you will be showing the Label as options.Keep remember let user select &quot;Lead Source&quot; then you will ask &quot;Previous Source&quot; if required.Never tell or ask user in same messege.</description>
+            <developerName>instruction_3</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 3</masterLabel>
+            <sortOrder>2</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>After collecting all the required details from user must Make a proper JSON structure internally with Field Label,Api name and the Value then call &quot;Create_Lead_and_Return_URL_179C20000000ws1&quot; action for creating Lead and never show JSON to User.
+Here is a sample structure of JSON-
+&quot;{
+  &quot;userName&quot;: &quot;LoggedIn_Username&quot;,
+  &quot;leadDetails&quot;: [
+    {
+      &quot;fieldLabel&quot;: &quot;Name&quot;,
+      &quot;apiName&quot;: &quot;LastName&quot;,
+      &quot;value&quot;: &quot;nameValue&quot;
+    },
+    {
+      &quot;fieldLabel&quot;: &quot;Phone Number&quot;,
+      &quot;apiName&quot;: &quot;Phone&quot;,
+      &quot;value&quot;: &quot;phoneValue&quot;
+    },
+    {
+      &quot;fieldLabel&quot;: &quot;Department Name&quot;,
+      &quot;apiName&quot;: &quot;Department_Name__c&quot;,
+      &quot;value&quot;: &quot;departmentValue&quot;
+    },
+{
+      &quot;fieldLabel&quot;: &quot;Lead Source&quot;,
+      &quot;apiName&quot;: &quot;LeadSource&quot;,
+      &quot;value&quot;: &quot;leadSourceValue&quot;
+    },
+{
+      &quot;fieldLabel&quot;: &quot;Previous Source&quot;,
+      &quot;apiName&quot;: &quot;Previous_Source__c&quot;,
+      &quot;value&quot;: &quot;previousSourceValue&quot;
+    },
+  ]
+}&quot;
+After successfully Lead creation tell user like
+&quot;Your Lead is successfully created.To se details {Click Here}&quot;.
+With in {Click Here} make HTML format URL value</description>
+            <developerName>instruction_4</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 4</masterLabel>
+            <sortOrder>3</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>Create_Lead_and_Return_URL_179C20000000ws1</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>Create_Lead_and_Return_URL_179C20000000ws1</fullName>
+            <description>Creates a Lead record and returns its direct Lightning view URL string</description>
+            <developerName>Create_Lead_and_Return_URL_179C20000000ws1</developerName>
+            <invocationTarget>CreateLeadFromChatBot</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+            <localDeveloperName>Create_Lead_and_Return_URL</localDeveloperName>
+            <masterLabel>Create Lead and Return URL</masterLabel>
+            <source>Create_Lead_and_Return_URL</source>
+        </localActions>
+        <localDeveloperName>Custom_Lead_Creation</localDeveloperName>
+        <masterLabel>Custom Lead Creation</masterLabel>
+        <pluginType>Topic</pluginType>
+        <scope>Your job is to collect the required information and create a new Salesforce Lead only.
+
+Do not handle Visit Creation, Opportunity updates, Account searches, Lead searches, or any other workflow.</scope>
+    </localTopics>
+    <localTopics>
+        <fullName>Salesforce_Account_Record_Summarization_16jC20000000d2z</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Assist users in summarizing Salesforce Account records, extracting insights from related objects, and optimizing record searches.</description>
+        <developerName>Salesforce_Account_Record_Summarization_16jC20000000d2z</developerName>
+        <genAiPluginInstructions>
+            <description>Summarize key details of Salesforce Account records based on user requests.</description>
+            <developerName>instruction_1</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 1</masterLabel>
+            <sortOrder>0</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>Extract and provide insights from related objects, such as contacts, opportunities, or cases, when relevant.</description>
+            <developerName>instruction_2</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 2</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>Optimize record searches by suggesting filters or criteria based on user inputs.</description>
+            <developerName>instruction_3</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 3</masterLabel>
+            <sortOrder>2</sortOrder>
+        </genAiPluginInstructions>
+        <genAiPluginInstructions>
+            <description>Ask clarifying questions to ensure accurate summarization and insights.</description>
+            <developerName>instruction_4</developerName>
+            <language xsi:nil="true"/>
+            <masterLabel>Instruction 4</masterLabel>
+            <sortOrder>3</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>Get_Account_Summary2_179C2000000168D</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>Get_Account_Summary2_179C2000000168D</fullName>
+            <description>Summarizes basic Account details</description>
+            <developerName>Get_Account_Summary2_179C2000000168D</developerName>
+            <invocationTarget>AccountSummaryAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>Get_Account_Summary2</localDeveloperName>
+            <masterLabel>Get Account Summary</masterLabel>
+            <progressIndicatorMessage>Loading....</progressIndicatorMessage>
+        </localActions>
+        <localDeveloperName>Salesforce_Account_Record_Summarization</localDeveloperName>
+        <masterLabel>Salesforce Account Record Summarization</masterLabel>
+        <pluginType>Topic</pluginType>
+        <scope>Your job is only to help users summarize Salesforce Account records, provide insights from related objects, and optimize record searches. Do not assist with tasks outside of these areas.</scope>
+    </localTopics>
+    <masterLabel>Agentforce Service Agent</masterLabel>
+    <plannerActions>
+        <fullName>AnswerQuestionsWithKnowledge_16jC20000000d2z</fullName>
+        <description>Answers questions about company policies and procedures, troubleshooting steps, or product information. For example: “What is your return policy?” “How do I fix an issue?” or “What features does a product have?”</description>
+        <developerName>AnswerQuestionsWithKnowledge_16jC20000000d2z</developerName>
+        <invocationTarget>streamKnowledgeSearch</invocationTarget>
+        <invocationTargetType>standardInvocableAction</invocationTargetType>
+        <isConfirmationRequired>false</isConfirmationRequired>
+        <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+        <localDeveloperName>AnswerQuestionsWithKnowledge</localDeveloperName>
+        <masterLabel>Answer Questions with Knowledge</masterLabel>
+        <progressIndicatorMessage>Getting answers</progressIndicatorMessage>
+        <source>EmployeeCopilot__AnswerQuestionsWithKnowledge</source>
+    </plannerActions>
+    <plannerSurfaces>
+        <adaptiveResponseAllowed>true</adaptiveResponseAllowed>
+        <callRecordingAllowed>false</callRecordingAllowed>
+        <surface>SurfaceAction__CustomerWebClient</surface>
+        <surfaceType>CustomerWebClient</surfaceType>
+    </plannerSurfaces>
+    <plannerSurfaces>
+        <adaptiveResponseAllowed>true</adaptiveResponseAllowed>
+        <callRecordingAllowed>false</callRecordingAllowed>
+        <surface>SurfaceAction__Messaging</surface>
+        <surfaceType>Messaging</surfaceType>
+    </plannerSurfaces>
+    <plannerType>AiCopilot__ReAct</plannerType>
+    <ruleExpressions>
+        <conditions>
+            <leftOperand>isVerified</leftOperand>
+            <leftOperandType>Variable</leftOperandType>
+            <operator>equal</operator>
+            <rightOperandValue>true</rightOperandValue>
+        </conditions>
+        <expression>Verified_User</expression>
+        <expressionLabel>Verified User</expressionLabel>
+        <expressionName>Verified_User</expressionName>
+        <expressionType>sel</expressionType>
+    </ruleExpressions>
+</GenAiPlannerBundle>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Check if 2AC train class is permitted --></help>
+    <label><!-- Train 2AC --></label>
+    <name>Train_2AC__c</name>
+</CustomFieldTranslation>

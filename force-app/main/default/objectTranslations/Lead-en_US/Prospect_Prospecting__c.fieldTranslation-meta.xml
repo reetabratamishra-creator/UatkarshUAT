@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Prospect/Prospecting --></label>
+    <name>Prospect_Prospecting__c</name>
+    <picklistValues>
+        <masterLabel>Prospect</masterLabel>
+        <translation><!-- Prospect --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Prospecting</masterLabel>
+        <translation><!-- Prospecting --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

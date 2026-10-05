@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Polymer HDPE Stage Check --></label>
+    <name>Polymer_HDPE_Stage_Check__c</name>
+    <picklistValues>
+        <masterLabel>Checked - No Match</masterLabel>
+        <translation><!-- Checked - No Match --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed - Config Error</masterLabel>
+        <translation><!-- Failed - Config Error --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed - No Documents</masterLabel>
+        <translation><!-- Failed - No Documents --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed - Unexpected Error</masterLabel>
+        <translation><!-- Failed - Unexpected Error --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Failed - Will Retry</masterLabel>
+        <translation><!-- Failed - Will Retry --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Matched</masterLabel>
+        <translation><!-- Matched --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>No Supported Files</masterLabel>
+        <translation><!-- No Supported Files --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

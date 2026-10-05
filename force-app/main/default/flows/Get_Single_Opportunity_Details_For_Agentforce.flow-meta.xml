@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Store_All_Details</name>
+        <label>Store All Details</label>
+        <locationX>828</locationX>
+        <locationY>384</locationY>
+        <assignmentItems>
+            <assignToReference>OutputOppRecordDetails</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>FormulaForOppDetails</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <environments>Default</environments>
+    <formulas>
+        <name>FormulaForOppDetails</name>
+        <dataType>String</dataType>
+        <expression>&quot;OpportunityId =&quot;+ {!Get_Opportunity_Record.Id} + &quot;;&quot; + &quot;Opportunity Stage = &quot;+TEXT({!Get_Opportunity_Record.StageName})+ &quot;;&quot; + &quot;Customer Journey = &quot; +  TEXT({!Get_Opportunity_Record.Customer_Journey__c})</expression>
+    </formulas>
+    <interviewLabel>Get Single Opportunity Details For Agentforce {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Get Single Opportunity Details For Agentforce</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Opportunity_Record</name>
+        <label>Get Opportunity Record</label>
+        <locationX>594</locationX>
+        <locationY>303</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_All_Details</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>OppId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Opportunity</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <runInMode>SystemModeWithoutSharing</runInMode>
+    <start>
+        <locationX>286</locationX>
+        <locationY>134</locationY>
+        <connector>
+            <targetReference>Get_Opportunity_Record</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>OppId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Store the output for backend uses</description>
+        <name>OutputOppRecordDetails</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+</Flow>

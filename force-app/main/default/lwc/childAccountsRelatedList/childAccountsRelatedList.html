@@ -1,0 +1,42 @@
+<template>
+    <lightning-card title="Sites" icon-name="standard:account">
+        <span slot="actions">
+            <lightning-button-icon
+                icon-name="utility:refresh"
+                variant="border-filled"
+                alternative-text="Refresh"
+                title="Refresh"
+                onclick={handleRefresh}
+            ></lightning-button-icon>
+        </span>
+
+        <div class="slds-p-horizontal_medium slds-p-bottom_small">
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading Sites" size="small"></lightning-spinner>
+            </template>
+
+            <template if:true={hasError}>
+                <div class="slds-text-color_error" role="alert">{errorMessage}</div>
+            </template>
+
+            <template if:true={isEmpty}>
+                <p class="slds-text-color_weak">No Sites were found.</p>
+            </template>
+
+            <template if:true={hasAccounts}>
+                <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_x-small">
+                    {recordCountLabel}
+                </p>
+                <lightning-datatable
+                    key-field="accountId"
+                    data={accounts}
+                    columns={columns}
+                    sorted-by={sortedBy}
+                    sorted-direction={sortedDirection}
+                    onsort={handleSort}
+                    hide-checkbox-column
+                ></lightning-datatable>
+            </template>
+        </div>
+    </lightning-card>
+</template>

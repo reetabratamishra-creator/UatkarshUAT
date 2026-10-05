@@ -1,0 +1,192 @@
+<apex:page standardController="Quote"
+           extensions="QuoteExportController"
+           contentType="application/vnd.ms-excel#Commercial_Offer.xls"
+           showHeader="false"
+           sidebar="false"
+           applyBodyTag="false">
+<head>
+    <style>
+        body   { font-family: Calibri, sans-serif; font-size: 11px; }
+        table  { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #000; padding: 5px; vertical-align: middle; }
+        .no-border  { border: none; }
+        .bg-green   { background-color: #92D050; font-weight: bold; }
+        .bg-yellow  { background-color: #FFFF00; font-weight: bold; }
+        .bg-header  { background-color: #f2f2f2; font-weight: bold; text-align: center; }
+        .text-center{ text-align: center; }
+        .text-right { text-align: right; }
+        .bold       { font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<!--
+    Single unified 12-column table so every section aligns perfectly.
+    Columns: 1=SlNo  2=Designation  3=SizeNB  4=WallThk  5=Standard
+             6=End   7=Qty  8=UOM  9=Rate  10=GST  11=Price/UOM  12=TotalPrice
+-->
+<table>
+
+    <!-- ── HEADER ─────────────────────────────────────────── -->
+    <tr>
+        <td colspan="4" class="no-border" style="font-size:16px; font-weight:bold;">
+            UTKARSH INDIA LIMITED
+        </td>
+        <td colspan="5" class="no-border" style="font-size:10px; color:#555;">
+            Corporate Office: Arrjavv Square, 95A Elliot Road, Kolkata 700016<br/>
+            P- 033 2264 6666 / 2265 8888 | E- info@utkarshindia.in
+        </td>
+        <td colspan="3" class="no-border text-right" height="80">
+            =IMAGE("{!$Label.Utkarsh_Logo_URL}", "Utkarsh Logo", 3, 60, 200)
+        </td>
+    </tr>
+
+    <!-- ── ACCOUNT NAME ───────────────────────────────────── -->
+    <tr>
+        <td colspan="12" class="bold" style="font-size:12px; text-transform:uppercase;">
+            {!accountName}
+        </td>
+    </tr>
+
+    <!-- ── OFFER NO / DATE ────────────────────────────────── -->
+    <tr>
+        <td colspan="6"><b>Offer No.</b> UIL/STEEL/020/25-26</td>
+        <td colspan="6" class="text-right"><b>Offer Date:</b> {!todayDate}</td>
+    </tr>
+
+    <!-- ── CONTACT ────────────────────────────────────────── -->
+    <tr>
+        <td colspan="2"><b>Contact Person:</b></td>
+        <td colspan="2">{!contactName}</td>
+        <td colspan="2"><b>Contact Number:</b></td>
+        <td colspan="2">{!contactNumber}</td>
+        <td colspan="2"><b>E-Mail:</b></td>
+        <td colspan="2">{!contactEmail}</td>
+    </tr>
+
+    <!-- ── DEAR SIR ───────────────────────────────────────── -->
+    <tr>
+        <td colspan="12" class="bold">Dear Sir,</td>
+    </tr>
+    <tr>
+        <td colspan="12">
+            While thanking you for subject enquiry, we are pleased to submit our offer
+            as under for your kind consideration.
+        </td>
+    </tr>
+    <tr>
+        <td colspan="12" class="bold">MATERIAL DESCRIPTION:</td>
+    </tr>
+    <tr>
+        <td colspan="12">
+            M.S. ERW Pipes in following sizes, all dimensional tolerance like OD &amp; WT
+            shall be as per applicable specification.
+        </td>
+    </tr>
+
+    <!-- ── LINE ITEMS HEADER ──────────────────────────────── -->
+    <tr class="bg-header">
+        <th>Sl No.</th>
+        <th>Pipe / Designation</th>
+        <th>Size (NB)</th>
+        <th>Wall Thickness / Class</th>
+        <th>Standard</th>
+        <th>End</th>
+        <th>Quantity</th>
+        <th>UOM</th>
+        <th>Rate (Rs)</th>
+        <th>GST</th>
+        <th>Price/UOM</th>
+        <th>Total Price</th>
+    </tr>
+
+    <!-- ── LINE ITEMS ─────────────────────────────────────── -->
+    <apex:repeat value="{!lineItems}" var="item">
+        <tr class="text-center">
+            <td>{!item['SlNo']}</td>
+            <td>{!IF(ISBLANK(item['designation']), item['name'],  item['designation'])}</td>
+            <td>{!IF(ISBLANK(item['size_nb']),     '-',           item['size_nb'])}</td>
+            <td>{!IF(ISBLANK(item['pipe_class']),  '-',           item['pipe_class'])}</td>
+            <td>{!IF(ISBLANK(item['standard_spec_grade']), '-',   item['standard_spec_grade'])}</td>
+            <td>{!IF(ISBLANK(item['end_finish']),  'P/E',         item['end_finish'])}</td>
+            <td>{!item['quantity']}</td>
+            <td>{!IF(ISBLANK(item['uom']),         'METER',       item['uom'])}</td>
+            <td class="text-right">{!item['rate']}</td>
+            <td class="text-right">{!item['gst']}</td>
+            <td class="text-right">{!item['price_per_uom']}</td>
+            <td class="text-right">{!item['total_price']}</td>
+        </tr>
+    </apex:repeat>
+
+    <!-- ── GRAND TOTAL ROW ────────────────────────────────── -->
+    <tr>
+        <td colspan="4" class="no-border"></td>
+        <td colspan="3" class="text-right bold">Above Rates are</td>
+        <td colspan="2" class="bold">FOR RANIGANJ</td>
+        <td colspan="2" class="bg-yellow text-right bold">&#x20B9;</td>
+        <td class="bg-yellow text-right bold">
+            <apex:outputText value="{0, number, #,##0.00}">
+                <apex:param value="{!totalAmount}"/>
+            </apex:outputText>
+        </td>
+    </tr>
+
+    <!-- ── BLANK SEPARATOR ───────────────────────────────── -->
+    <tr><td colspan="12" class="no-border" style="height:10px;"></td></tr>
+
+    <!-- ── TERMS & CONDITIONS ────────────────────────────── -->
+    <tr>
+        <td colspan="12" class="bold" style="font-size:12px;">TERMS &amp; CONDITIONS:</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="bg-green">Offer Validity</td>
+        <td colspan="9">{!jsonData['tc_offer_validity']}</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="bg-green">Delivery Schedule</td>
+        <td colspan="9">{!jsonData['tc_delivery_schedule']}</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="bg-green">PRICE VARIATION CLAUSE</td>
+        <td colspan="9" class="bg-yellow">{!jsonData['tc_price_variation']}</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="bg-green">Payment Terms</td>
+        <td colspan="9">{!jsonData['tc_payment_terms']}</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="bg-green">Transportation</td>
+        <td colspan="9">{!jsonData['tc_transportation']}</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="bg-green">Vehicle Load</td>
+        <td colspan="9">{!jsonData['tc_vehicle_load']}</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="bg-green">Tolerance</td>
+        <td colspan="9">{!jsonData['tc_tolerance']}</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="bg-green">Inspection</td>
+        <td colspan="9">{!jsonData['tc_inspection']}</td>
+    </tr>
+    <tr>
+        <td colspan="3" class="bg-green">Pre Dispatch Inspection</td>
+        <td colspan="9">{!jsonData['tc_pre_dispatch_inspection']}</td>
+    </tr>
+
+    <!-- ── NOTES (moved inside table, inside body) ────────── -->
+    <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(quoteNotes))}">
+        <tr><td colspan="12" class="no-border" style="height:10px;"></td></tr>
+        <tr>
+            <td colspan="12" class="bold">Notes / Remarks:</td>
+        </tr>
+        <tr>
+            <td colspan="12">{!quoteNotes}</td>
+        </tr>
+    </apex:outputPanel>
+
+</table>
+
+</body>
+</apex:page>

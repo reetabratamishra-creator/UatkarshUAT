@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Campaign_Reports</fullName>
+    <columns>NAME</columns>
+    <columns>Campaign__c</columns>
+    <columns>Journey_Name__c</columns>
+    <columns>Journey_Campaign_Name__c</columns>
+    <columns>Product_Name__c</columns>
+    <columns>Delivered__c</columns>
+    <columns>Failed__c</columns>
+    <columns>Read__c</columns>
+    <columns>Fetched_At__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Campaign Reports</label>
+</ListView>

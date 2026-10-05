@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Nurture Escalation 48 Sent --></label>
+    <name>Nurture_Escalation_48_Sent__c</name>
+</CustomFieldTranslation>

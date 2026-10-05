@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Refer_to_Dealer_cant_move_to_Negotiation</fullName>
+    <active>false</active>
+    <errorConditionFormula>AND(
+    ISCHANGED(StageName),
+    ISPICKVAL(StageName, &quot;Negotiation&quot;),
+    ISPICKVAL(Customer_Journey__c, &quot;Refer to Dealer&quot;),
+    RecordType.DeveloperName = &quot;Master_Opportunity&quot;
+)</errorConditionFormula>
+    <errorDisplayField>Customer_Journey__c</errorDisplayField>
+    <errorMessage>Its already Refer to the Dealer in the Customer Journey, Kindly fill Dealer field to move forward.</errorMessage>
+</ValidationRule>

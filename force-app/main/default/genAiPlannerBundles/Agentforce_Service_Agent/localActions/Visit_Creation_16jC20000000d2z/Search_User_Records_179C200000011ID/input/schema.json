@@ -1,0 +1,21 @@
+{
+  "required" : [ "jsonInput" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "jsonInput" : {
+      "title" : "JSON Payload",
+      "description" : "JSON payload received from Agentforce",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "loggedInUsername" : {
+      "title" : "Logged In Username",
+      "description" : "Username of the currently logged-in user",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

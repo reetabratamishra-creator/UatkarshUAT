@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Maximum 50% of entitled allowance per day can be claimed against fooding in case not supported by bills --></help>
+    <label><!-- Max Fooding Percentage --></label>
+    <name>Max_Fooding_Percentage__c</name>
+</CustomFieldTranslation>

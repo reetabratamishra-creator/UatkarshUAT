@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Rich Text Area for Case Management Description</value>
+    </caseValues>
+    <name>description_rich_text_case</name>
+    <startsWith>Consonant</startsWith>
+</CustomFieldTranslation>

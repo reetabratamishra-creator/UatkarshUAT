@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Returns count of Leads and Opportunities in Salesforce</description>
+    <developerName>Get_Record_Counts</developerName>
+    <invocationTarget>RecordCountAction</invocationTarget>
+    <invocationTargetType>apex</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+    <localDeveloperName>Get_Record_Counts</localDeveloperName>
+    <masterLabel>Get Record Counts</masterLabel>
+    <progressIndicatorMessage>Showing...........</progressIndicatorMessage>
+</GenAiFunction>

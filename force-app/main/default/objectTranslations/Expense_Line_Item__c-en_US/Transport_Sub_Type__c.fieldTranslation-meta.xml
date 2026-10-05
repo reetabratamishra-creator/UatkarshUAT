@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Transport Sub Type --></label>
+    <name>Transport_Sub_Type__c</name>
+    <picklistValues>
+        <masterLabel>Air</masterLabel>
+        <translation><!-- Air --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Auto</masterLabel>
+        <translation><!-- Auto --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Bus</masterLabel>
+        <translation><!-- Bus --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Ola/Uber/Taxi</masterLabel>
+        <translation><!-- Ola/Uber/Taxi --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Own Vehicle - 2 Wheeler</masterLabel>
+        <translation><!-- Own Vehicle - 2 Wheeler --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Own Vehicle - 4 Wheeler</masterLabel>
+        <translation><!-- Own Vehicle - 4 Wheeler --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Train</masterLabel>
+        <translation><!-- Train --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

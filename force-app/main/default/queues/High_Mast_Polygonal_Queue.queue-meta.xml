@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesIncludeBosses>false</doesIncludeBosses>
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>High Mast &amp; Polygonal Queue</name>
+    <queueMembers>
+        <users>
+            <user>baren.roy@utkarshindialimited.in</user>
+        </users>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>Bidders_Contact_Details__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>Bidders__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>Tender_Ai_Summary_Json__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>Tender_Docoment_Details__c</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>Tender__c</sobjectType>
+    </queueSobject>
+</Queue>

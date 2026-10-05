@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Tracks the expense through submission, approval, and reimbursement stages --></help>
+    <label><!-- Status --></label>
+    <name>Status__c</name>
+    <picklistValues>
+        <masterLabel>Approved by ED</masterLabel>
+        <translation><!-- Approved by ED --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>New</masterLabel>
+        <translation><!-- New --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending ED Approval</masterLabel>
+        <translation><!-- Pending ED Approval --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending HOD Approval</masterLabel>
+        <translation><!-- Pending HOD Approval --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pending HR Approval</masterLabel>
+        <translation><!-- Pending HR Approval --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Reimbursed</masterLabel>
+        <translation><!-- Reimbursed --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Rejected by ED</masterLabel>
+        <translation><!-- Rejected by ED --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Rejected by HOD</masterLabel>
+        <translation><!-- Rejected by HOD --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Rejected by HR</masterLabel>
+        <translation><!-- Rejected by HR --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

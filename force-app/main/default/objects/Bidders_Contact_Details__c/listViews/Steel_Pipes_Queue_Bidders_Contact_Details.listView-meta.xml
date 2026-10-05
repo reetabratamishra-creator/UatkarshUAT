@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Steel_Pipes_Queue_Bidders_Contact_Details</fullName>
+    <filterScope>Queue</filterScope>
+    <label>Steel Pipes Queue</label>
+    <queue>Steel_Pipes_Queue</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

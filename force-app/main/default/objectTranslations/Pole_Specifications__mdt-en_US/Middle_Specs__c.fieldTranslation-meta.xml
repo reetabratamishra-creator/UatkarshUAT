@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The physical dimensions and specifications (Outer Diameter x Thickness x Length) for the middle section of the pole. --></help>
+    <label><!-- Middle Specs --></label>
+    <name>Middle_Specs__c</name>
+</CustomFieldTranslation>

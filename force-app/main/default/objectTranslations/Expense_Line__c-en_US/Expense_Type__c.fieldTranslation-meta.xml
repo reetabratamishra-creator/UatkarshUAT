@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Select the type of expense (Lodging, Fooding, Air, Train, Roadways, Own Vehicle) --></help>
+    <label><!-- Expense Type --></label>
+    <name>Expense_Type__c</name>
+    <picklistValues>
+        <masterLabel>Air</masterLabel>
+        <translation><!-- Air --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Fooding</masterLabel>
+        <translation><!-- Fooding --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lodging</masterLabel>
+        <translation><!-- Lodging --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Own Vehicle</masterLabel>
+        <translation><!-- Own Vehicle --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Roadways</masterLabel>
+        <translation><!-- Roadways --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Train</masterLabel>
+        <translation><!-- Train --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

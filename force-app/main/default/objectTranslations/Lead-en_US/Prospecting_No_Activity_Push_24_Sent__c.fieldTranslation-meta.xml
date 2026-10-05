@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Prospecting No Activity Push 24 Sent --></label>
+    <name>Prospecting_No_Activity_Push_24_Sent__c</name>
+</CustomFieldTranslation>

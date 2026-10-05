@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- A semicolon-separated list of picklist values available in the root dropdown --></help>
+    <label><!-- First Field Options --></label>
+    <name>First_Field_Options__c</name>
+</CustomFieldTranslation>

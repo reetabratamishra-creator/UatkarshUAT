@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Opportunity Address Junc. --></label>
+    <name>Opportunity_Address_Junc__c</name>
+    <relationshipLabel><!-- Tenders --></relationshipLabel>
+</CustomFieldTranslation>

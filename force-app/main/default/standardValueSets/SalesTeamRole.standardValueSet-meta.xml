@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Utkarsh Sales</fullName>
+        <default>false</default>
+        <label>Utkarsh Sales</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Utkarsh Tender</fullName>
+        <default>false</default>
+        <label>Utkarsh Tender</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Utkarsh CRM</fullName>
+        <default>false</default>
+        <label>Utkarsh CRM</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Utkarsh HOD</fullName>
+        <default>false</default>
+        <label>Utkarsh HOD</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Utkarsh Commercial</fullName>
+        <default>false</default>
+        <label>Utkarsh Commercial</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Utkarsh Telecaller</fullName>
+        <default>false</default>
+        <label>Utkarsh Telecaller</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Utkarsh Admin</fullName>
+        <default>false</default>
+        <label>Utkarsh Admin</label>
+    </standardValue>
+    <standardValue>
+        <fullName>CMD</fullName>
+        <default>false</default>
+        <label>CMD</label>
+    </standardValue>
+    <standardValue>
+        <fullName>ED</fullName>
+        <default>false</default>
+        <label>ED</label>
+    </standardValue>
+    <standardValue>
+        <fullName>CRM Head</fullName>
+        <default>false</default>
+        <label>CRM Head</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Senior Manager</fullName>
+        <default>false</default>
+        <label>Senior Manager</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Deputy Manager</fullName>
+        <default>false</default>
+        <label>Deputy Manager</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Manager</fullName>
+        <default>false</default>
+        <label>Manager</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Assistant Manager</fullName>
+        <default>false</default>
+        <label>Assistant Manager</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Sales Coordinator</fullName>
+        <default>false</default>
+        <label>Sales Coordinator</label>
+    </standardValue>
+</StandardValueSet>

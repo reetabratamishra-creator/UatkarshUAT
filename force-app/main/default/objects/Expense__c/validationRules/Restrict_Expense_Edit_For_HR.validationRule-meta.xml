@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Restrict_Expense_Edit_For_HR</fullName>
+    <active>false</active>
+    <description>Prevent edit of an expense after it is approved by HR.</description>
+    <errorConditionFormula>AND(
+    $Profile.Name = &quot;Utkarsh HR&quot;,
+    NOT(ISNEW()),
+    NOT(ISPICKVAL(Status__c, &quot;Pending HR Approval&quot;)),
+    OR(
+        ISCHANGED(Subject__c),
+        ISCHANGED(Travel_Start_Date__c),
+        ISCHANGED(Travel_End_Date__c),
+        ISCHANGED(Purpose__c),
+        ISCHANGED(Submitted_Date__c)
+    )
+)</errorConditionFormula>
+    <errorMessage>You cannot edit an expense unless its pending your approval.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Own Vehicle 2 Wheeler Rate Per KM --></label>
+    <name>Own_Vehicle_2_Wheeler_Rate_Per_KM__c</name>
+</CustomFieldTranslation>

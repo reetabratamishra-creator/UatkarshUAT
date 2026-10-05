@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_Category__c</fullName>
+    <label>Customer Category</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>EPC</fullName>
+                <default>false</default>
+                <label>EPC</label>
+            </value>
+            <value>
+                <fullName>Contractors</fullName>
+                <default>false</default>
+                <label>Contractors</label>
+            </value>
+            <value>
+                <fullName>Dealer</fullName>
+                <default>false</default>
+                <label>Dealer</label>
+            </value>
+            <value>
+                <fullName>Distributor</fullName>
+                <default>false</default>
+                <label>Distributor</label>
+            </value>
+            <value>
+                <fullName>OEM</fullName>
+                <default>false</default>
+                <label>OEM</label>
+            </value>
+            <value>
+                <fullName>Retailer</fullName>
+                <default>false</default>
+                <label>Retailer</label>
+            </value>
+            <value>
+                <fullName>End-user</fullName>
+                <default>false</default>
+                <label>End-user</label>
+            </value>
+            <value>
+                <fullName>Govt. Entity</fullName>
+                <default>false</default>
+                <label>Govt. Entity</label>
+            </value>
+            <value>
+                <fullName>PSU</fullName>
+                <default>false</default>
+                <label>PSU</label>
+            </value>
+            <value>
+                <fullName>Entity</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Entity</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

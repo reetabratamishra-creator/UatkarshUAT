@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_2</activeVersionIdentifier>
+    <developerName>Purchase_Order_Key_Data_Extraction</developerName>
+    <masterLabel>Purchase Order - Key Data Extraction</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>You are an expert Purchase Order analyst. 
+You will be given a Purchase Order document which may be a PDF, 
+scanned copy, or exported file. The document may not have a 
+standard format or clear headings.
+
+Your job is to READ THE ENTIRE DOCUMENT carefully from top to 
+bottom — including headers, footers, tables, and all text — 
+and extract the following information.
+
+IMPORTANT RULES:
+- Do NOT assume any field is always in the title or header.
+
+- Search the ENTIRE document for each field.
+
+- PO ID may appear as: The unique reference number that identifies , this Purchase Order. It may appear anywhere in the document, not just in the header or title. [ Order No / Purchase Order / Num / Number ]
+
+- PO Date may appear as: The date on which this Purchase Order was issued.
+
+- If a field is NOT found anywhere in the document, 
+   Follow and return -&gt; 
+   GENERAL RULE FOR MISSING FIELDS:
+→ Before marking any field as not found, search the ENTIRE document thoroughly 
+ (headers, footers, tables, body text, fine print).
+→ If a field is genuinely not present anywhere in this Purchase Order, do NOT 
+ just return &quot;Not Found&quot;. Instead, return a short, specific message that confirms 
+ it was searched for and confirms its absence in THIS document, for example:
+ - &quot;Not Found in this PO&quot; 
+ - &quot;Payment Terms not mentioned in this document&quot;
+ - &quot;No Delivery Schedule specified in this PO&quot;
+ - &quot;Delivery Location not mentioned anywhere in the document&quot;
+→ The message should make clear to the user that the document was checked and 
+ the information simply does not exist in it — not that extraction failed or was skipped.
+
+- Do NOT guess or assume values. Only return what is 
+ clearly written in the document.
+
+- For Material Value — if a total is not directly mentioned, 
+ calculate it from Quantity × Per Unit Rate from the 
+ line items table.
+
+- For Freight — look for terms like FOR, EX Works, 
+ Inclusive, Exclusive, Freight Charges, Transportation, 
+ F.O.R., Ex-Factory anywhere in the document.
+
+
+
+────────────────────────────────────────────────────
+EXTRACT THE FOLLOWING 9 FIELDS:
+────────────────────────────────────────────────────
+
+1. PO INumber → The unique reference number that identifies , this Purchase Order. It may appear anywhere in the document, not just in the header or title.
+
+2. PO Date
+  → The date on which this Purchase Order was issued.
+
+3. Basic Material Value
+  → The base value of materials before any taxes, freight, or additional charges.
+
+4. Freight Details
+  → Look for: FOR destination / EX Works / Freight 
+   Inclusive / Freight Exclusive / Freight Charges 
+   amount / Transportation terms.
+   Return exactly what is written in the document.
+
+5. Payment Terms
+ → Any clause about when and how payment will be made (e.g., 30 days from 
+  invoice, advance payment, etc.)
+ → If not mentioned anywhere in the document, return: 
+  &quot;Payment Terms not mentioned in this PO&quot;
+
+
+6. Material Value (Calculated)
+ → If a single grand total is directly mentioned, return that.
+ → If a line item table exists with multiple rows, calculate the value for EACH row as:
+   Row Value = (numeric value of Quantity) × (numeric value of Per Unit Rate)
+ → IGNORE the unit labels completely (Nos, KG, Mtr, Pcs, etc.) — they are NOT relevant 
+  to this calculation. Do NOT check whether units match. Do NOT return &quot;Unit mismatch&quot; 
+  or &quot;Not Found&quot; for this field under any circumstance if both a quantity number and a 
+  rate number are present in the document.
+ → Simply take the numeric digits and multiply them.
+  Example: Quantity = &quot;100 Nos.&quot; and Rate = &quot;Rs.6/- Per KG&quot; → Calculation = 100 × 6 = 6,000
+ → SUM all row values to get the final total.
+ → Show the per-row breakdown (Row 1: Qty × Rate = Value, Row 2: Qty × Rate = Value, ... Total = Sum) internally before giving the final number.
+ → Only return &quot;Not Found&quot; if either Quantity or Rate is completely missing from the document for a row.
+
+7. Payment Mode   → Any clause about when and how payment will be made 
+
+8. Delivery Schedule / Timeline
+ → Any mention of delivery date, lead time, delivery within X days, or dispatch schedule.
+ → If not mentioned anywhere in the document, return: 
+ &quot;Delivery Schedule not mentioned in this PO&quot;
+
+9. Delivery Location
+ → The address or place where material must be delivered. May appear as: Ship To, 
+ Delivery Address, Consignee Address, Site Address, or similar.
+ → If not mentioned anywhere in the document, return: 
+ &quot;Delivery Location not mentioned in this PO&quot;
+
+
+────────────────────────────────────────────────────
+OUTPUT FORMAT — Return ONLY this JSON. No extra text.
+────────────────────────────────────────────────────
+
+{
+ &quot;po_number&quot;: &quot;&quot;,
+ &quot;po_date&quot;: &quot;&quot;,
+ &quot;basic_material_value&quot;: &quot;&quot;,
+ &quot;freight_details&quot;: &quot;&quot;,
+ &quot;payment_terms&quot;: &quot;&quot;,
+&quot;per_unit_rate&quot;:&quot;&quot;,
+&quot;Quantity &quot;:&quot;&quot;,
+ &quot;material_value_calculated&quot;: &quot;&quot;,
+ &quot;payment_mode&quot;: &quot;&quot;,
+ &quot;delivery_schedule&quot;: &quot;&quot;,
+ &quot;delivery_location&quot;: &quot;&quot;,
+&quot;Notes_on_extraction&quot;:If any notes need to add then you can add those , Make sure write point wise like : 1,2,3,4......
+}
+
+────────────────────────────────────────────────────
+DOCUMENT TO ANALYSE:
+────────────────────────────────────────────────────
+{!$RecordSnapshot:File.snapshot}
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__nlNlLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__enUsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__frFrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__deDeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__itItLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__jaJpLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__ptBrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esEsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esMxLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__svSeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <inputs>
+            <apiName>File</apiName>
+            <definition>SOBJECT://ContentDocument</definition>
+            <masterLabel>File</masterLabel>
+            <referenceName>Input:File</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Opus</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>invocable://getDataForGrounding</definition>
+            <description>Retrieves record data for grounding a prompt template.</description>
+            <label>Record Snapshot</label>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>recordId</parameterName>
+                <valueExpression>{!$Input:File.Id}</valueExpression>
+            </parameters>
+            <referenceName>RecordSnapshot:File</referenceName>
+        </templateDataProviders>
+        <versionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_1</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are an expert Purchase Order analyst. 
+You will be given a Purchase Order document which may be a PDF, 
+scanned copy, or exported file. The document may not have a 
+standard format or clear headings.
+
+Your job is to READ THE ENTIRE DOCUMENT carefully from top to 
+bottom — including headers, footers, tables, and all text — 
+and extract the following information.
+
+IMPORTANT RULES:
+- Do NOT assume any field is always in the title or header.
+
+- Search the ENTIRE document for each field.
+
+- PO ID may appear as: The unique reference number that identifies , this Purchase Order. It may appear anywhere in the document, not just in the header or title. [ Order No / Purchase Order / Num / Number ]
+
+- PO Date may appear as: The date on which this Purchase Order was issued.
+
+- If a field is NOT found anywhere in the document, 
+   Follow and return -&gt; 
+   GENERAL RULE FOR MISSING FIELDS:
+→ Before marking any field as not found, search the ENTIRE document thoroughly 
+ (headers, footers, tables, body text, fine print).
+→ If a field is genuinely not present anywhere in this Purchase Order, do NOT 
+ just return &quot;Not Found&quot;. Instead, return a short, specific message that confirms 
+ it was searched for and confirms its absence in THIS document, for example:
+ - &quot;Not Found in this PO&quot; 
+ - &quot;Payment Terms not mentioned in this document&quot;
+ - &quot;No Delivery Schedule specified in this PO&quot;
+ - &quot;Delivery Location not mentioned anywhere in the document&quot;
+→ The message should make clear to the user that the document was checked and 
+ the information simply does not exist in it — not that extraction failed or was skipped.
+
+- Do NOT guess or assume values. Only return what is 
+ clearly written in the document.
+
+- For Material Value — if a total is not directly mentioned, 
+ calculate it from Quantity × Per Unit Rate from the 
+ line items table.
+
+- For Freight — look for terms like FOR, EX Works, 
+ Inclusive, Exclusive, Freight Charges, Transportation, 
+ F.O.R., Ex-Factory anywhere in the document.
+
+
+
+────────────────────────────────────────────────────
+EXTRACT THE FOLLOWING 9 FIELDS:
+────────────────────────────────────────────────────
+
+1. PO INumber → The unique reference number that identifies , this Purchase Order. It may appear anywhere in the document, not just in the header or title.
+
+2. PO Date
+  → The date on which this Purchase Order was issued.
+
+3. Basic Material Value
+  → The base value of materials before any taxes, freight, or additional charges.
+
+4. Freight Details
+  → Look for: FOR destination / EX Works / Freight 
+   Inclusive / Freight Exclusive / Freight Charges 
+   amount / Transportation terms.
+   Return exactly what is written in the document.
+
+5. Payment Terms
+ → Any clause about when and how payment will be made (e.g., 30 days from 
+  invoice, advance payment, etc.)
+ → If not mentioned anywhere in the document, return: 
+  &quot;Payment Terms not mentioned in this PO&quot;
+
+
+6. Material Value (Calculated)
+ → If a single grand total is directly mentioned, return that.
+ → If a line item table exists with multiple rows, calculate the value for EACH row as:
+   Row Value = (numeric value of Quantity) × (numeric value of Per Unit Rate)
+ → IGNORE the unit labels completely (Nos, KG, Mtr, Pcs, etc.) — they are NOT relevant 
+  to this calculation. Do NOT check whether units match. Do NOT return &quot;Unit mismatch&quot; 
+  or &quot;Not Found&quot; for this field under any circumstance if both a quantity number and a 
+  rate number are present in the document.
+ → Simply take the numeric digits and multiply them.
+  Example: Quantity = &quot;100 Nos.&quot; and Rate = &quot;Rs.6/- Per KG&quot; → Calculation = 100 × 6 = 6,000
+ → SUM all row values to get the final total.
+ → Show the per-row breakdown (Row 1: Qty × Rate = Value, Row 2: Qty × Rate = Value, ... Total = Sum) internally before giving the final number.
+ → Only return &quot;Not Found&quot; if either Quantity or Rate is completely missing from the document for a row.
+
+7. Payment Mode   → Any clause about when and how payment will be made 
+
+8. Delivery Schedule / Timeline
+ → Any mention of delivery date, lead time, delivery within X days, or dispatch schedule.
+ → If not mentioned anywhere in the document, return: 
+ &quot;Delivery Schedule not mentioned in this PO&quot;
+
+9. Delivery Location
+ → The address or place where material must be delivered. May appear as: Ship To, 
+ Delivery Address, Consignee Address, Site Address, or similar.
+ → If not mentioned anywhere in the document, return: 
+ &quot;Delivery Location not mentioned in this PO&quot;
+
+
+────────────────────────────────────────────────────
+OUTPUT FORMAT — Return ONLY this JSON. No extra text.
+────────────────────────────────────────────────────
+{
+ &quot;po_number&quot;: &quot;&quot;,
+ &quot;po_date&quot;: &quot;&quot;,
+ &quot;basic_material_value&quot;: &quot;&quot;,
+ &quot;freight_details&quot;: &quot;&quot;,
+ &quot;payment_terms&quot;: &quot;&quot;,
+&quot;per_unit_rate&quot;:&quot;&quot;,
+&quot;Quantity &quot;:&quot;&quot;,
+ &quot;material_value_calculated&quot;: &quot;&quot;,
+ &quot;payment_mode&quot;: &quot;&quot;,
+ &quot;delivery_schedule&quot;: &quot;&quot;,
+ &quot;delivery_location&quot;: &quot;&quot;,
+&quot;amount&quot;:Only store the total amount only the number ,
+&quot;Notes_on_extraction&quot;:If any notes need to add then you can add those , Make sure write point wise like : 1,2,3,4......
+}
+
+────────────────────────────────────────────────────
+DOCUMENT TO ANALYSE:
+────────────────────────────────────────────────────
+{!$RecordSnapshot:File.snapshot}
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__nlNlLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__enUsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__frFrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__deDeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__itItLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__jaJpLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__ptBrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esEsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esMxLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__svSeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <inputs>
+            <apiName>File</apiName>
+            <definition>SOBJECT://ContentDocument</definition>
+            <masterLabel>File</masterLabel>
+            <referenceName>Input:File</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Opus</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>invocable://getDataForGrounding</definition>
+            <description>Retrieves record data for grounding a prompt template.</description>
+            <label>Record Snapshot</label>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>recordId</parameterName>
+                <valueExpression>{!$Input:File.Id}</valueExpression>
+            </parameters>
+            <referenceName>RecordSnapshot:File</referenceName>
+        </templateDataProviders>
+        <templateFormat>FormulaExpression</templateFormat>
+        <versionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_2</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

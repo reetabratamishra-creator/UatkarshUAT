@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Channel --></label>
+    <name>Channel__c</name>
+    <picklistValues>
+        <masterLabel>Journey</masterLabel>
+        <translation><!-- Journey --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>RCS</masterLabel>
+        <translation><!-- RCS --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SMS</masterLabel>
+        <translation><!-- SMS --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>WhatsApp</masterLabel>
+        <translation><!-- WhatsApp --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

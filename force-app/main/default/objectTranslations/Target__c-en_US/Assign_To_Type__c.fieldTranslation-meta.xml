@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Assign To Type --></label>
+    <name>Assign_To_Type__c</name>
+    <picklistValues>
+        <masterLabel>Team</masterLabel>
+        <translation><!-- Team --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Users</masterLabel>
+        <translation><!-- Users --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Crash Barrier - Excluded</label>
+    <protected>false</protected>
+    <values>
+        <field>Department__c</field>
+        <value xsi:type="xsd:string">Crash Barrier</value>
+    </values>
+    <values>
+        <field>Is_Excluded__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Is_Relevant__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Matched_Negative_Keywords__c</field>
+        <value xsi:type="xsd:string">SEAMLESS, Replacement, Shifting, REPAIR, RECANNING, REPAIR AND RECANNING, Maintenance, Operation, OLD, DAMAGED, Upgradation,Toilet, School, House, Garden, Housing,  College, Annual Maintenance, Dismantling, Sinking, COMPREHENSIVE REPAIR,RESTORATION, Repairing, Infiltration, plumbing line, water supply line, drainage line, building rubbish, Reconstruction, RCC Work</value>
+    </values>
+    <values>
+        <field>Matched_Positive_Keywords__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Schema_Prompt__c</field>
+        <value xsi:type="xsd:string">Analyze if this document is related to Polymer.
+Check for presence of positive keywords and absence of negative keywords.
+Return confidence score based on how many positive keywords are found.</value>
+    </values>
+</CustomMetadata>

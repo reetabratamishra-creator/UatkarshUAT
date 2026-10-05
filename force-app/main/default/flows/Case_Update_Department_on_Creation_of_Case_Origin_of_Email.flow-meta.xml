@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <description>This flow is created to update Department field upon checking and matching text of Email Subject or Body on case created from Email.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>DepartmentValue</name>
+        <dataType>String</dataType>
+        <expression>IF(
+OR(
+CONTAINS(LOWER($Record.Subject),&quot;high mast&quot;),
+CONTAINS(LOWER($Record.Description),&quot;high mast&quot;)
+),
+&quot;High Mast &amp; Polygonal&quot;,
+
+IF(
+OR(
+CONTAINS(LOWER($Record.Subject),&quot;steel pipes&quot;),
+CONTAINS(LOWER($Record.Description),&quot;steel pipes&quot;)
+),
+&quot;Steel Pipes&quot;,
+
+IF(
+OR(
+CONTAINS(LOWER($Record.Subject),&quot;crash barrier&quot;),
+CONTAINS(LOWER($Record.Description),&quot;crash barrier&quot;)
+),
+&quot;Crash Barrier&quot;,
+
+IF(
+OR(
+CONTAINS(LOWER($Record.Subject),&quot;steel tubular poles&quot;),
+CONTAINS(LOWER($Record.Description),&quot;steel tubular poles&quot;)
+),
+&quot;Steel Tubular Poles&quot;,
+
+IF(
+OR(
+CONTAINS(LOWER($Record.Subject),&quot;polymer&quot;),
+CONTAINS(LOWER($Record.Description),&quot;polymer&quot;)
+),
+&quot;Polymer&quot;,
+
+IF(
+OR(
+CONTAINS(LOWER($Record.Subject),&quot;hdpe&quot;),
+CONTAINS(LOWER($Record.Description),&quot;hdpe&quot;)
+),
+&quot;HDPE&quot;,
+
+IF(
+OR(
+CONTAINS(LOWER($Record.Subject),&quot;transmission&quot;),
+CONTAINS(LOWER($Record.Description),&quot;transmission&quot;),
+CONTAINS(LOWER($Record.Subject),&quot;telecom tower&quot;),
+CONTAINS(LOWER($Record.Description),&quot;telecom tower&quot;)
+),
+&quot;Transmission &amp; Telecom Tower&quot;,
+
+IF(
+OR(
+CONTAINS(LOWER($Record.Subject),&quot;pre engineering building&quot;),
+CONTAINS(LOWER($Record.Description),&quot;pre engineering building&quot;)
+),
+&quot;Pre Engineering Building&quot;,
+
+IF(
+OR(
+CONTAINS(LOWER($Record.Subject),&quot;solar structure&quot;),
+CONTAINS(LOWER($Record.Description),&quot;solar structure&quot;)
+),
+&quot;Solar Structure&quot;,
+
+IF(
+OR(
+CONTAINS(LOWER($Record.Subject),&quot;railway electrification&quot;),
+CONTAINS(LOWER($Record.Description),&quot;railway electrification&quot;)
+),
+&quot;Railway Electrification Structure&quot;,
+
+&quot;Enquiry&quot;
+))))))))))</expression>
+    </formulas>
+    <interviewLabel>Case : Update Department on Case Origin of Email {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Case : Update Department on Creation of Case Origin of Email</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Users</name>
+        <label>Get Users</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Update_Case_Department</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ProfileId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>00eC2000001HvKfIAK</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Department</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>DepartmentValue</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Case_Department</name>
+        <label>Update Case Department</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Department__c</field>
+            <value>
+                <elementReference>DepartmentValue</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Get_Users.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Users</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Origin</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Email</stringValue>
+            </value>
+        </filters>
+        <object>Case</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+</Flow>

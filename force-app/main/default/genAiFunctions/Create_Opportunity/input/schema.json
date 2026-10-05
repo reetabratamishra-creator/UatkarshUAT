@@ -1,0 +1,56 @@
+{
+  "required" : [ "accountName", "accountPhone", "closeDate", "opportunityName", "stageName" ],
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "accountEmail" : {
+      "title" : "Account Email",
+      "description" : "The email address of the company. This is optional",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "accountName" : {
+      "title" : "Account Name",
+      "description" : "The company name for this opportunity. A new account will be automatically created",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "accountPhone" : {
+      "title" : "Account Phone",
+      "description" : "The phone number of the company. Numbers only, no spaces or dashes",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "closeDate" : {
+      "title" : "Close Date",
+      "description" : "The expected close date of the opportunity in YYYY-MM-DD format",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "opportunityName" : {
+      "title" : "Opportunity Name",
+      "description" : "The name of the opportunity deal",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "ownerId" : {
+      "title" : "Owner Id",
+      "description" : "The Salesforce User Id of the user creating the opportunity. This is automatically set by the system",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "stageName" : {
+      "title" : "Stage Name",
+      "description" : "The current sales stage of the opportunity such as Prospecting, Qualification, Proposal, Negotiation, Closed Won or Closed Lost",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

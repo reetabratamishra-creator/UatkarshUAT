@@ -1,0 +1,198 @@
+<template>
+    <div class="tav-wrapper">
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- PENDING STATE                                   -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <template if:true={isPending}>
+            <div class="state-card state-pending">
+                <div class="state-icon-ring pending-ring">
+                    <lightning-icon icon-name="utility:clock" size="medium" class="state-icon"></lightning-icon>
+                </div>
+                <h2 class="state-title">Awaiting Analysis</h2>
+                <p class="state-msg">This document has been queued. Analysis will begin shortly.</p>
+                <div class="status-pill pill-pending">Pending</div>
+            </div>
+        </template>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- PROCESSING STATE — Animated Loader              -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <template if:true={isProcessing}>
+            <div class="state-card state-processing">
+                <div class="loader-orbit">
+                    <div class="orbit-ring ring1"></div>
+                    <div class="orbit-ring ring2"></div>
+                    <div class="orbit-ring ring3"></div>
+                    <div class="orbit-core">
+                        <lightning-icon icon-name="utility:einstein" size="small" class="ai-icon"></lightning-icon>
+                    </div>
+                </div>
+                <h2 class="state-title processing-title">AI is Reading Your Documents</h2>
+                <p class="state-msg">Gemini is analyzing <strong>{uploadedFileCount}</strong> file(s) for category
+                    matching and PQC compliance. </p>
+                <div class="progress-track">
+                    <div class="progress-bar-animated"></div>
+                </div>
+                <div class="processing-steps">
+                    <div class="proc-step active">
+                        <span class="proc-dot"></span>
+                        <span>Uploading documents</span>
+                    </div>
+                    <div class="proc-step active">
+                        <span class="proc-dot"></span>
+                        <span>Matching categories</span>
+                    </div>
+                    <div class="proc-step">
+                        <span class="proc-dot pulse"></span>
+                        <span>Running PQC checks…</span>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- FAILED STATE                                    -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <template if:true={isFailed}>
+            <div class="state-card state-failed">
+                <div class="state-icon-ring failed-ring">
+                    <lightning-icon icon-name="utility:error" size="medium" class="state-icon"></lightning-icon>
+                </div>
+                <h2 class="state-title">Analysis Failed</h2>
+                <p class="state-msg">Something went wrong during document processing.</p>
+                <template if:true={errorMessage}>
+                    <div class="error-box">
+                        <p class="error-label">Error Details</p>
+                        <p class="error-text">{errorMessage}</p>
+                    </div>
+                </template>
+                <div class="status-pill pill-failed">Failed</div>
+            </div>
+        </template>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- COMPLETED STATE — Full Results                  -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <template if:true={isCompleted}>
+
+            <!-- ── TOP HEADER BAR ── -->
+            <div class="results-header">
+                <div class="results-header-left">
+                    <div class="header-icon-wrap">
+                        <lightning-icon icon-name="utility:check" size="small"
+                            class="header-check-icon"></lightning-icon>
+                    </div>
+                    <div>
+                        <p class="results-eyebrow">Analysis Complete</p>
+                        <h1 class="results-title">{matchedCategory}</h1>
+                    </div>
+                </div>
+                <div class="results-header-right">
+                    <div class="confidence-badge badge-{confidenceLower}">
+                        <span class="conf-label">Confidence</span>
+                        <span class="conf-value">{confidenceScore}</span>
+                    </div>
+                    <div class="status-pill pill-completed">Completed</div>
+                </div>
+            </div>
+
+            <!-- ── STAT TILES ── -->
+            <div class="stat-tiles">
+                <div class="stat-tile">
+                    <lightning-icon icon-name="utility:file" size="x-small" class="tile-icon"></lightning-icon>
+                    <div class="tile-body">
+                        <span class="tile-value">{uploadedFileCount}</span>
+                        <span class="tile-label">Files Analyzed</span>
+                    </div>
+                </div>
+                <div class="stat-tile">
+                    <lightning-icon icon-name="utility:groups" size="x-small" class="tile-icon"></lightning-icon>
+                    <div class="tile-body">
+                        <span class="tile-value">{matchedDepartment}</span>
+                        <span class="tile-label">Department</span>
+                    </div>
+                </div>
+                <div class="stat-tile">
+                    <lightning-icon icon-name="utility:approval" size="x-small" class="tile-icon"></lightning-icon>
+                    <div class="tile-body">
+                        <span class="tile-value">{relevanceLabel}</span>
+                        <span class="tile-label">Relevance</span>
+                    </div>
+                </div>
+                <!-- <div class="stat-tile">
+                    <lightning-icon icon-name="utility:block_visitor" size="x-small" class="tile-icon"></lightning-icon>
+                    <div class="tile-body">
+                        <span class="tile-value">{exclusionLabel}</span>
+                        <span class="tile-label">Exclusion</span>
+                    </div>
+                </div> -->
+            </div>
+
+            <!-- ── SUMMARY ── -->
+            <template if:true={summary}>
+                <div class="section-card">
+                    <div class="section-header">
+                        <lightning-icon icon-name="utility:description" size="x-small"
+                            class="section-icon"></lightning-icon>
+                        <h3 class="section-title">Document Summary</h3>
+                    </div>
+                    <p class="summary-text">{summary}</p>
+                </div>
+            </template>
+
+            <!-- ── MATCHED KEYWORDS ── -->
+            <template if:true={hasMatchedKeywords}>
+                <div class="section-card">
+                    <div class="section-header">
+                        <lightning-icon icon-name="utility:search" size="x-small" class="section-icon"></lightning-icon>
+                        <h3 class="section-title">
+                            Matched Keywords
+                            <span class="count-badge">{matchedKeywords.length}</span>
+                        </h3>
+                    </div>
+                    <div class="keyword-table-wrap">
+                        <table class="keyword-table">
+                            <colgroup>
+                                <col class="col-keyword" />
+                                <col class="col-page" />
+                                <col class="col-filename" />
+                                <col class="col-section" />
+                                <col class="col-matched-text" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Keyword</th>
+                                    <th>Page</th>
+                                    <th>File</th>
+                                    <th>Section</th>
+                                    <th>Matched Text</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={matchedKeywords} for:item="kw">
+                                    <tr key={kw.uniqueKey}>
+                                        <td>
+                                            <span class="kw-chip">{kw.keyword}</span>
+                                        </td>
+                                        <td class="page-cell">
+                                            {kw.pageNum}
+                                        </td>
+                                        <td class="filename-cell-wrap">
+                                            <span class="filename-cell">{kw.fileName}</span>
+                                        </td>
+                                        <td class="section-cell">{kw.section}</td>
+                                        <td class="matched-text-cell">{kw.matchedText}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </template>
+
+        </template>
+        <!-- END COMPLETED -->
+
+    </div>
+</template>

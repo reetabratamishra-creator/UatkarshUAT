@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>IGesXOEdvLVj49HY1afu3AFbSBypMfECdxpWVDQnwBY=_2</activeVersionIdentifier>
+    <developerName>Language_Convert</developerName>
+    <masterLabel>Language Convert</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>You are an expert translator and summarizer.
+
+The input text may be in Bengali, Hindi, or English.identify that from {!$Input:Language}
+
+Your job:
+- Identify the language from {!$Input:Messege} and check if the message language is same like {!$Input:Language}.If same then don&apos;t convert it just output the same {!$Input:Messege} and if it is different then convert it to {!$Input:Language}.
+- Never say &quot;the speaker&quot;, &quot;the author&quot;, &quot;the text says&quot; or any meta commentary
+
+Output must be same as input with the translated value. No addition or deduction need.
+Text: {!$Input:Messege}
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>Messege</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Messege</masterLabel>
+            <referenceName>Input:Messege</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>Language</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Language</masterLabel>
+            <referenceName>Input:Language</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultVertexAIGeminiPro25</primaryModel>
+        <status>Published</status>
+        <templateFormat>FormulaExpression</templateFormat>
+        <versionIdentifier>IGesXOEdvLVj49HY1afu3AFbSBypMfECdxpWVDQnwBY=_2</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

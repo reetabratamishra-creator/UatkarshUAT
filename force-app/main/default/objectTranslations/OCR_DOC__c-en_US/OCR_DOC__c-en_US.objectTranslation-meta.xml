@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>OCR DOC</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>OCR Details</value>
+    </caseValues>
+    <layouts>
+        <layout>OCR DOC Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- PQC ( JSON ) --></label>
+            <section>PQC ( JSON )</section>
+        </sections>
+        <sections>
+            <label><!-- Tender Keywords ( JSON ) --></label>
+            <section>Tender Keywords ( JSON )</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- OCR Analysis --></label>
+        <name>Start_OCR_Analysis</name>
+    </quickActions>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

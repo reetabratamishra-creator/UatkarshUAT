@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Reassaign Reason --></label>
+    <name>Reassaign_Reason__c</name>
+    <picklistValues>
+        <masterLabel>Due to Week Off</masterLabel>
+        <translation><!-- Due to Week Off --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Due to technical Issue (Reassign Done)</masterLabel>
+        <translation><!-- Due to technical Issue (Reassign Done) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Duplicate lead with the same user</masterLabel>
+        <translation><!-- Duplicate lead with the same user --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Interested in other Utkarsh Projects</masterLabel>
+        <translation><!-- Interested in other Utkarsh Projects --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Looking For other User</masterLabel>
+        <translation><!-- Looking For other User --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Owner Change Request Due as per management</masterLabel>
+        <translation><!-- Owner Change Request Due as per management --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Unwell/Early Leave</masterLabel>
+        <translation><!-- Unwell/Early Leave --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,144 @@
+<template>
+    <lightning-card>
+        <div slot="title">
+            <lightning-icon icon-name="doctype:pdf" size="small" class="slds-m-right_x-small"></lightning-icon>
+            Tender Document
+        </div>
+
+        <div class="slds-p-around_medium">
+
+            <!-- ── Spinner ── -->
+            <template lwc:if={isLoading}>
+                <div class="slds-align_absolute-center slds-p-around_large">
+                    <lightning-spinner alternative-text="Loading tender..." size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- ── Error ── -->
+            <template lwc:if={hasError}>
+                <div class="slds-notify slds-notify_alert slds-theme_error slds-m-bottom_small" role="alert">
+                    <lightning-icon icon-name="utility:error" alternative-text="Error" size="x-small"
+                        class="slds-m-right_x-small"></lightning-icon>
+                    {errorMessage}
+                </div>
+            </template>
+
+            <!-- ── Success toast ── -->
+            <template lwc:if={uploadSuccess}>
+                <div class="slds-notify slds-notify_toast slds-theme_success slds-m-bottom_small" role="status">
+                    <lightning-icon icon-name="utility:success" alternative-text="Success" size="x-small"
+                        class="slds-m-right_x-small"></lightning-icon>
+                    PDF saved to Files successfully!
+                    <a href={fileUrl} target="_blank" class="slds-m-left_small">View file</a>
+                </div>
+            </template>
+
+            <!-- ── PDF Preview Panel ── -->
+            <template lwc:if={tender}>
+                <div class="tender-preview">
+
+                    <!-- Header -->
+                    <div class="preview-header slds-m-bottom_medium">
+                        <p class="slds-text-heading_medium slds-text-color_default">{tender.departmentName}</p>
+                        <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                            Tender ID: {tender.tenderId} &nbsp;|&nbsp; {tender.state}
+                        </p>
+                        <p class="slds-text-body_regular slds-m-top_x-small category-text">{tender.category}</p>
+                    </div>
+
+                    <!-- Key Info -->
+                    <div class="section-block">
+                        <div class="section-title">Key Tender Information</div>
+                        <div class="slds-grid slds-wrap">
+                            <template for:each={keyFields} for:item="f">
+                                <div key={f.label} class="slds-col slds-size_1-of-2 field-row">
+                                    <span class="field-label">{f.label}</span>
+                                    <span class="field-value">{f.value}</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    
+                    <div class="section-block">
+                        <div class="section-title">Bid Dates</div>
+                        <div class="field-row">
+                            <span class="field-label">Bid End Date</span>
+                            <span class="field-value">{tender.bidEndDate}</span>
+                        </div>
+                        <div class="field-row">
+                            <span class="field-label">Bid Opening Date</span>
+                            <span class="field-value">{tender.bidOpeningDate}</span>
+                        </div>
+                    </div>
+
+                    <!-- Eligibility -->
+                    <div class="section-block">
+                        <div class="section-title">Eligibility Criteria</div>
+                        <div class="rich-text-box">
+                            <p class="field-value">{tender.eligibility}</p>
+                        </div>
+                    </div>
+
+                    <!-- Payment Terms -->
+                    <div class="section-block">
+                        <div class="section-title">Payment Terms</div>
+                        <div class="rich-text-box">
+                            <p class="field-value">{tender.paymentTerms}</p>
+                        </div>
+                    </div>
+
+                    <!-- Penalty -->
+                    <div class="section-block">
+                        <div class="section-title">Penalty & Security</div>
+                        <div class="rich-text-box">
+                            <p class="field-value">{tender.penalty}</p>
+                        </div>
+                    </div>
+
+                    <!-- Site Visit -->
+                    <div class="section-block">
+                        <div class="section-title">Site Visit Requirement</div>
+                        <p class="field-value slds-p-around_small">{tender.siteVisit}</p>
+                    </div>
+
+                    <!-- Checklist -->
+                    <div class="section-block">
+                        <div class="section-title">Checklist</div>
+                        <p class="field-value slds-p-around_small">{tender.checklist}</p>
+                    </div>
+
+                </div>
+            </template>
+
+            <!-- ── Action Buttons ── -->
+            <div class="slds-m-top_medium slds-grid slds-gutters_x-small">
+                <div class="slds-col slds-shrink-none">
+                    <lightning-button
+                        variant="brand"
+                        label="Download PDF"
+                        icon-name="utility:download"
+                        onclick={handleDownload}
+                        disabled={isActionDisabled}>
+                    </lightning-button>
+                </div>
+                <!--div class="slds-col slds-shrink-none">
+                    <lightning-button
+                        variant="brand-outline"
+                        label="Save to Files"
+                        icon-name="utility:upload"
+                        onclick={handleSaveToFiles}
+                        disabled={isActionDisabled}>
+                    </lightning-button>
+                </div-->
+                <template lwc:if={isGenerating}>
+                    <div class="slds-col slds-align-middle">
+                        <lightning-spinner size="small" alternative-text="Generating PDF..."></lightning-spinner>
+                        <span class="slds-m-left_x-small slds-text-body_small">{generatingLabel}</span>
+                    </div>
+                </template>
+            </div>
+
+        </div>
+    </lightning-card>
+</template>

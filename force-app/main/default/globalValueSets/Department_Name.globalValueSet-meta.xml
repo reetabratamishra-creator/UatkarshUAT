@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>High Mast &amp; Polygonal</fullName>
+        <default>false</default>
+        <label>High Mast &amp; Polygonal</label>
+    </customValue>
+    <customValue>
+        <fullName>Steel Pipes</fullName>
+        <default>false</default>
+        <label>Steel Pipes</label>
+    </customValue>
+    <customValue>
+        <fullName>Crash Barrier</fullName>
+        <default>false</default>
+        <label>Crash Barrier</label>
+    </customValue>
+    <customValue>
+        <fullName>Steel Tubular Poles</fullName>
+        <default>false</default>
+        <label>Steel Tubular Poles</label>
+    </customValue>
+    <customValue>
+        <fullName>Polymer</fullName>
+        <default>false</default>
+        <label>Polymer</label>
+    </customValue>
+    <customValue>
+        <fullName>HDPE</fullName>
+        <default>false</default>
+        <label>HDPE</label>
+    </customValue>
+    <customValue>
+        <fullName>Transmission &amp; Telecom Tower</fullName>
+        <default>false</default>
+        <label>Transmission &amp; Telecom Tower</label>
+    </customValue>
+    <customValue>
+        <fullName>Pre Engineering Building</fullName>
+        <default>false</default>
+        <label>Pre Engineering Building</label>
+    </customValue>
+    <customValue>
+        <fullName>Railway Electrification Structure</fullName>
+        <default>false</default>
+        <label>Railway Electrification Structure</label>
+    </customValue>
+    <customValue>
+        <fullName>Solar Structure</fullName>
+        <default>false</default>
+        <label>Solar Structure</label>
+    </customValue>
+    <customValue>
+        <fullName>Enquiry</fullName>
+        <default>false</default>
+        <label>Enquiry</label>
+    </customValue>
+    <customValue>
+        <fullName>Telecom Tower</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Telecom Tower</label>
+    </customValue>
+    <customValue>
+        <fullName>High Mast Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>High Mast Products</label>
+    </customValue>
+    <customValue>
+        <fullName>Core</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Core</label>
+    </customValue>
+    <customValue>
+        <fullName>Steel Pipes Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Steel Pipes Products</label>
+    </customValue>
+    <customValue>
+        <fullName>Polygonal Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Polygonal Products</label>
+    </customValue>
+    <customValue>
+        <fullName>Crash Barrier Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Crash Barrier Products</label>
+    </customValue>
+    <customValue>
+        <fullName>Steel Tubular Poles Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Steel Tubular Poles Products</label>
+    </customValue>
+    <customValue>
+        <fullName>PVC Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>PVC Products</label>
+    </customValue>
+    <customValue>
+        <fullName>HDPE Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>HDPE Products</label>
+    </customValue>
+    <customValue>
+        <fullName>Telecom Tower Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Telecom Tower Products</label>
+    </customValue>
+    <customValue>
+        <fullName>Transmission Tower Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Transmission Tower Products</label>
+    </customValue>
+    <customValue>
+        <fullName>Railway Electrification Structure Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Railway Electrification Structure Products</label>
+    </customValue>
+    <customValue>
+        <fullName>Pre Engineering Buildings Products</fullName>
+        <default>false</default>
+        <isActive>false</isActive>
+        <label>Pre Engineering Buildings Products</label>
+    </customValue>
+    <masterLabel>Department Name</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

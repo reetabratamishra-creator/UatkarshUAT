@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Rate per KM for own vehicle expense reimbursement (e.g., Rs. 8/KM, Rs. 3/KM) --></help>
+    <label><!-- Own Vehicle Rate --></label>
+    <name>Own_Vehicle_Rate__c</name>
+</CustomFieldTranslation>

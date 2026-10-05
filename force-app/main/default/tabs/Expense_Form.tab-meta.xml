@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This tab is used to launch the Expense Form</description>
+    <label>Expense Form</label>
+    <lwcComponent>expenseForm</lwcComponent>
+    <motif>Custom20: Airplane</motif>
+</CustomTab>

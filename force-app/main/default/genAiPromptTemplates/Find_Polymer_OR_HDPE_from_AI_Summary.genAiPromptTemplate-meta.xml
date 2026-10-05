@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_3</activeVersionIdentifier>
+    <developerName>Find_Polymer_OR_HDPE_from_AI_Summary</developerName>
+    <masterLabel>Find Polymer OR HDPE from AI Summary</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>Tender Name: {!$Input:tenderName}
+Tender Description: {!$Input:tenderDescription}
+AI Generated Summary: {!$Input:aiSummaryMerged} 
+
+--- STEP 1: Check Polymer Keywords ---
+{!$Input:polymerKeywords}
+
+If any of the above Polymer keywords match the Tender Name, Tender Description, or AI Generated Summary, then:
+Department = &quot;Polymer&quot;
+Stop further processing.
+
+--- STEP 2: Check HDPE Keywords (Only if no Polymer keywords are matched) ---
+{!$Input:hdpeKeywords}
+
+If any of the above HDPE keywords match the Tender Name, Tender Description, or AI Generated Summary, then:
+Department = &quot;HDPE&quot;
+
+--- STEP 3: If no keywords are matched ---
+Department = &quot;No Match&quot;
+
+Return only valid JSON:
+
+{
+ &quot;department&quot;: &quot;Polymer&quot; | &quot;HDPE&quot; | &quot;No Match&quot;,
+ &quot;reasoning&quot;: &quot;...&quot;
+}
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>tenderName</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>tenderName</masterLabel>
+            <referenceName>Input:tenderName</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>tenderDescription</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>tenderDescription</masterLabel>
+            <referenceName>Input:tenderDescription</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>aiSummaryMerged</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>aiSummaryMerged</masterLabel>
+            <referenceName>Input:aiSummaryMerged</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>polymerKeywords</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>polymerKeywords</masterLabel>
+            <referenceName>Input:polymerKeywords</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>hdpeKeywords</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>hdpeKeywords</masterLabel>
+            <referenceName>Input:hdpeKeywords</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_1</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are a strict document classifier. Your ONLY task is to decide whether the tender below belongs to the &quot;Polymer&quot; department or the &quot;HDPE&quot; department, based ONLY on keyword matching. Do not use outside knowledge or guess based on general context — match ONLY against the keyword lists provided below.
+
+=== TENDER DATA ===
+Tender Name: {!$Input:tenderName}
+Tender Description: {!$Input:tenderDescription}
+AI Generated Summary: {!$Input:aiSummaryMerged}
+
+Note: The AI Generated Summary may contain HTML-encoded characters (such as &amp;lt;, &amp;gt;, &amp;amp;) or HTML tags. Ignore all markup/encoding and read only the underlying text content when searching for keyword matches.
+
+=== MATCHING RULES ===
+- Match keywords case-insensitively.
+- A match counts if the keyword phrase (or a close variant of it, e.g. singular/plural, minor spelling difference) appears anywhere in the Tender Name, Tender Description, or AI Generated Summary.
+- Check STEP 1 (Polymer) first. If ANY Polymer keyword matches, set department = &quot;Polymer&quot; and STOP — do not check HDPE keywords.
+- Only if NO Polymer keyword matches, check STEP 2 (HDPE) keywords. If ANY HDPE keyword matches, set department = &quot;HDPE&quot;.
+- If neither list has any match, set department = &quot;No Match&quot;.
+
+=== STEP 1: POLYMER KEYWORDS ===
+{!$Input:polymerKeywords}
+
+=== STEP 2: HDPE KEYWORDS (check only if Step 1 has no match) ===
+{!$Input:hdpeKeywords}
+
+=== OUTPUT FORMAT ===
+Return ONLY a single valid JSON object. No markdown code fences, no explanation text before or after the JSON, no extra keys.
+
+{
+ &quot;department&quot;: &quot;Polymer&quot; | &quot;HDPE&quot; | &quot;No Match&quot;,
+ &quot;reasoning&quot;: &quot;State exactly which keyword(s) matched and where (Tender Name / Description / AI Summary), or state clearly that no keyword matched.&quot;
+}
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>tenderName</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>tenderName</masterLabel>
+            <referenceName>Input:tenderName</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>tenderDescription</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>tenderDescription</masterLabel>
+            <referenceName>Input:tenderDescription</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>aiSummaryMerged</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>aiSummaryMerged</masterLabel>
+            <referenceName>Input:aiSummaryMerged</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>polymerKeywords</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>polymerKeywords</masterLabel>
+            <referenceName>Input:polymerKeywords</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>hdpeKeywords</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>hdpeKeywords</masterLabel>
+            <referenceName>Input:hdpeKeywords</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultGPT41Mini</primaryModel>
+        <status>Published</status>
+        <templateFormat>FormulaExpression</templateFormat>
+        <versionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_2</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are a strict document classifier. Your ONLY task is to decide whether the tender below belongs to the &quot;Polymer&quot; department or the &quot;HDPE&quot; department, based ONLY on keyword matching. Do not use outside knowledge or guess based on general context — match ONLY against the keyword lists provided below.
+
+=== TENDER DATA ===
+Tender Name: {!$Input:tenderName}
+Tender Description: {!$Input:tenderDescription}
+AI Generated Summary: {!$Input:aiSummaryMerged}
+
+Note: The AI Generated Summary may contain HTML-encoded characters (such as &amp;lt;, &amp;gt;, &amp;amp;) or HTML tags. Ignore all markup/encoding and read only the underlying text content when searching for keyword matches.
+
+=== MATCHING RULES ===
+- Match keywords case-insensitively.
+- A match counts if the keyword phrase (or a close variant of it, e.g. singular/plural, minor spelling difference) appears anywhere in the Tender Name, Tender Description, or AI Generated Summary.
+- Check STEP 1 (Polymer) first. If ANY Polymer keyword matches, set department = &quot;Polymer&quot; and STOP — do not check HDPE keywords.
+- Only if NO Polymer keyword matches, check STEP 2 (HDPE) keywords. If ANY HDPE keyword matches, set department = &quot;HDPE&quot;.
+- If neither list has any match, set department = &quot;No Match&quot;.
+
+=== STEP 1: POLYMER KEYWORDS ===
+{!$Input:polymerKeywords}
+
+=== STEP 2: HDPE KEYWORDS (check only if Step 1 has no match) ===
+{!$Input:hdpeKeywords}
+
+=== OUTPUT FORMAT ===
+Return ONLY a single valid JSON object. No markdown code fences, no explanation text before or after the JSON, no extra keys.
+
+{
+ &quot;department&quot;: &quot;Polymer&quot; | &quot;HDPE&quot; | &quot;No Match&quot;,
+ &quot;reasoning&quot;: &quot;State exactly which keyword(s) matched and where (Tender Name / Description / AI Summary), or state clearly that no keyword matched.&quot;
+}
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <inputs>
+            <apiName>hdpeKeywords</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>hdpeKeywords</masterLabel>
+            <referenceName>Input:hdpeKeywords</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>polymerKeywords</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>polymerKeywords</masterLabel>
+            <referenceName>Input:polymerKeywords</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>aiSummaryMerged</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>aiSummaryMerged</masterLabel>
+            <referenceName>Input:aiSummaryMerged</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>tenderDescription</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>tenderDescription</masterLabel>
+            <referenceName>Input:tenderDescription</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>tenderName</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>tenderName</masterLabel>
+            <referenceName>Input:tenderName</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultBedrockAnthropicClaude45Haiku</primaryModel>
+        <status>Published</status>
+        <templateFormat>FormulaExpression</templateFormat>
+        <versionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_3</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

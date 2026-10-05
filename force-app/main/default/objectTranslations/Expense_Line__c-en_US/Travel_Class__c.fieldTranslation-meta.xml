@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Select the travel class based on your eligibility level (Business, Economy for Air; 1AC, 2AC, 3AC, Sleeper for Train) --></help>
+    <label><!-- Travel Class --></label>
+    <name>Travel_Class__c</name>
+    <picklistValues>
+        <masterLabel>1AC</masterLabel>
+        <translation><!-- 1AC --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>2AC</masterLabel>
+        <translation><!-- 2AC --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>3AC</masterLabel>
+        <translation><!-- 3AC --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Business</masterLabel>
+        <translation><!-- Business --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Economy</masterLabel>
+        <translation><!-- Economy --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Sleeper</masterLabel>
+        <translation><!-- Sleeper --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

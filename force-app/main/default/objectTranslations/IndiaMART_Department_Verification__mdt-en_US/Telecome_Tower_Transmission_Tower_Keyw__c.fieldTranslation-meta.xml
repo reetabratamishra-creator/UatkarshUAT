@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Telecome Tower &amp; Transmission Tower Keyw --></label>
+    <name>Telecome_Tower_Transmission_Tower_Keyw__c</name>
+</CustomFieldTranslation>

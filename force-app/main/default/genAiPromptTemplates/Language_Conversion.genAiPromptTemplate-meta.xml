@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <activeVersionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_2</activeVersionIdentifier>
+    <developerName>Language_Conversion</developerName>
+    <masterLabel>Language Conversion</masterLabel>
+    <overridable>false</overridable>
+    <templateVersions>
+        <content>You are an expert translator and summarizer.
+
+The input text may be in Bengali, Hindi, or English.
+
+Your job:
+- If the input is in Bengali or Hindi: translate it to English first, then summarize
+- If the input is already in English: summarize directly
+- If the input is a single short sentence: just convert it to clean English as-is
+- If the input has multiple lines or sentences: understand the main topic and express it in one concise English sentence
+- Never say &quot;the speaker&quot;, &quot;the author&quot;, &quot;the text says&quot; or any meta commentary
+- Always write as if you are directly stating the fact or idea
+- No bullet points, no labels, no formatting — just one plain English sentence
+
+Output only one plain sentence. Nothing else.
+Text: {!$Input:Source_Text}
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__nlNlLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__enUsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__frFrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__deDeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__itItLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__jaJpLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__ptBrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esEsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esMxLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__svSeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__afLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__bnLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__enInLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__hiLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <inputs>
+            <apiName>Source_Text</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Source Text</masterLabel>
+            <referenceName>Input:Source_Text</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultOpenAIGPT4OmniMini</primaryModel>
+        <status>Published</status>
+        <versionIdentifier>IGesXOEdvLVj49HY1afu3AFbSBypMfECdxpWVDQnwBY=_1</versionIdentifier>
+    </templateVersions>
+    <templateVersions>
+        <content>You are an expert translator and summarizer.
+
+The input text may be in Bengali, Hindi, or English.
+
+Your job:
+- If the input is in Bengali or Hindi: translate it to English first,no changes or addition required
+- If the input is already in English: summarise directly
+- If the input is a single short sentence: just convert it to clean English as-is
+- If the input has multiple lines or sentences: understand the main topic and express it in one concise English sentence
+- Never say &quot;the speaker&quot;, &quot;the author&quot;, &quot;the text says&quot; or any meta commentary
+- Always try to translate same to same ,no changes or addition required.
+
+-For example if Input is like &quot;Crash Barrier - Subhajit Paul - Ipshita Nandy&quot; or &quot;Core Dept(Avijit D)&quot; or &quot;Global Media - 80 Widgets (Sample)&quot; or &quot;Transmission &amp; Telecom Tower 1 (Pritam C)&quot; these are the Name and never change or explain it.
+-If a name starts with small letter never capitalise. 
+
+Output only one plain sentence. Nothing else.
+Text: {!$Input:Source_Text}
+</content>
+        <fileDroppingStrategy>{&quot;dropFilesBy&quot;:&quot;LAST_MODIFIED_DATE&quot;,&quot;dropFileStartingWith&quot;:&quot;OLDEST&quot;}</fileDroppingStrategy>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__nlNlLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__enUsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__frFrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__deDeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__itItLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__jaJpLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__ptBrLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esEsLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__esMxLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__svSeLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__afLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__bnLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__enInLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <generationTemplateConfigs>
+            <generationConfigDeveloperName>einstein_gpt__hiLanguageStyle</generationConfigDeveloperName>
+        </generationTemplateConfigs>
+        <inputs>
+            <apiName>Source_Text</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>Source Text</masterLabel>
+            <referenceName>Input:Source_Text</referenceName>
+            <required>true</required>
+        </inputs>
+        <isCitationEnabled>false</isCitationEnabled>
+        <primaryModel>sfdc_ai__DefaultVertexAIGeminiPro25</primaryModel>
+        <status>Published</status>
+        <templateFormat>FormulaExpression</templateFormat>
+        <versionIdentifier>fqhGB2xaahKCku3PINix53OtsFxyAz86i5h1NOZXvuc=_2</versionIdentifier>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

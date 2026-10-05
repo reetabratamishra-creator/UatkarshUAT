@@ -1,0 +1,32 @@
+<template>
+    <div class="checkbox-filter slds-form-element">
+        <label class="slds-form-element__label checkbox-filter__label">{label}</label>
+        <div class={panelClass}>
+            <template if:true={hasOptions}>
+                <div class={listClass}>
+                    <template for:each={optionRows} for:item="option">
+                        <div key={option.value} class="checkbox-filter__item">
+                            <div class="slds-checkbox">
+                                <input
+                                    type="checkbox"
+                                    id={option.inputId}
+                                    name={groupName}
+                                    value={option.value}
+                                    checked={option.checked}
+                                    onchange={handleCheckboxChange}
+                                />
+                                <label class="slds-checkbox__label" for={option.inputId}>
+                                    <span class="slds-checkbox_faux"></span>
+                                    <span class="slds-form-element__label">{option.label}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+            <template if:false={hasOptions}>
+                <div class="checkbox-filter__empty slds-text-color_weak">No options available</div>
+            </template>
+        </div>
+    </div>
+</template>

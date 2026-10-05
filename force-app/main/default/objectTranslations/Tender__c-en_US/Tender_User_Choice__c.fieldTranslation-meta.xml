@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Tender User Choice --></label>
+    <name>Tender_User_Choice__c</name>
+    <picklistValues>
+        <masterLabel>Accept and participate</masterLabel>
+        <translation><!-- Accept and participate --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Reject and Close</masterLabel>
+        <translation><!-- Reject and Close --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Reject and Create Project</masterLabel>
+        <translation><!-- Reject and Create Project --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

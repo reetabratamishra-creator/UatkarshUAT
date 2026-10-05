@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Tender Stage Bidder Wise --></label>
+    <name>Tender_Stage_Bidder_Wise_ProjectFormula__c</name>
+</CustomFieldTranslation>

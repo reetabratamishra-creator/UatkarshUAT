@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExternalClientApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>anshitachandar@gmail.com</contactEmail>
+    <distributionState>Local</distributionState>
+    <isProtected>false</isProtected>
+    <label>Bluewave Quotation Response Webhook</label>
+    <orgScopedExternalApp>00DC2000003CoP7:Bluewave_Quotation_Response_Webhook</orgScopedExternalApp>
+</ExternalClientApplication>

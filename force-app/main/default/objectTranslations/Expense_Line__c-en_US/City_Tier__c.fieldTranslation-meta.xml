@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Tier 1: Metro cities. Tier 2: Major cities. Tier 3: All other towns and cities. --></help>
+    <label><!-- City Tier --></label>
+    <name>City_Tier__c</name>
+    <picklistValues>
+        <masterLabel>Tier 1</masterLabel>
+        <translation><!-- Tier 1 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Tier 2</masterLabel>
+        <translation><!-- Tier 2 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Tier 3</masterLabel>
+        <translation><!-- Tier 3 --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

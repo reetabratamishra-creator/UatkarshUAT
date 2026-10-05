@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Closed_Opportunity_can_not_be_modified</fullName>
+    <active>true</active>
+    <description>Closed Opportunity can&apos;t be modified except Admins</description>
+    <errorConditionFormula>AND(
+    NOT(ISNEW()),
+    PRIORVALUE(IsClosed) = TRUE,
+    NOT(
+        OR(
+            $Profile.Name = &quot;System Administrator&quot;,
+            $Profile.Name = &quot;Utkarsh Admin&quot;,
+            AND(
+                TEXT(Department_Name__c) = $User.Department,
+                OR(
+                    OwnerId = $User.Id,
+                    $Profile.Name = &quot;CRM Head&quot;,
+                    $Profile.Name = &quot;Utkarsh HOD&quot;
+                )
+            )
+        )
+    )
+)</errorConditionFormula>
+    <errorMessage>Closed Opportunity can&apos;t be modified except Admins</errorMessage>
+</ValidationRule>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <layouts>
+        <layout>Lead Layout</layout>
+        <sections>
+            <label><!-- Marketing Details --></label>
+            <section>Marketing Details</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Change Owner/Department --></label>
+        <name>Change_Department</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create A Task --></label>
+        <name>Create_A_Task</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create A Tasks --></label>
+        <name>Create_A_Tasks</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create Product Category --></label>
+        <name>Create_Product_Category</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Create Task --></label>
+        <name>Create_Task</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Reopen Lead --></label>
+        <name>Reopen_Lead</name>
+    </quickActions>
+    <validationRules>
+        <errorMessage><!-- Company can&apos;t have special character --></errorMessage>
+        <name>Company_can_not_have_special_character</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You are not allowed to edit closed leads. Please contact system adminstrator for further help. --></errorMessage>
+        <name>Disable_Edit_permission_for_Closed_leads</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Name field can&apos;t be Number and Special Character --></errorMessage>
+        <name>LastName_not_Special_character_or_Number</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- City, State, Country, Company, Customer Category is mandatory to Qualify a Lead --></errorMessage>
+        <name>Lead_Qualified_Mandatory_fields</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- PIN must contain only numeric values --></errorMessage>
+        <name>PIN_cannot_be_a_text</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Phone number can only be digits --></errorMessage>
+        <name>Phone_can_only_be_digits</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Lost or Qualified Leads can only be edited by System Administrator and Utkarsh Admin profiles. --></errorMessage>
+        <name>Restrict_Lost_Lead_Edits</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- Bulk_Owner_Change --></label>
+        <name>Bulk_Owner_Change</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleMaps --></label>
+        <name>GoogleMaps</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleNews --></label>
+        <name>GoogleNews</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleSearch --></label>
+        <name>GoogleSearch</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- New --></label>
+        <name>New</name>
+    </webLinks>
+</CustomObjectTranslation>

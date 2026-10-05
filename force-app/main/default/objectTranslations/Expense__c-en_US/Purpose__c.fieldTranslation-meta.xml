@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Describe the business purpose for this travel or expense (e.g., client meeting, training, conference) --></help>
+    <label><!-- Purpose --></label>
+    <name>Purpose__c</name>
+</CustomFieldTranslation>

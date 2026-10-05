@@ -1,0 +1,5 @@
+{
+  "description" : "Displays matching Account, Lead, or Opportunity search results",
+  "lightning:type" : "@apexClassType/c__SearchUserRecordsFromChatBot$SearchResult",
+  "title" : "searchResultsResponse"
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OCR_Doc__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>OCR Doc</label>
+    <referenceTo>OCR_DOC__c</referenceTo>
+    <relationshipLabel>OCR Doc Results</relationshipLabel>
+    <relationshipName>OCR_Doc_Results</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

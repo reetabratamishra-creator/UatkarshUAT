@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Message Log</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Message Logs</value>
+    </caseValues>
+    <layouts>
+        <layout>Message Log Layout</layout>
+        <sections>
+            <label><!-- API Request --></label>
+            <section>API Request</section>
+        </sections>
+        <sections>
+            <label><!-- API Response --></label>
+            <section>API Response</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

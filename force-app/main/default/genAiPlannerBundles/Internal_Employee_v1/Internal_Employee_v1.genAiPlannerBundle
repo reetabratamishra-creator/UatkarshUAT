@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlannerBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Automate common business tasks and assist users in their flow of work. Agentforce Employee Agent can search knowledge articles and other data sources. Customize it further to meet your employees&apos; business needs.</description>
+    <localTopicLinks>
+        <genAiPluginName>Lead_Creation_16jC20000000ler</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>agent_router_16jC20000000ler</genAiPluginName>
+    </localTopicLinks>
+    <localTopicLinks>
+        <genAiPluginName>off_topic_16jC20000000ler</genAiPluginName>
+    </localTopicLinks>
+    <localTopics>
+        <fullName>off_topic_16jC20000000ler</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Redirect conversation to relevant topics when user request goes off-topic</description>
+        <developerName>off_topic_16jC20000000ler</developerName>
+        <genAiPluginInstructions>
+            <description>You are an AI Agent.
+
+The user&apos;s current context is:
+Current App Name: {{state.currentAppName}}
+Current Object Name: {{state.currentObjectApiName}}
+Current Page Type: {{state.currentPageType}}
+Current Record ID: {{state.currentRecordId}}</description>
+            <developerName>instruction0_179C20000001BCl</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179C20000001BCl</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>off_topic</localDeveloperName>
+        <masterLabel>Off Topic</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>agent_router_16jC20000000ler</fullName>
+        <canEscalate>false</canEscalate>
+        <description>Welcome the user and determine the appropriate subagent based on user input</description>
+        <developerName>agent_router_16jC20000000ler</developerName>
+        <genAiPluginInstructions>
+            <description>You are an AI Agent.
+
+The user&apos;s current context is:
+Current App Name: {{state.currentAppName}}
+Current Object Name: {{state.currentObjectApiName}}
+Current Page Type: {{state.currentPageType}}
+Current Record ID: {{state.currentRecordId}}</description>
+            <developerName>instruction0_179C20000001BCk</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179C20000001BCk</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localDeveloperName>agent_router</localDeveloperName>
+        <masterLabel>Agent Router</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <localTopics>
+        <fullName>Lead_Creation_16jC20000000ler</fullName>
+        <canEscalate>false</canEscalate>
+        <description>This subagent collects the required lead details from the user and creates a Lead record in Salesforce. If the user wants to create a Lead, this action will be triggered.</description>
+        <developerName>Lead_Creation_16jC20000000ler</developerName>
+        <genAiPluginInstructions>
+            <description>You are an AI Agent.
+
+The user&apos;s current context is:
+Current App Name: {{state.currentAppName}}
+Current Object Name: {{state.currentObjectApiName}}
+Current Page Type: {{state.currentPageType}}
+Current Record ID: {{state.currentRecordId}}</description>
+            <developerName>instruction0_179C20000001BCj</developerName>
+            <language>en_US</language>
+            <masterLabel>instruction0_179C20000001BCj</masterLabel>
+            <sortOrder>1</sortOrder>
+        </genAiPluginInstructions>
+        <language>en_US</language>
+        <localActionLinks>
+            <functionName>Creating_Lead_179C20000001BCj</functionName>
+        </localActionLinks>
+        <localActionLinks>
+            <functionName>Get_Picklist_Values_179C20000001BCj</functionName>
+        </localActionLinks>
+        <localActions>
+            <fullName>Get_Picklist_Values_179C20000001BCj</fullName>
+            <description>Retrieves the active picklist values for LeadSource, Department, and PreviousSource fields on Lead object in a single call.</description>
+            <developerName>Get_Picklist_Values_179C20000001BCj</developerName>
+            <invocationTarget>LeadPicklistValuesAction</invocationTarget>
+            <invocationTargetType>apex</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>Get_Picklist_Values</localDeveloperName>
+            <masterLabel>Get Picklist Values</masterLabel>
+            <progressIndicatorMessage>Fetching options...</progressIndicatorMessage>
+        </localActions>
+        <localActions>
+            <fullName>Creating_Lead_179C20000001BCj</fullName>
+            <description>Creating Lead with all collected data</description>
+            <developerName>Creating_Lead_179C20000001BCj</developerName>
+            <invocationTarget>Lead_Creation_from_Agentforce_Agent</invocationTarget>
+            <invocationTargetType>flow</invocationTargetType>
+            <isConfirmationRequired>false</isConfirmationRequired>
+            <isIncludeInProgressIndicator>true</isIncludeInProgressIndicator>
+            <localDeveloperName>Creating_Lead</localDeveloperName>
+            <masterLabel>Creating Lead</masterLabel>
+            <progressIndicatorMessage>Creating Lead . . .</progressIndicatorMessage>
+        </localActions>
+        <localDeveloperName>Lead_Creation</localDeveloperName>
+        <masterLabel>Lead Creation</masterLabel>
+        <pluginType>Topic</pluginType>
+    </localTopics>
+    <masterLabel>Internal Employee</masterLabel>
+    <plannerType>Atlas__ConcurrentMultiAgentOrchestration</plannerType>
+</GenAiPlannerBundle>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Customer Category --></label>
+    <name>Customer_Category__c</name>
+    <picklistValues>
+        <masterLabel>Contractors</masterLabel>
+        <translation><!-- Contractors --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Dealer</masterLabel>
+        <translation><!-- Dealer --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Distributor</masterLabel>
+        <translation><!-- Distributor --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>EPC</masterLabel>
+        <translation><!-- EPC --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>End-user</masterLabel>
+        <translation><!-- End-user --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Govt. Entity</masterLabel>
+        <translation><!-- Govt. Entity --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>OEM</masterLabel>
+        <translation><!-- OEM --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PSU</masterLabel>
+        <translation><!-- PSU --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Retailer</masterLabel>
+        <translation><!-- Retailer --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

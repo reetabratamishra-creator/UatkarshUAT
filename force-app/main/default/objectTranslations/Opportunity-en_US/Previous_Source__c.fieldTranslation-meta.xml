@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Previous Source --></label>
+    <name>Previous_Source__c</name>
+    <picklistValues>
+        <masterLabel>EMAIL CAMPAIGNING</masterLabel>
+        <translation><!-- EMAIL CAMPAIGNING --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>EVENT ACTIVATION</masterLabel>
+        <translation><!-- EVENT ACTIVATION --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>FACEBOOK</masterLabel>
+        <translation><!-- FACEBOOK --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>FB LEAD ADS</masterLabel>
+        <translation><!-- FB LEAD ADS --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>INBOUND EMAIL</masterLabel>
+        <translation><!-- INBOUND EMAIL --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>INBOUND PHONE CALL</masterLabel>
+        <translation><!-- INBOUND PHONE CALL --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>INDIAMART</masterLabel>
+        <translation><!-- INDIAMART --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Indiamart V2</masterLabel>
+        <translation><!-- Indiamart V2 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>OFFLINE CRM</masterLabel>
+        <translation><!-- OFFLINE CRM --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>ONLINE CAMPAIGNING</masterLabel>
+        <translation><!-- ONLINE CAMPAIGNING --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>OUTBOUND PHONE CALL</masterLabel>
+        <translation><!-- OUTBOUND PHONE CALL --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PAY PER CLICK ADS</masterLabel>
+        <translation><!-- PAY PER CLICK ADS --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>TENDER</masterLabel>
+        <translation><!-- TENDER --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>WEBSITE BOT CHAT</masterLabel>
+        <translation><!-- WEBSITE BOT CHAT --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>WHATSAPP CAMPAIGNING</masterLabel>
+        <translation><!-- WHATSAPP CAMPAIGNING --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Website</masterLabel>
+        <translation><!-- Website --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

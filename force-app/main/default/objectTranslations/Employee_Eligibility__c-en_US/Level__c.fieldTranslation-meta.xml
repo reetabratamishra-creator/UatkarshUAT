@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Select the employee level (L2-L9) that this eligibility record applies to --></help>
+    <label><!-- Level --></label>
+    <name>Level__c</name>
+    <picklistValues>
+        <masterLabel>L2</masterLabel>
+        <translation><!-- L2 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>L3</masterLabel>
+        <translation><!-- L3 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>L4</masterLabel>
+        <translation><!-- L4 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>L5</masterLabel>
+        <translation><!-- L5 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>L6</masterLabel>
+        <translation><!-- L6 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>L7</masterLabel>
+        <translation><!-- L7 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>L8</masterLabel>
+        <translation><!-- L8 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>L9</masterLabel>
+        <translation><!-- L9 --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

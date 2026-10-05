@@ -1,0 +1,42 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "departmentValues" : {
+      "title" : "Department Values",
+      "description" : "Active picklist values for Department. Present these to the user as a numbered list - do not invent values, do not skip showing them, do not ask Department as free text.",
+      "maxItems" : 2000,
+      "items" : {
+        "lightning:type" : "lightning__textType"
+      },
+      "lightning:type" : "lightning__listType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "leadSourceValues" : {
+      "title" : "Lead Source Values",
+      "description" : "Active picklist values for Lead Source. Present these to the user as a numbered list - do not invent values, do not skip showing them.",
+      "maxItems" : 2000,
+      "items" : {
+        "lightning:type" : "lightning__textType"
+      },
+      "lightning:type" : "lightning__listType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    },
+    "previousSourceValues" : {
+      "title" : "Previous Source Values",
+      "description" : "Active picklist values for Previous Source. Present these to the user as a numbered list - do not invent values.",
+      "maxItems" : 2000,
+      "items" : {
+        "lightning:type" : "lightning__textType"
+      },
+      "lightning:type" : "lightning__listType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : false,
+      "copilotAction:isUsedByPlanner" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

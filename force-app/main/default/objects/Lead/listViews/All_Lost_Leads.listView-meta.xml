@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_Lost_Leads</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>Company_Name__c</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <columns>Lost_DateTime__c</columns>
+    <columns>Lost_Reason__c</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>Lead_Owner__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>equals</operation>
+        <value>Lost</value>
+    </filters>
+    <label>All Lost Leads</label>
+</ListView>

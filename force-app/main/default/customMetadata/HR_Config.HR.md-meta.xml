@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>HR</label>
+    <protected>false</protected>
+    <values>
+        <field>HR_Email__c</field>
+        <value xsi:type="xsd:string">deepanjan.dey@halsaglobal.io.uat</value>
+    </values>
+    <values>
+        <field>HR_User_Name__c</field>
+        <value xsi:type="xsd:string">Dummy User</value>
+    </values>
+</CustomMetadata>

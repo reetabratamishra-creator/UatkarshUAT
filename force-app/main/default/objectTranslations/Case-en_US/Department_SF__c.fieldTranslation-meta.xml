@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Department SF --></label>
+    <name>Department_SF__c</name>
+    <picklistValues>
+        <masterLabel>Crash Barrier</masterLabel>
+        <translation><!-- Crash Barrier --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>HDPE</masterLabel>
+        <translation><!-- HDPE --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>High Mast &amp; Polygonal</masterLabel>
+        <translation><!-- High Mast &amp; Polygonal --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Polymer</masterLabel>
+        <translation><!-- Polymer --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pre Engineering Building</masterLabel>
+        <translation><!-- Pre Engineering Building --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Railway Electrification Structure</masterLabel>
+        <translation><!-- Railway Electrification Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Solar Structure</masterLabel>
+        <translation><!-- Solar Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Steel Pipes</masterLabel>
+        <translation><!-- Steel Pipes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Steel Tubular Poles</masterLabel>
+        <translation><!-- Steel Tubular Poles --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Transmission &amp; Telecom Tower</masterLabel>
+        <translation><!-- Transmission &amp; Telecom Tower --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

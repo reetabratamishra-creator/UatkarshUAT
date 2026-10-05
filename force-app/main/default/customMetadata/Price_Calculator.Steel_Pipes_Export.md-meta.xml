@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Export</label>
+    <protected>false</protected>
+    <values>
+        <field>Add_On_Amount__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Base_Amount__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Department__c</field>
+        <value xsi:type="xsd:string">Steel Pipe Export Config</value>
+    </values>
+    <values>
+        <field>GST__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>JSON_Payload__c</field>
+        <value xsi:type="xsd:string">{&quot;BASE_RATES&quot;:{&quot;Black Steel&quot;:65,&quot;Galvanized Iron (GI)&quot;:80.5,&quot;Stainless Steel&quot;:80,&quot;RODTEP (%)&quot;:0.45,&quot;Incentive (%)&quot;:1.5}}</value>
+    </values>
+    <values>
+        <field>fm_general_detail__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>man_riding_lift__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>rateCard__c</field>
+        <value xsi:type="xsd:string">{
+  &quot;Black Steel&quot;: 62.5,
+  &quot;Black Steel|MS ERW&quot;: 62.5,
+  &quot;Galvanized Iron (GI)&quot;: 70.0,
+  &quot;Stainless Steel&quot;: 150.0,
+  &quot;Black Steel|MS ERW|Square|1.8|19&quot;: 67.5,
+  &quot;Black Steel|MS ERW|Square|2|19&quot;: 66.0,
+  &quot;Black Steel|MS ERW|Square|2.3|19&quot;: 65.5,
+  &quot;Black Steel|MS ERW|Square|2.6|19&quot;: 65.5,
+  &quot;Black Steel|MS ERW|Square|3|19&quot;: 65.5,
+  &quot;Black Steel|MS ERW|Square|3.2|19&quot;: 65.5,
+  &quot;Black Steel|MS ERW|Square|3.6|19&quot;: 65.5,
+  &quot;Black Steel|MS ERW|Square|1.8|25&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Square|2|25&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Square|1.8|32&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Square|2|32&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Square|1.8|38&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Square|2|38&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Square|1.8|49.5&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Square|2|49.5&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Square|2|60&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Rectangular|1.8|50&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Rectangular|2|50&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Rectangular|1.8|60&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Rectangular|2|60&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Rectangular|1.8|66&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Rectangular|2|66&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Light|2|15mm&quot;: 65.5,
+  &quot;Black Steel|MS ERW|Light|2.3|15mm&quot;: 65.0,
+  &quot;Black Steel|MS ERW|Light|2.6|15mm&quot;: 65.0,
+  &quot;Black Steel|MS ERW|Light|2.9|15mm&quot;: 65.0,
+  &quot;Black Steel|MS ERW|Light|3.2|15mm&quot;: 65.0,
+  &quot;Black Steel|MS ERW|Light|3.6|15mm&quot;: 65.0,
+  &quot;Black Steel|MS ERW|Light|2.3|20mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Light|2.6|25mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Light|2.6|32mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Medium|2.6|15mm&quot;: 65.0,
+  &quot;Black Steel|MS ERW|Medium|2.6|20mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Medium|3.2|25mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Medium|3.2|32mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Heavy|3.2|15mm&quot;: 65.0,
+  &quot;Black Steel|MS ERW|Heavy|3.2|20mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Heavy|4|25mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Heavy|4|32mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|2|15mm&quot;: 65.5,
+  &quot;Black Steel|MS ERW|Default|2.5|15mm&quot;: 65.0,
+  &quot;Black Steel|MS ERW|Default|3|15mm&quot;: 65.0,
+  &quot;Black Steel|MS ERW|Default|2|20mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|2.5|20mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|3|20mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|2|25mm&quot;: 63.5,
+  &quot;Black Steel|MS ERW|Default|2.5|25mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|3|25mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|2|32mm&quot;: 63.5,
+  &quot;Black Steel|MS ERW|Default|2.5|32mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|3|32mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|4|32mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|2|40mm&quot;: 63.5,
+  &quot;Black Steel|MS ERW|Default|2|50mm&quot;: 63.5,
+  &quot;Black Steel|MS ERW|Default|2|65mm&quot;: 63.5,
+  &quot;Black Steel|MS ERW|Default|2|80mm&quot;: 63.5,
+  &quot;Black Steel|MS ERW|Default|2|90mm&quot;: 63.5,
+  &quot;Black Steel|MS ERW|Default|4|175mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|5|175mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|6|175mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|6.3|175mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|4|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|4.5|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|4.85|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|5|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|5.4|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|5.5|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|6|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|6.35|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|7|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|7.5|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|8|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|9|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|9.5|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|10|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|10.5|200mm&quot;: 63.0,
+  &quot;Black Steel|MS ERW|Default|5|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|5.4|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|5.5|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|6|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|6.35|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|7|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|7.5|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|8|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|9|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|9.5|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|10|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|10.5|250mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|6|300mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|6.35|300mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|7|300mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|7.5|300mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|8|300mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|9|300mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|9.5|300mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|10|300mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|10.5|300mm&quot;: 64.0,
+  &quot;Black Steel|MS ERW|Default|5|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|5.4|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|5.5|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|6|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|6.35|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|7|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|7.5|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|8|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|9|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|9.5|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|10|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|10.5|350mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|4|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|4.5|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|4.85|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|5|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|5.4|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|5.5|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|6|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|6.35|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|7|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|7.5|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|8|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|9|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|9.5|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|10|400mm&quot;: 64.5,
+  &quot;Black Steel|MS ERW|Default|10.5|400mm&quot;: 64.5
+}</value>
+    </values>
+    <values>
+        <field>tp_segment__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

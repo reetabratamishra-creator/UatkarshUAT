@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Material List Type --></label>
+    <name>Material_List_Type__c</name>
+    <picklistValues>
+        <masterLabel>B-Series Mast</masterLabel>
+        <translation><!-- B-Series Mast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Bridge Mast</masterLabel>
+        <translation><!-- Bridge Mast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Emergency Mast</masterLabel>
+        <translation><!-- Emergency Mast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>O, N &amp; R Type Portal</masterLabel>
+        <translation><!-- O, N &amp; R Type Portal --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>RSJ / BFB MAST</masterLabel>
+        <translation><!-- RSJ / BFB MAST --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SPS</masterLabel>
+        <translation><!-- SPS --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Special 1</masterLabel>
+        <translation><!-- Special 1 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Special 2</masterLabel>
+        <translation><!-- Special 2 --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>TSS</masterLabel>
+        <translation><!-- TSS --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>TTC</masterLabel>
+        <translation><!-- TTC --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

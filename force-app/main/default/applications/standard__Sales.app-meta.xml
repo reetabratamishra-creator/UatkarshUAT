@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>standard-home</defaultLandingTab>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <isOmniPinnedViewEnabled>false</isOmniPinnedViewEnabled>
+    <tabs>standard-Contact</tabs>
+    <tabs>standard-Account</tabs>
+    <tabs>standard-Lead</tabs>
+    <tabs>standard-Opportunity</tabs>
+    <tabs>standard-report</tabs>
+    <tabs>standard-Dashboard</tabs>
+    <tabs>standard-Chatter</tabs>
+    <tabs>standard-File</tabs>
+    <tabs>standard-Product2</tabs>
+    <tabs>standard-Forecasting3</tabs>
+    <tabs>standard-Quote</tabs>
+    <tabs>Travel_Policy_Matrix__c</tabs>
+    <tabs>Travel_Request__c</tabs>
+    <tabs>Expense_Report__c</tabs>
+    <tabs>Expense_Line_Item__c</tabs>
+    <tabs>Tour_Advance__c</tabs>
+    <tabs>Expense_Policy__c</tabs>
+    <tabs>Employee_Eligibility__c</tabs>
+    <tabs>Expense__c</tabs>
+    <tabs>Expense_Line__c</tabs>
+    <tabs>OCR_DOC__c</tabs>
+    <tabs>OCR_Doc_Result__c</tabs>
+    <tabs>Message_Log__c</tabs>
+    <tabs>Email_Log__c</tabs>
+    <tabs>BWM_Email_Scheduled_Send__c</tabs>
+    <tabs>Product_Category__c</tabs>
+    <tabs>PO_Line_Items__c</tabs>
+    <tabs>Opportunity_Address_Junc__c</tabs>
+    <tabs>Travel_Eligibility_Matrix__c</tabs>
+</CustomApplication>

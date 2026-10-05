@@ -1,0 +1,108 @@
+/* ── Summary bar ───────────────────────────────────────── */
+.summary-bar {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.summary-pill {
+    padding: 0.28rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.pill-found    { background: #dcfce7; color: #166534; }
+.pill-partial  { background: #fef3c7; color: #92400e; }
+.pill-notfound { background: #fee2e2; color: #991b1b; }
+.pill-total    { background: #e0e7ff; color: #3730a3; }
+
+/* ── Scroll container ──────────────────────────────────── */
+.table-container {
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+/* ── Table ─────────────────────────────────────────────── */
+.pqc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    table-layout: fixed;
+}
+
+.pqc-table thead tr {
+    background: #f1f5f9;
+}
+
+.pqc-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f1f5f9;
+    z-index: 10;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.pqc-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    color: #334155;
+    line-height: 1.6;
+}
+
+.pqc-table tbody tr:last-child td { border-bottom: none; }
+.pqc-table tbody tr:hover td      { background: #f8faff; }
+
+/* ── Column widths ─────────────────────────────────────── */
+.col-item     { width: 22%; }
+.col-findings { width: 43%; }
+.col-page     { width: 22%; }   /* wider — was 13%, Page Ref needs room */
+.col-status   { width: 13%; text-align: center; }
+
+/* ── Status badges ─────────────────────────────────────── */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.badge-found    { background: #dcfce7; color: #166534; }
+.badge-partial  { background: #fef3c7; color: #92400e; }
+.badge-notfound { background: #fee2e2; color: #991b1b; }
+.badge-default  { background: #e2e8f0; color: #475569; }
+
+/* ── Misc ──────────────────────────────────────────────── */
+.error-msg {
+    color: #dc2626;
+    padding: 0.75rem;
+    background: #fff5f5;
+    border-radius: 8px;
+    border: 1px solid #fecaca;
+}
+
+.empty-msg {
+    text-align: center;
+    color: #94a3b8;
+    padding: 2rem;
+}

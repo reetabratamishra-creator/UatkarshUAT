@@ -1,0 +1,28 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "recordCount" : {
+      "title" : "Record Count",
+      "description" : "Number of matching records found",
+      "lightning:type" : "lightning__integerType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true,
+      "copilotAction:useHydratedPrompt" : false
+    },
+    "records" : {
+      "title" : "Matching Records",
+      "description" : "List of matching Account, Lead, or Opportunity records",
+      "maxItems" : 2000,
+      "items" : {
+        "lightning:type" : "c__searchResultsResponse"
+      },
+      "lightning:type" : "lightning__listType",
+      "lightning:isPII" : false,
+      "copilotAction:isDisplayable" : true,
+      "copilotAction:isUsedByPlanner" : true,
+      "copilotAction:useHydratedPrompt" : false
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

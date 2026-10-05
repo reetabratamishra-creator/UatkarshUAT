@@ -1,0 +1,55 @@
+{
+  "unevaluatedProperties" : false,
+  "properties" : {
+    "loggedInUsername" : {
+      "title" : "loggedInUsername",
+      "description" : "collect the user details",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "mom" : {
+      "title" : "mom",
+      "description" : "Collect it from user",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "objectType" : {
+      "title" : "objectType",
+      "description" : "Collect it from user",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "reasonForVisit" : {
+      "title" : "reasonForVisit",
+      "description" : "Collect it from user",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "recordId" : {
+      "title" : "recordId",
+      "description" : "Use the selected record id",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : false
+    },
+    "visitOutcome" : {
+      "title" : "visitOutcome",
+      "description" : "Collect it from user",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    },
+    "visitType" : {
+      "title" : "visitType",
+      "description" : "Collect it from user",
+      "lightning:type" : "lightning__textType",
+      "lightning:isPII" : false,
+      "copilotAction:isUserInput" : true
+    }
+  },
+  "lightning:type" : "lightning__objectType"
+}

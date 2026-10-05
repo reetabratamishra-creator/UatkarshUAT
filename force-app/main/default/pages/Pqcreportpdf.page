@@ -1,0 +1,210 @@
+<apex:page standardController="OCR_DOC__c"
+           extensions="PQCReportPDFController"
+           renderAs="pdf"
+           applyHtmlTag="false"
+           applyBodyTag="false"
+           showHeader="false"
+           sidebar="false"
+           standardStylesheets="false">
+<html>
+<head>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10px;
+        color: #1c2733;
+        margin: 20px;
+    }
+
+    /* ── Header ── */
+    h1 {
+        font-size: 16px;
+        color: #003B5C;
+        border-bottom: 2px solid #003B5C;
+        padding-bottom: 6px;
+        margin-bottom: 8px;
+    }
+    .meta {
+        margin: 6px 0 14px 0;
+        font-size: 10px;
+    }
+    .meta span {
+        display: inline-block;
+        margin-right: 20px;
+    }
+
+    /* ── Main two-column table ── */
+    table.main {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 6px;
+    }
+    table.main th,
+    table.main td {
+        border: 1px solid #b0b8c1;
+        padding: 5px 7px;
+        vertical-align: top;
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    /* Header row — dark navy */
+    .row-header th {
+        background-color: #003B5C;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: bold;
+        text-align: center;
+        padding: 7px;
+    }
+
+    /* Section group header — medium blue */
+    .row-section td {
+        background-color: #1a6496;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 5px 7px;
+    }
+
+    /* Label column */
+    .col-label {
+        width: 28%;
+        font-weight: bold;
+        color: #1c2733;
+        background-color: #f0f4f8;
+    }
+
+    /* Answer column */
+    .col-answer {
+        width: 52%;
+        color: #2c3e50;
+    }
+
+    /* Page ref column */
+    .col-page {
+        width: 12%;
+        color: #1a6496;
+        font-size: 9px;
+    }
+
+    /* Status column */
+    .col-status {
+        width: 8%;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .status-found    { color: #2e844a; }
+    .status-notfound { color: #ba0517; }
+    .status-partial  { color: #b88600; }
+
+    /* Alternating rows */
+    .row-even td { background-color: #f9fbfc; }
+    .row-odd  td { background-color: #ffffff;  }
+    /* override label bg regardless of even/odd */
+    .row-even .col-label,
+    .row-odd  .col-label { background-color: #f0f4f8; }
+
+    /* ── Footer ── */
+    .footer {
+        margin-top: 16px;
+        font-size: 9px;
+        color: #777777;
+        text-align: center;
+        border-top: 1px solid #cccccc;
+        padding-top: 6px;
+    }
+
+    /* Error box */
+    .error-box {
+        color: #ba0517;
+        border: 1px solid #ba0517;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 10px;
+    }
+</style>
+</head>
+<body>
+
+    <h1>PQC (Pre-Qualification Criteria) Report</h1>
+
+    <div class="meta">
+        <span><b>Record:</b> {!record.Name}</span>
+        <span><b>Status:</b> {!record.AI_Status__c}</span>
+        <span><b>Department:</b> {!record.Matched_Department__c}</span>
+    </div>
+
+    <!-- ERROR STATE -->
+    <apex:outputPanel rendered="{!hasError}">
+        <div class="error-box">
+            <b>Error:</b> <apex:outputText value="{!errorMessage}" escape="false"/>
+        </div>
+    </apex:outputPanel>
+
+    <!-- RESULTS TABLE -->
+    <apex:outputPanel rendered="{!NOT(hasError)}">
+        <table class="main">
+
+            <!-- Column header -->
+            <tr class="row-header">
+                <th>Criteria / Parameters</th>
+                <th>Details / Findings</th>
+                <th>Page Ref</th>
+                <th>Status</th>
+            </tr>
+
+            <!-- ══ GENERAL ══ -->
+            <tr class="row-section">
+                <td colspan="4">GENERAL</td>
+            </tr>
+            <apex:repeat value="{!generalItems}" var="item">
+                <tr class="{!item.rowClass}">
+                    <td class="col-label"><apex:outputText value="{!item.pqcLabel}" escape="false"/></td>
+                    <td class="col-answer"><apex:outputText value="{!item.findings}" escape="false"/></td>
+                    <td class="col-page"><apex:outputText value="{!item.pageReference}" escape="false"/></td>
+                    <td class="col-status">
+                        <apex:outputText value="{!item.status}" styleClass="{!item.statusClass}" escape="false"/>
+                    </td>
+                </tr>
+            </apex:repeat>
+
+            <!-- ══ TECHNICAL ══ -->
+            <tr class="row-section">
+                <td colspan="4">TECHNICAL</td>
+            </tr>
+            <apex:repeat value="{!technicalItems}" var="item">
+                <tr class="{!item.rowClass}">
+                    <td class="col-label"><apex:outputText value="{!item.pqcLabel}" escape="false"/></td>
+                    <td class="col-answer"><apex:outputText value="{!item.findings}" escape="false"/></td>
+                    <td class="col-page"><apex:outputText value="{!item.pageReference}" escape="false"/></td>
+                    <td class="col-status">
+                        <apex:outputText value="{!item.status}" styleClass="{!item.statusClass}" escape="false"/>
+                    </td>
+                </tr>
+            </apex:repeat>
+
+            <!-- ══ FINANCIAL ══ -->
+            <tr class="row-section">
+                <td colspan="4">FINANCIAL</td>
+            </tr>
+            <apex:repeat value="{!financialItems}" var="item">
+                <tr class="{!item.rowClass}">
+                    <td class="col-label"><apex:outputText value="{!item.pqcLabel}" escape="false"/></td>
+                    <td class="col-answer"><apex:outputText value="{!item.findings}" escape="false"/></td>
+                    <td class="col-page"><apex:outputText value="{!item.pageReference}" escape="false"/></td>
+                    <td class="col-status">
+                        <apex:outputText value="{!item.status}" styleClass="{!item.statusClass}" escape="false"/>
+                    </td>
+                </tr>
+            </apex:repeat>
+
+        </table>
+    </apex:outputPanel>
+
+</body>
+</html>
+</apex:page>

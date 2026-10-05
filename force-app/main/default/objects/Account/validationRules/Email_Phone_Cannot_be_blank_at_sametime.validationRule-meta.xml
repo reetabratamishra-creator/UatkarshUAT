@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Phone_Cannot_be_blank_at_sametime</fullName>
+    <active>false</active>
+    <description>Email and Phone cannot be blank at the same time</description>
+    <errorConditionFormula>AND( ISBLANK( Email__c ) ,
+      ISBLANK(  Phone  ))</errorConditionFormula>
+    <errorMessage>Email and Phone cannot be blank at the same time</errorMessage>
+</ValidationRule>

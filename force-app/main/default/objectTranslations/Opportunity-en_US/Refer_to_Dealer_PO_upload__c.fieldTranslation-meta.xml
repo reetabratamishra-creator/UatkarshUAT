@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Refer to Dealer PO upload --></label>
+    <name>Refer_to_Dealer_PO_upload__c</name>
+    <picklistValues>
+        <masterLabel>Delivery from stock</masterLabel>
+        <translation><!-- Delivery from stock --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PO is required</masterLabel>
+        <translation><!-- PO is required --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

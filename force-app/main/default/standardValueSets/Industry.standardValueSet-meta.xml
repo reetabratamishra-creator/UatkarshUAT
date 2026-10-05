@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Agriculture &amp; Irrigation</fullName>
+        <default>false</default>
+        <label>Agriculture &amp; Irrigation</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Construction &amp; EPC</fullName>
+        <default>false</default>
+        <label>Construction &amp; EPC</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Electronics</fullName>
+        <default>false</default>
+        <label>Electronics</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Renewable Energy (Solar)</fullName>
+        <default>false</default>
+        <label>Renewable Energy (Solar)</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Government / PSU</fullName>
+        <default>false</default>
+        <label>Government / PSU</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Hospitality</fullName>
+        <default>false</default>
+        <label>Hospitality</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Manufacturing</fullName>
+        <default>false</default>
+        <label>Manufacturing</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Telecommunications</fullName>
+        <default>false</default>
+        <label>Telecommunications</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Power &amp; Utilities</fullName>
+        <default>false</default>
+        <label>Power &amp; Utilities</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Infrastructure</fullName>
+        <default>false</default>
+        <label>Infrastructure</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Railways</fullName>
+        <default>false</default>
+        <label>Railways</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Water Infrastructure</fullName>
+        <default>false</default>
+        <label>Water Infrastructure</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Steel &amp; Metal</fullName>
+        <default>false</default>
+        <label>Steel &amp; Metal</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Oil &amp; Gas</fullName>
+        <default>false</default>
+        <label>Oil &amp; Gas</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Mining</fullName>
+        <default>false</default>
+        <label>Mining</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Cement</fullName>
+        <default>false</default>
+        <label>Cement</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Chemical &amp; Petrochemical</fullName>
+        <default>false</default>
+        <label>Chemical &amp; Petrochemical</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Real Estate</fullName>
+        <default>false</default>
+        <label>Real Estate</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Warehousing &amp; Logistics</fullName>
+        <default>false</default>
+        <label>Warehousing &amp; Logistics</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Automobile Ancilllaries</fullName>
+        <default>false</default>
+        <label>Automobile Ancilllaries</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Drugs &amp; Pharmaceutical</fullName>
+        <default>false</default>
+        <label>Drugs &amp; Pharmaceutical</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Packaging</fullName>
+        <default>false</default>
+        <label>Packaging</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Defense</fullName>
+        <default>false</default>
+        <label>Defense</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Residential</fullName>
+        <default>false</default>
+        <label>Residential</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Commercial &amp; Business Complex</fullName>
+        <default>false</default>
+        <label>Commercial &amp; Business Complex</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Aviation</fullName>
+        <default>false</default>
+        <label>Aviation</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Transmission &amp; distribution</fullName>
+        <default>false</default>
+        <label>Transmission &amp; distribution</label>
+    </standardValue>
+</StandardValueSet>

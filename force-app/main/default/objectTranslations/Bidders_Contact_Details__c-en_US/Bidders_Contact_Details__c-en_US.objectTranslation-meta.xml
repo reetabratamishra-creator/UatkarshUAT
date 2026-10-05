@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Bidders Contact Detail</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Bidders Contact Details</value>
+    </caseValues>
+    <layouts>
+        <layout>Bidders Contact Detail Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- You do not have permission to edit this Bidder Contact Detail record. Contact your System Administrator if changes are needed. --></errorMessage>
+        <name>Bidder_Lock_After_Creation</name>
+    </validationRules>
+</CustomObjectTranslation>

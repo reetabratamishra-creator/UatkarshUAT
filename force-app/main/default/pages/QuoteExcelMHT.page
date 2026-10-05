@@ -1,0 +1,4 @@
+<apex:page standardController="Quote" extensions="SteelPipesExcelMHTMLController"
+           contentType="application/vnd.ms-excel#SteelPipesQuotation_{!quoteRecord.QuoteNumber}.xls"
+           showHeader="false" sidebar="false" applyBodyTag="false" applyHtmlTag="false"
+><apex:outputText escape="false" value="{!mhtmlContent}"/></apex:page>

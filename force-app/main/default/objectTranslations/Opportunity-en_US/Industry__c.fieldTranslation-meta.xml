@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Industry --></label>
+    <name>Industry__c</name>
+    <picklistValues>
+        <masterLabel>Agriculture &amp; Irrigation</masterLabel>
+        <translation><!-- Agriculture &amp; Irrigation --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Automobile Ancilllaries</masterLabel>
+        <translation><!-- Automobile Ancilllaries --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Aviation</masterLabel>
+        <translation><!-- Aviation --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Cement</masterLabel>
+        <translation><!-- Cement --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Chemical &amp; Petrochemical</masterLabel>
+        <translation><!-- Chemical &amp; Petrochemical --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Commercial &amp; Business Complex</masterLabel>
+        <translation><!-- Commercial &amp; Business Complex --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Construction &amp; EPC</masterLabel>
+        <translation><!-- Construction &amp; EPC --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Defense</masterLabel>
+        <translation><!-- Defense --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Drugs &amp; Pharmaceutical</masterLabel>
+        <translation><!-- Drugs &amp; Pharmaceutical --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Electronics</masterLabel>
+        <translation><!-- Electronics --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Government / PSU</masterLabel>
+        <translation><!-- Government / PSU --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Hospitality</masterLabel>
+        <translation><!-- Hospitality --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Infrastructure</masterLabel>
+        <translation><!-- Infrastructure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Manufacturing</masterLabel>
+        <translation><!-- Manufacturing --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mining</masterLabel>
+        <translation><!-- Mining --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Oil &amp; Gas</masterLabel>
+        <translation><!-- Oil &amp; Gas --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Packaging</masterLabel>
+        <translation><!-- Packaging --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Power &amp; Utilities</masterLabel>
+        <translation><!-- Power &amp; Utilities --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Railways</masterLabel>
+        <translation><!-- Railways --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Real Estate</masterLabel>
+        <translation><!-- Real Estate --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Renewable Energy (Solar)</masterLabel>
+        <translation><!-- Renewable Energy (Solar) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Residential</masterLabel>
+        <translation><!-- Residential --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Steel &amp; Metal</masterLabel>
+        <translation><!-- Steel &amp; Metal --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Telecommunications</masterLabel>
+        <translation><!-- Telecommunications --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Transmission &amp; distribution</masterLabel>
+        <translation><!-- Transmission &amp; distribution --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Warehousing &amp; Logistics</masterLabel>
+        <translation><!-- Warehousing &amp; Logistics --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Water Infrastructure</masterLabel>
+        <translation><!-- Water Infrastructure --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

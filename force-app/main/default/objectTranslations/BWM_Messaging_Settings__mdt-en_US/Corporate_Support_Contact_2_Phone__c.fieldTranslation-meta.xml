@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Corporate Support Contact 2 Phone --></label>
+    <name>Corporate_Support_Contact_2_Phone__c</name>
+</CustomFieldTranslation>

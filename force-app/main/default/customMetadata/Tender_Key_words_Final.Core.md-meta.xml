@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Core - Relevant</label>
+    <protected>false</protected>
+    <values>
+        <field>Department__c</field>
+        <value xsi:type="xsd:string">Core</value>
+    </values>
+    <values>
+        <field>Is_Excluded__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Relevant__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Matched_Negative_Keywords__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Matched_Positive_Keywords__c</field>
+        <value xsi:type="xsd:string">OHE MAST, RAILWAY ELECTRIFICATION MAST, CORE APPROVED MANUFACTURERS, CORE APPROVED SUPPLIERS, CORE APPROVED SUPPLIERS IN INDIA, CORE APPROVED SUPPLIERS IN KOLKATA, OHE MAST FOR  RAILWAY  ELECTRIFICATION, OHE MAST SUPPLIERS, RAILWAY OHE MAST, RAILWAY MAST, EMERGENCY MAST, BRIDGE MAST, SPS,TSS, OHE MAST DESIGN, CORE ALLAHABAD APPROVED VENDOR LIST, CORE APPROVED SUPPLIER LIST, OHE MAST DRAWINGS, RAILWAY ELECTRIFICATION STRUCTURE, RAILWAY STRUCTURE, RDSO CORE APPROVED VENDORS, CORE APPROVED VENDOR, ERC, RDSO APPROVED ERC, ELASTIC RAIL CLIP, MARK V, MARK III, MARK 5, MARK 3, ERC MARK III &amp; V, ERC MARK 3 &amp; 5, H-BEAM SLEEPER, RAILWAY SLEEPER, CHANNEL SLEEPER, H-BEAM CHANNEL SLEEPER.</value>
+    </values>
+    <values>
+        <field>Schema_Prompt__c</field>
+        <value xsi:type="xsd:string">Analyze if this document is related to Polymer.
+Check for presence of positive keywords and absence of negative keywords.
+Return confidence score based on how many positive keywords are found.</value>
+    </values>
+</CustomMetadata>

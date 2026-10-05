@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_Journey_null_Validation</fullName>
+    <active>false</active>
+    <errorConditionFormula>AND(
+    NOT(ISNEW()),
+
+    ISPICKVAL(Customer_Journey__c, &quot;&quot;),
+
+    $Profile.Name &lt;&gt; &quot;System Administrator&quot;,
+
+    NOT(
+        OR(
+            ISCHANGED(Department_Name__c),
+            ISCHANGED(Description),
+            ISCHANGED(Industry__c),
+            ISCHANGED(Notes__c),
+            ISCHANGED(OwnerId)
+        )
+    )
+)</errorConditionFormula>
+    <errorMessage>You have to select Customer Journey first to edit fields</errorMessage>
+</ValidationRule>

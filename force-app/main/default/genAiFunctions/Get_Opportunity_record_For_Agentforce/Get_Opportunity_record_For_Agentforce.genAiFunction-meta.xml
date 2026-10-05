@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>When User want to Update Opportunity Stage</description>
+    <developerName>Get_Opportunity_record_For_Agentforce</developerName>
+    <invocationTarget>Get_Opportunity_record_For_Agentforce</invocationTarget>
+    <invocationTargetType>flow</invocationTargetType>
+    <isConfirmationRequired>false</isConfirmationRequired>
+    <isIncludeInProgressIndicator>false</isIncludeInProgressIndicator>
+    <localDeveloperName>Get_Opportunity_record_For_Agentforce</localDeveloperName>
+    <masterLabel>Get Opportunity record For Agentforce</masterLabel>
+</GenAiFunction>

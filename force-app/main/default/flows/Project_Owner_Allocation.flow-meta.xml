@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Check_with_user_with_Dept_City</name>
+        <label>Check with user with Dept&amp;City</label>
+        <locationX>551</locationX>
+        <locationY>587</locationY>
+        <defaultConnector>
+            <targetReference>get_User_with_Dept_State</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Available</defaultConnectorLabel>
+        <rules>
+            <name>Available_with_Dept_City</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>get_User_with_Dept_City</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Project_with_Dept_City</targetReference>
+            </connector>
+            <label>Available with Dept&amp;City</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_with_user_with_Dept_State</name>
+        <label>Check with user with Dept&amp;State</label>
+        <locationX>749</locationX>
+        <locationY>803</locationY>
+        <defaultConnectorLabel>Not Available</defaultConnectorLabel>
+        <rules>
+            <name>Available_with_Dept_State</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>get_User_with_Dept_State</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Project_with_Dept_State</targetReference>
+            </connector>
+            <label>Available with Dept&amp;State</label>
+        </rules>
+    </decisions>
+    <description>Updated with State picklist field</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>deptName_shortForm_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;High Mast &amp; Polygonal&apos;) , &apos;HMP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Steel Pipes&apos;) , &apos;SP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Polygonal Products&apos;) , &apos;PGP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Crash Barrier&apos;) , &apos;CB&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Steel Tubular Poles&apos;) , &apos;STP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Polymer&apos;) , &apos;PVC&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;HDPE&apos;) , &apos;HDPE&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Transmission &amp; Telecom Tower&apos;) , &apos;TTT&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Solar Structure&apos;) , &apos;SS&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Railway Electrification Structure&apos;) , &apos;CORE&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Pre Engineering Building&apos;) , &apos;PEB&apos;,
+
+&apos;&apos;)))))))))))</expression>
+    </formulas>
+    <formulas>
+        <name>project_number_formula</name>
+        <dataType>String</dataType>
+        <expression>&quot;PROJ&quot; + &quot;/&quot; + {!deptName_shortForm_Formula} +&quot;/&quot;+ {!$Record.AutoNumber__c}</expression>
+    </formulas>
+    <interviewLabel>[Project] Owner Allocation {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>[Project] Owner Allocation</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>get_User_with_Dept_City</name>
+        <label>get User with Dept&amp;City</label>
+        <locationX>551</locationX>
+        <locationY>479</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_with_user_with_Dept_City</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>City</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.City__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Department</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Department_Name__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>get_User_with_Dept_State</name>
+        <label>get User with Dept&amp;State</label>
+        <locationX>749</locationX>
+        <locationY>695</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_with_user_with_Dept_State</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Department</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Department_Name__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>State</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.State_Picklist__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Project</name>
+        <label>Update Project</label>
+        <locationX>551</locationX>
+        <locationY>371</locationY>
+        <connector>
+            <targetReference>get_User_with_Dept_City</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Project_Number__c</field>
+            <value>
+                <elementReference>project_number_formula</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Project_with_Dept_City</name>
+        <label>Update Project with Dept&amp;City</label>
+        <locationX>353</locationX>
+        <locationY>695</locationY>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>get_User_with_Dept_City.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Project_with_Dept_State</name>
+        <label>Update Project with Dept&amp;State</label>
+        <locationX>617</locationX>
+        <locationY>911</locationY>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>get_User_with_Dept_State.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>425</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>Update_Project</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Department_Name__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Project__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+</Flow>

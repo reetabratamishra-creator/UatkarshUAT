@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Restrict_Expense_Line_Edit_For_HR</fullName>
+    <active>false</active>
+    <description>Prevent edit of Expense Line if the expense is approved by HR.</description>
+    <errorConditionFormula>AND(
+    $Profile.Name = &quot;Utkarsh HR&quot;,
+    NOT(ISNEW()),
+    NOT(ISCHANGED(Expense__c)),
+    OR(
+        ISPICKVAL(Expense__r.Status__c, &quot;Pending ED Approval&quot;),
+        ISPICKVAL(Expense__r.Status__c, &quot;Approved By ED&quot;),
+        ISPICKVAL(Expense__r.Status__c, &quot;Reimbursed&quot;)
+    )
+)</errorConditionFormula>
+    <errorMessage>You cannot edit an Expense Line if the Expense is in one of Pending ED Approval, Approved by ED or Reimbursed states.</errorMessage>
+</ValidationRule>

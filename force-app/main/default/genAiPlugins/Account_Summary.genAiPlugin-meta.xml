@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <canEscalate>false</canEscalate>
+    <description>Summarizes a Salesforce Account by using the Account Name or Account ID provided by the user. This includes retrieving and presenting key account details and related information.</description>
+    <developerName>Account_Summary</developerName>
+    <genAiFunctions>
+        <functionName>Get_Account_Summary_179C200000015qT</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>If both Account Name and Account ID are provided, prioritize the Account ID when retrieving the account.</description>
+        <developerName>instruction_0_1784619343759</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_0_1784619343759</masterLabel>
+        <sortOrder>0</sortOrder>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>If multiple accounts match the provided Account Name, ask the user to clarify which account they mean before generating the summary.</description>
+        <developerName>instruction_1_1784619343765</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_1_1784619343765</masterLabel>
+        <sortOrder>1</sortOrder>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Include key account details such as owner, industry, status, related contacts, opportunities, recent activities, and any important updates or action items in the summary.</description>
+        <developerName>instruction_2_1784619343765</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_2_1784619343765</masterLabel>
+        <sortOrder>2</sortOrder>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>Retrieve and summarize information concisely to ensure clarity and relevance for the user.</description>
+        <developerName>instruction_3_1784619343765</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_3_1784619343765</masterLabel>
+        <sortOrder>3</sortOrder>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <localDeveloperName>Account_Summary</localDeveloperName>
+    <masterLabel>Account Summary</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your job is to summarize a Salesforce Account using the provided Account Name or Account ID. Retrieve the matching Account and provide a concise summary, including key account details, owner, industry, status, related contacts, opportunities, recent activities, and any important updates or action items. Prioritize the Account ID if both Account Name and Account ID are provided. If multiple accounts match the provided name, ask the user to clarify before generating the summary.</scope>
+</GenAiPlugin>

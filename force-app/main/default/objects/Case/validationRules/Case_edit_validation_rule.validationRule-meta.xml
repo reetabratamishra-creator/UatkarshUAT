@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Case_edit_validation_rule</fullName>
+    <active>true</active>
+    <description>1. Case can be edited only by Utkarsh Admin, System Administrator and owner of that case.
+
+2. If the &quot;Status&quot; (picklist field) is equal to &quot;Resolved&quot;, or was previously &quot;Resolved&quot;, 
+it can only be edited by Utkarsh Admin and System Administrator - not</description>
+    <errorConditionFormula>AND(
+NOT(
+OR(
+$Profile.Name = &quot;System Administrator&quot;,
+$Profile.Name = &quot;Utkarsh Admin&quot;
+)
+),
+ISCHANGED(Description),
+OR(
+/* Condition 1: User is not the Owner */
+OwnerId &lt;&gt; $User.Id,
+/* Condition 2: Record is Resolved */
+ISPICKVAL(Status, &quot;Resolved&quot;)
+)
+)</errorConditionFormula>
+    <errorMessage>You do not have authority to update any field value after case is resolved</errorMessage>
+</ValidationRule>

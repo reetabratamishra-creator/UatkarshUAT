@@ -1,0 +1,91 @@
+.upload-card {
+    border-radius: 16px;
+}
+
+.header {
+    background: linear-gradient(135deg, #0176d3, #00a1e0);
+    padding: 24px;
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-content h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.header-content p {
+    margin: 4px 0 0;
+    opacity: 0.9;
+}
+
+.header-icon {
+    --slds-c-icon-color-foreground-default: white;
+}
+
+.container {
+    padding: 24px;
+}
+
+.upload-section {
+    background: #f8f9fb;
+    border: 2px dashed #c9d8e6;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.upload-section:hover {
+    border-color: #0176d3;
+    transition: 0.3s;
+}
+
+.file-summary {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.file-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.file-row:last-child {
+    border-bottom: none;
+}
+
+.action-section {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.action-section lightning-button {
+    width: 220px;
+}
+
+:host {
+    display: block;
+    max-width: 900px;
+    margin: auto;
+}

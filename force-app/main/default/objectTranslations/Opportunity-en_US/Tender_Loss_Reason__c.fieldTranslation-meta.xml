@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Tender Loss Reason --></label>
+    <name>Tender_Loss_Reason__c</name>
+    <picklistValues>
+        <masterLabel>Lost Due to Make Approval</masterLabel>
+        <translation><!-- Lost Due to Make Approval --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lost Due to Price</masterLabel>
+        <translation><!-- Lost Due to Price --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lost Due to Technical Issue</masterLabel>
+        <translation><!-- Lost Due to Technical Issue --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

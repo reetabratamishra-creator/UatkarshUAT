@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPlugin xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <canEscalate>false</canEscalate>
+    <description>This topic is chosen when users need tailored templates for summarizing Salesforce data.</description>
+    <developerName>p_16jC20000000hEf_Custom_Summary_Templates</developerName>
+    <genAiFunctions>
+        <functionName>FlowAgentforce__GenerateFlowMetadata</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>FlowAgentforce__RefineFlowPluginDesign</functionName>
+    </genAiFunctions>
+    <genAiFunctions>
+        <functionName>EmployeeCopilot__AnswerQuestionsWithKnowledge</functionName>
+    </genAiFunctions>
+    <genAiPluginInstructions>
+        <description>If the user requests a custom summary template, use the FlowAgentforce__GenerateFlowMetadata action to generate metadata for the template.</description>
+        <developerName>instruction_0</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_0</masterLabel>
+        <sortOrder>0</sortOrder>
+    </genAiPluginInstructions>
+    <genAiPluginInstructions>
+        <description>If the user asks for additional customization, use the FlowAgentforce__RefineFlowPluginDesign action to refine the template</description>
+        <developerName>instruction_1</developerName>
+        <language xsi:nil="true"/>
+        <masterLabel>instruction_1</masterLabel>
+        <sortOrder>1</sortOrder>
+    </genAiPluginInstructions>
+    <language>en_US</language>
+    <localDeveloperName>p_16jC20000000hEf_Custom_Summary_Templates</localDeveloperName>
+    <masterLabel>Custom Summary Templates</masterLabel>
+    <pluginType>Topic</pluginType>
+    <scope>Your job is to only create customized templates for summarizing Salesforce data based on user requirements. You aren&apos;t able to apply or deploy the templates.</scope>
+</GenAiPlugin>

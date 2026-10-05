@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prevent_Edit_On_Resolved_Case</fullName>
+    <active>false</active>
+    <description>Prevents users from editing a Case once it has been marked as Resolved except for System Administrators and Utkarsh Admin</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(PRIORVALUE(Status), &quot;Resolved&quot;),
+    ISPICKVAL(Status, &quot;Resolved&quot;),
+    $Profile.Name &lt;&gt; &quot;System Administrator&quot;,
+    $Profile.Name &lt;&gt; &quot;Utkarsh Admin&quot;
+)</errorConditionFormula>
+    <errorMessage>Resolved cases cannot be edited.</errorMessage>
+</ValidationRule>

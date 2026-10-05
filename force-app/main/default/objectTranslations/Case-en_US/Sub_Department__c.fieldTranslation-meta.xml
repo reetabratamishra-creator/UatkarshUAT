@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Sub Department --></label>
+    <name>Sub_Department__c</name>
+    <picklistValues>
+        <masterLabel>Accounts</masterLabel>
+        <translation><!-- Accounts --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>CRM</masterLabel>
+        <translation><!-- CRM --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Finance</masterLabel>
+        <translation><!-- Finance --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>HR</masterLabel>
+        <translation><!-- HR --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>IT</masterLabel>
+        <translation><!-- IT --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Logistic</masterLabel>
+        <translation><!-- Logistic --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Production</masterLabel>
+        <translation><!-- Production --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Purchase Direct</masterLabel>
+        <translation><!-- Purchase Direct --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Purchase Indirect</masterLabel>
+        <translation><!-- Purchase Indirect --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>QC</masterLabel>
+        <translation><!-- QC --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SAP</masterLabel>
+        <translation><!-- SAP --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

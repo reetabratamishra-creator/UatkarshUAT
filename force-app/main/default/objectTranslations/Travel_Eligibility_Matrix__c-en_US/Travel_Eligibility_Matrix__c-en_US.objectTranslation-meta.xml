@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Travel Eligibility Matrix</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Travel Eligibility Matrices</value>
+    </caseValues>
+    <layouts>
+        <layout>Travel Eligibility Matrix Layout</layout>
+        <sections>
+            <label><!-- Airway --></label>
+            <section>Airway</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Fooding per day --></label>
+            <section>Fooding per day</section>
+        </sections>
+        <sections>
+            <label><!-- General detail --></label>
+            <section>General detail</section>
+        </sections>
+        <sections>
+            <label><!-- Lodging per day --></label>
+            <section>Lodging per day</section>
+        </sections>
+        <sections>
+            <label><!-- Own vehicles --></label>
+            <section>Own vehicles</section>
+        </sections>
+        <sections>
+            <label><!-- Railway --></label>
+            <section>Railway</section>
+        </sections>
+        <sections>
+            <label><!-- Roadways --></label>
+            <section>Roadways</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

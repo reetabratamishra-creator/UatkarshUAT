@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Crash_Barrier_Queue_Tender_Ai_Summary_Json</fullName>
+    <filterScope>Queue</filterScope>
+    <label>Crash Barrier Queue</label>
+    <queue>Crash_Barrier_Queue</queue>
+    <sharedTo>
+        <allInternalUsers></allInternalUsers>
+    </sharedTo>
+</ListView>

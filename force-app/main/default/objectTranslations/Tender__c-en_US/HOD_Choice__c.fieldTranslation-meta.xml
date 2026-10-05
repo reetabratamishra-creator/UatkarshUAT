@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- HOD Choice --></label>
+    <name>HOD_Choice__c</name>
+    <picklistValues>
+        <masterLabel>Accept for participation</masterLabel>
+        <translation><!-- Accept for participation --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Reject and Close</masterLabel>
+        <translation><!-- Reject and Close --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Reject and Create Project</masterLabel>
+        <translation><!-- Reject and Create Project --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Review and resend for participation</masterLabel>
+        <translation><!-- Review and resend for participation --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Update Account Details</masterLabel>
+        <translation><!-- Update Account Details --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

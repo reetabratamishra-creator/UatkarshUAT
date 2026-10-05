@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Tender Stage Bidder Wise --></label>
+    <name>Tender_Stage_Bidder_Wise__c</name>
+    <picklistValues>
+        <masterLabel>AOC Done</masterLabel>
+        <translation><!-- AOC Done --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Final Stage</masterLabel>
+        <translation><!-- Final Stage --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Financial Evaluation Done</masterLabel>
+        <translation><!-- Financial Evaluation Done --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Open</masterLabel>
+        <translation><!-- Open --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Technical Evaluation Done</masterLabel>
+        <translation><!-- Technical Evaluation Done --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

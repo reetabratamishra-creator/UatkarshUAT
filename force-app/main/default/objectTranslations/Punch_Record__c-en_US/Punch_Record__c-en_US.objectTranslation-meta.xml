@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Punch Record</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Punch Record</value>
+    </caseValues>
+    <layouts>
+        <layout>Punch Record Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- WFH/WFO Details --></label>
+            <section>WFH/WFO Details</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

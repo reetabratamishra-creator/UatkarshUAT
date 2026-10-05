@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Require_Customer_Journey_To_Edit</fullName>
+    <active>false</active>
+    <description>Blocks editing an existing Opportunity while Customer_Journey__c is blank. The only allowed update on a blank record is one that sets Customer Journey (done via the Customer Journey screen). New records are excluded so they can still be created.</description>
+    <errorConditionFormula>AND(
+    NOT(ISNEW()),
+    ISBLANK(TEXT(Customer_Journey__c)))</errorConditionFormula>
+    <errorMessage>Set the Customer Journey on this Opportunity before making any other changes. Use the Customer Journey action.</errorMessage>
+</ValidationRule>

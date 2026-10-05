@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Crash Barrier - Relevant</label>
+    <protected>false</protected>
+    <values>
+        <field>Department__c</field>
+        <value xsi:type="xsd:string">Crash Barrier</value>
+    </values>
+    <values>
+        <field>Is_Excluded__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+    <values>
+        <field>Is_Relevant__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Matched_Negative_Keywords__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Matched_Positive_Keywords__c</field>
+        <value xsi:type="xsd:string">Guardrail for Highways, Guardrail, Metal Beam Crash Barrier, Crash Barrier for Highways, Crash Barrier, MBCB, Thrie Beam Crash Barrier, W Beam Crash Barrier, Pedestrian Barriers, PGR, Pedestrian Guard Rail, Tested Crash Barrie. TSS1 : Thrie Beam 1 No, W Beam metal crash barriers shall be typically 3 mm thick of length-4.318m long, W - Beam Crash Barrier (Q2), NHAI anti-crash Barrier; Crash Barrier W Beam crash barrier one set of WSS1; TSS Tri beam of size 4318 pt 23 mm X 505 mm X 83 mm X 3 mm, TSS1: Threi-Beam 1 No. Posts 2 Nos. Spacers 2 Nos. Dome Headed Bolts 16 Nos. Hexagonal Headed Bolts 6 Nos, Guardrail for Highways ( Hot Dipped Galvanized Thrie Beam Metal Crash Barrier, Supply and Installation of Crash Barrier, Boarder Road Organisation.</value>
+    </values>
+    <values>
+        <field>Schema_Prompt__c</field>
+        <value xsi:type="xsd:string">Analyze if this document is related to Crash Barrier.
+Check for presence of positive keywords and absence of negative keywords. 
+Return confidence score based on how many positive keywords are found.</value>
+    </values>
+</CustomMetadata>

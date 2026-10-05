@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Section Name --></label>
+    <name>Section_Name__c</name>
+    <picklistValues>
+        <masterLabel>Calender Details</masterLabel>
+        <translation><!-- Calender Details --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other Information</masterLabel>
+        <translation><!-- Other Information --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Related To</masterLabel>
+        <translation><!-- Related To --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>System Information</masterLabel>
+        <translation><!-- System Information --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

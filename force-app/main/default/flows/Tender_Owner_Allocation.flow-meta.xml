@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Check_with_user_with_Dept_City</name>
+        <label>Check with user with Dept&amp;City</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>get_User_with_Dept_State</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Available</defaultConnectorLabel>
+        <rules>
+            <name>Available_with_Dept_City</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>get_User_with_Dept_City</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Tender_with_Dept_City</targetReference>
+            </connector>
+            <label>Available with Dept&amp;City</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_with_user_with_Dept_State</name>
+        <label>Check with user with Dept&amp;State</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Not Available</defaultConnectorLabel>
+        <rules>
+            <name>Available_with_Dept_State</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>get_User_with_Dept_State</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Tender_with_Dept_State</targetReference>
+            </connector>
+            <label>Available with Dept&amp;State</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>deptName_shortForm_Formula</name>
+        <dataType>String</dataType>
+        <expression>IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;High Mast Products&apos;) , &apos;HMS&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Steel Pipes Products&apos;) , &apos;SPP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Polygonal Products&apos;) , &apos;PGP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Crash Barrier Products&apos;) , &apos;CBP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Steel Tubular Poles Products&apos;) , &apos;STPP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;PVC Products&apos;) , &apos;PVC&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;HDPE Products&apos;) , &apos;HPP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Telecom Tower Products&apos;) , &apos;TETP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Transmission Tower Products&apos;) , &apos;TRTP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Railway Electrification Structure Products&apos;) , &apos;RESP&apos;,
+IF( ISPICKVAL( {!$Record.Department_Name__c} , &apos;Pre Engineering Buildings Products&apos;) , &apos;PEBP&apos;,
+
+&apos;&apos;)))))))))))</expression>
+    </formulas>
+    <formulas>
+        <name>project_number_formula</name>
+        <dataType>String</dataType>
+        <expression>&quot;TEND&quot; + &quot;/&quot; + {!deptName_shortForm_Formula} +&quot;/&quot;+ {!$Record.AutoNumber__c}</expression>
+    </formulas>
+    <interviewLabel>[Tender] Owner Allocation {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>[Tender] Owner Allocation</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>get_User_with_Dept_City</name>
+        <label>get User with Dept&amp;City</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_with_user_with_Dept_City</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>City</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.City__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Department</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Department_Name__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>get_User_with_Dept_State</name>
+        <label>get User with Dept&amp;State</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_with_user_with_Dept_State</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Department</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Department_Name__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>State</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.State__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Tender</name>
+        <label>Update Tender</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>get_User_with_Dept_City</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Tender_Number__c</field>
+            <value>
+                <elementReference>project_number_formula</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Tender_with_Dept_City</name>
+        <label>Update Tender with Dept&amp;City</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>get_User_with_Dept_City.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Tender_with_Dept_State</name>
+        <label>Update Tender with Dept&amp;State</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>get_User_with_Dept_State.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Update_Tender</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Department_Name__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Tender__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+</Flow>

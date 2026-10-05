@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlowDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This flow is scheduled to send an email notification to HOD and CRM User as because even after sending email to case owner at the first time no response given to the case.</description>
+    <masterLabel>Case : 2nd Reminder Email to HOD and CRM User</masterLabel>
+</FlowDefinition>

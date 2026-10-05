@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Punch Type --></label>
+    <name>Punch_Type__c</name>
+    <picklistValues>
+        <masterLabel>Day In / Out</masterLabel>
+        <translation><!-- Day In / Out --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Market Visit</masterLabel>
+        <translation><!-- Market Visit --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>WFH</masterLabel>
+        <translation><!-- WFH --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>WFO</masterLabel>
+        <translation><!-- WFO --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

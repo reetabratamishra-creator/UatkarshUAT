@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- This will be updated when the change owner happed while performing transfer --></help>
+    <label><!-- Change Owner Date/Time --></label>
+    <name>Change_Owner_Date_Time__c</name>
+</CustomFieldTranslation>

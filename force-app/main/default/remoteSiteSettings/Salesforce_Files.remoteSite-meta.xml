@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RemoteSiteSetting xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Public ContentDistribution downloads for email brochure attachments</description>
+    <disableProtocolSecurity>false</disableProtocolSecurity>
+    <isActive>true</isActive>
+    <url>https://momentum-customer-397--utkarshuat.sandbox.file.force.com</url>
+</RemoteSiteSetting>

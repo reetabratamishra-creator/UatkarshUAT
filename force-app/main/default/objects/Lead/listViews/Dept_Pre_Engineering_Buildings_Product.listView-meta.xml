@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dept_Pre_Engineering_Buildings_Product</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.COMPANY</columns>
+    <columns>LEAD.STATE</columns>
+    <columns>LEAD.STATUS</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>Lead_Owner__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Department_Name__c</field>
+        <operation>equals</operation>
+        <value>Pre Engineering Building</value>
+    </filters>
+    <label>Dept - Pre Engineering Buildings Product</label>
+    <sharedTo>
+        <group>Pre_Engineering_Building_Read</group>
+        <group>Pre_Engineering_Building_Read_Write</group>
+    </sharedTo>
+</ListView>

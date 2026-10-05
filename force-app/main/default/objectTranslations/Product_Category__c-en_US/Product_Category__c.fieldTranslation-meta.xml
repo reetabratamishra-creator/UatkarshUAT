@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Product Category --></label>
+    <name>Product_Category__c</name>
+    <picklistValues>
+        <masterLabel>Agriculture Pipes &amp; Fittings</masterLabel>
+        <translation><!-- Agriculture Pipes &amp; Fittings --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>BFB (Broad Flanged Beam)</masterLabel>
+        <translation><!-- BFB (Broad Flanged Beam) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Ballast Structure</masterLabel>
+        <translation><!-- Ballast Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Bollard Structure</masterLabel>
+        <translation><!-- Bollard Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Borewell Pipes</masterLabel>
+        <translation><!-- Borewell Pipes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Buffer End Return</masterLabel>
+        <translation><!-- Buffer End Return --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Bull Nose</masterLabel>
+        <translation><!-- Bull Nose --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>CCTV Mast</masterLabel>
+        <translation><!-- CCTV Mast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>CCTV Pole</masterLabel>
+        <translation><!-- CCTV Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>CHANNEL SLEEPER</masterLabel>
+        <translation><!-- CHANNEL SLEEPER --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>COLOUR COATED SHEET</masterLabel>
+        <translation><!-- COLOUR COATED SHEET --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>CPVC Pipes &amp; Fittings</masterLabel>
+        <translation><!-- CPVC Pipes &amp; Fittings --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Cantilever Pole</masterLabel>
+        <translation><!-- Cantilever Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Column Riser Pipes</masterLabel>
+        <translation><!-- Column Riser Pipes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Conical Pole</masterLabel>
+        <translation><!-- Conical Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>DECK SHEET</masterLabel>
+        <translation><!-- DECK SHEET --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Dead-end Tower</masterLabel>
+        <translation><!-- Dead-end Tower --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Distribution Poles</masterLabel>
+        <translation><!-- Distribution Poles --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>ERW Hollow Section Pipes</masterLabel>
+        <translation><!-- ERW Hollow Section Pipes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Elastic Rail Clip</masterLabel>
+        <translation><!-- Elastic Rail Clip --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>End Beam</masterLabel>
+        <translation><!-- End Beam --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>End Connector / End Shoe Connector / Terminal Connector</masterLabel>
+        <translation><!-- End Connector / End Shoe Connector / Terminal Connector --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Equipment Supply Tower</masterLabel>
+        <translation><!-- Equipment Supply Tower --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Fish Tail</masterLabel>
+        <translation><!-- Fish Tail --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Fixed Roof Mounting Structure</masterLabel>
+        <translation><!-- Fixed Roof Mounting Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Flag Mast</masterLabel>
+        <translation><!-- Flag Mast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>GI Pipes</masterLabel>
+        <translation><!-- GI Pipes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Gantry Mast</masterLabel>
+        <translation><!-- Gantry Mast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Gantry Pole</masterLabel>
+        <translation><!-- Gantry Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Gantry Structure</masterLabel>
+        <translation><!-- Gantry Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Garden Pipes</masterLabel>
+        <translation><!-- Garden Pipes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Ground Mounted Fixed Tilt Structure</masterLabel>
+        <translation><!-- Ground Mounted Fixed Tilt Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>H-BEAM CHANNEL SLEEPER</masterLabel>
+        <translation><!-- H-BEAM CHANNEL SLEEPER --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>H-BEAM SLEEPER</masterLabel>
+        <translation><!-- H-BEAM SLEEPER --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>HDPE PLB Duct</masterLabel>
+        <translation><!-- HDPE PLB Duct --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>HDPE Pipes &amp; Fittings</masterLabel>
+        <translation><!-- HDPE Pipes &amp; Fittings --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>High Mast</masterLabel>
+        <translation><!-- High Mast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>High Mast Lighting Towers</masterLabel>
+        <translation><!-- High Mast Lighting Towers --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Kavach Tower</masterLabel>
+        <translation><!-- Kavach Tower --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Kusum Project Solar Structure</masterLabel>
+        <translation><!-- Kusum Project Solar Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>LCLM (Lightning Conductor Lightning Mast)</masterLabel>
+        <translation><!-- LCLM (Lightning Conductor Lightning Mast) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lancing Pipe</masterLabel>
+        <translation><!-- Lancing Pipe --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lattice Tower</masterLabel>
+        <translation><!-- Lattice Tower --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Lighting Pole</masterLabel>
+        <translation><!-- Lighting Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>MDPE</masterLabel>
+        <translation><!-- MDPE --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>MS Pipes</masterLabel>
+        <translation><!-- MS Pipes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Melt</masterLabel>
+        <translation><!-- Melt --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mix Product</masterLabel>
+        <translation><!-- Mix Product --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>NJB Connector</masterLabel>
+        <translation><!-- NJB Connector --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Noise Barrier</masterLabel>
+        <translation><!-- Noise Barrier --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>OHE MAST</masterLabel>
+        <translation><!-- OHE MAST --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>OHE SPS (Small Parts Steel)</masterLabel>
+        <translation><!-- OHE SPS (Small Parts Steel) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>OHE Structure</masterLabel>
+        <translation><!-- OHE Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Octagonal Pole</masterLabel>
+        <translation><!-- Octagonal Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Overhead Electrification Structure</masterLabel>
+        <translation><!-- Overhead Electrification Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC Casing Pipes</masterLabel>
+        <translation><!-- PVC Casing Pipes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC RDS</masterLabel>
+        <translation><!-- PVC RDS --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC RDS Filter</masterLabel>
+        <translation><!-- PVC RDS Filter --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC RDS Strainer</masterLabel>
+        <translation><!-- PVC RDS Strainer --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC RMS</masterLabel>
+        <translation><!-- PVC RMS --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC RMS Filter</masterLabel>
+        <translation><!-- PVC RMS Filter --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC RMS Strainer</masterLabel>
+        <translation><!-- PVC RMS Strainer --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC Ribbed Filter</masterLabel>
+        <translation><!-- PVC Ribbed Filter --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC Slotted</masterLabel>
+        <translation><!-- PVC Slotted --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC Slotted Filter</masterLabel>
+        <translation><!-- PVC Slotted Filter --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC Slotted RDS</masterLabel>
+        <translation><!-- PVC Slotted RDS --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC Slotted RMS</masterLabel>
+        <translation><!-- PVC Slotted RMS --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>PVC Slotted Strainer</masterLabel>
+        <translation><!-- PVC Slotted Strainer --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pedestrian Guardrail (PGR)</masterLabel>
+        <translation><!-- Pedestrian Guardrail (PGR) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Piers Tracker</masterLabel>
+        <translation><!-- Piers Tracker --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Polygonal Pole</masterLabel>
+        <translation><!-- Polygonal Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Portals</masterLabel>
+        <translation><!-- Portals --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Pre-engineered Building</masterLabel>
+        <translation><!-- Pre-engineered Building --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>RAILWAY ELECTRIFICATION MAST</masterLabel>
+        <translation><!-- RAILWAY ELECTRIFICATION MAST --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>RAILWAY SLEEPER</masterLabel>
+        <translation><!-- RAILWAY SLEEPER --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>RSJ (Rolled Steel Joist)</masterLabel>
+        <translation><!-- RSJ (Rolled Steel Joist) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>RSJ Pole</masterLabel>
+        <translation><!-- RSJ Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Railway Crash Barrier</masterLabel>
+        <translation><!-- Railway Crash Barrier --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Railway Tower</masterLabel>
+        <translation><!-- Railway Tower --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Rectangular Pipe</masterLabel>
+        <translation><!-- Rectangular Pipe --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Roller Crash Barrier</masterLabel>
+        <translation><!-- Roller Crash Barrier --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Rooftop Module Mounting Structure</masterLabel>
+        <translation><!-- Rooftop Module Mounting Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Round Pipe</masterLabel>
+        <translation><!-- Round Pipe --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SPRINKLER PIPES</masterLabel>
+        <translation><!-- SPRINKLER PIPES --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SSP (Sub-sectioning and Paralleling Post)</masterLabel>
+        <translation><!-- SSP (Sub-sectioning and Paralleling Post) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SWR Pipes &amp; Fittings</masterLabel>
+        <translation><!-- SWR Pipes &amp; Fittings --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Signage Mast</masterLabel>
+        <translation><!-- Signage Mast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Solar Mast</masterLabel>
+        <translation><!-- Solar Mast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Solar Panel Carport</masterLabel>
+        <translation><!-- Solar Panel Carport --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Solar Pole</masterLabel>
+        <translation><!-- Solar Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Solar Tubes</masterLabel>
+        <translation><!-- Solar Tubes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Square Pipes</masterLabel>
+        <translation><!-- Square Pipes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Stadium Mast</masterLabel>
+        <translation><!-- Stadium Mast --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Steel Tubular Poles</masterLabel>
+        <translation><!-- Steel Tubular Poles --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Street Light Pole</masterLabel>
+        <translation><!-- Street Light Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Street Lighting Pole</masterLabel>
+        <translation><!-- Street Lighting Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Substation Structure</masterLabel>
+        <translation><!-- Substation Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Suspension Tower</masterLabel>
+        <translation><!-- Suspension Tower --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Swaged Steel Tubular Pole</masterLabel>
+        <translation><!-- Swaged Steel Tubular Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Swan Neck Pole</masterLabel>
+        <translation><!-- Swan Neck Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>TSS (Traction Sub Station Structure)</masterLabel>
+        <translation><!-- TSS (Traction Sub Station Structure) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>TT</masterLabel>
+        <translation><!-- TT --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>TTC (Two Track Cantilever)</masterLabel>
+        <translation><!-- TTC (Two Track Cantilever) --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Telecom Tower</masterLabel>
+        <translation><!-- Telecom Tower --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Thrie Beam</masterLabel>
+        <translation><!-- Thrie Beam --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Torque Tube Tracker</masterLabel>
+        <translation><!-- Torque Tube Tracker --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Tracking System Mounting Structure</masterLabel>
+        <translation><!-- Tracking System Mounting Structure --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Traffic Pole</masterLabel>
+        <translation><!-- Traffic Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Transmission Line Tower</masterLabel>
+        <translation><!-- Transmission Line Tower --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Transmission Monopoles</masterLabel>
+        <translation><!-- Transmission Monopoles --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Transmission Power Distribution Poles</masterLabel>
+        <translation><!-- Transmission Power Distribution Poles --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Transmission Tower</masterLabel>
+        <translation><!-- Transmission Tower --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>U Bend Shoulder</masterLabel>
+        <translation><!-- U Bend Shoulder --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>UPVC Pipes &amp; Fittings</masterLabel>
+        <translation><!-- UPVC Pipes &amp; Fittings --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Utility Poles</masterLabel>
+        <translation><!-- Utility Poles --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Via-duct Pole</masterLabel>
+        <translation><!-- Via-duct Pole --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>W Beam</masterLabel>
+        <translation><!-- W Beam --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Water Tanks</masterLabel>
+        <translation><!-- Water Tanks --></translation>
+    </picklistValues>
+</CustomFieldTranslation>
