@@ -1770,7 +1770,7 @@ field.fields.forEach(subField => {
 
     /* ═══════════════ Core SUB-TYPE × QUANTITY multiselect widget (Path B) ═══════════════
        One field type: 'subtype_qty_grid'. Fully gated. Writes total_weight + total_quantity
-       into the  column's EXISTING slots,so unit_rate / cost / summary / line-item stay
+       into the  column's EXISTING slots, so unit_rate / cost / summary / line-item stay
        unchanged. Weight comes from CORE_SUBTYPE_DATA (blueprint ternary -> weightMap). */
 
     _sqgDataset() {
