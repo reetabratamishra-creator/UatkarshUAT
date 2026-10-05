@@ -1754,7 +1754,7 @@ field.fields.forEach(subField => {
     }
 
     /* No class-level this.isFirmMode exists — detect mode the same way the
-       pricing engine does: material grid present AND no PV month field = FIRM. */
+       pricing engine does: material grid present AND no PV month field = FIRM.*/
     _sqgIsFirm() {
         const hasMaterialField = this.accordionSections.some(sec =>
             sec.fields.some(f =>
