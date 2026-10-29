@@ -6,6 +6,7 @@
     <disableAIProvVertexGemini>false</disableAIProvVertexGemini>
     <disableAIProviderRegionFallback>false</disableAIProviderRegionFallback>
     <enableAIModelBeta>false</enableAIModelBeta>
+    <enableAiSkillRoleHierarchy>false</enableAiSkillRoleHierarchy>
     <enableDeployOnlyActivePromptTemplateVersion>true</enableDeployOnlyActivePromptTemplateVersion>
     <enableEinsteinGPTDeployPromptTemplatesAsActive>true</enableEinsteinGPTDeployPromptTemplatesAsActive>
     <enableEinsteinGptAllowUnsafePTInputChanges>true</enableEinsteinGptAllowUnsafePTInputChanges>
@@ -13,4 +14,5 @@
     <enableEinsteinGptPlatform>true</enableEinsteinGptPlatform>
     <enableEnhancedPromptSecurity>false</enableEnhancedPromptSecurity>
     <enablePBJinjaSyntaxBeta>false</enablePBJinjaSyntaxBeta>
+    <enablePBPreviewStartsWith>false</enablePBPreviewStartsWith>
 </EinsteinGptSettings>

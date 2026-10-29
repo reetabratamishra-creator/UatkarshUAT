@@ -9,8 +9,10 @@
     <enablePTQueueManagement>false</enablePTQueueManagement>
     <enablePhoneNumberMaskingForSCV>false</enablePhoneNumberMaskingForSCV>
     <enableRZoneCloudVoiceOptIn>false</enableRZoneCloudVoiceOptIn>
+    <enableSCVASAContextLinking>false</enableSCVASAContextLinking>
     <enableSCVBYOT>false</enableSCVBYOT>
     <enableSCVExternalTelephony>false</enableSCVExternalTelephony>
     <enableSCVOpenVCAsNewTabHVS>false</enableSCVOpenVCAsNewTabHVS>
+    <enableScvAutoHangup>false</enableScvAutoHangup>
     <enableServiceCloudVoice>false</enableServiceCloudVoice>
 </ServiceCloudVoiceSettings>

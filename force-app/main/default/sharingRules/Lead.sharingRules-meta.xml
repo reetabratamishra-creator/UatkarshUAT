@@ -291,4 +291,16 @@
             <allInternalUsers></allInternalUsers>
         </sharedFrom>
     </sharingOwnerRules>
+    <sharingOwnerRules>
+        <fullName>Solar_Structure_Share</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Share records owned by Solar structure department roles with HDPE CRM head</description>
+        <label>Solar Structure Share</label>
+        <sharedTo>
+            <role>HDPE_CRM_Head</role>
+        </sharedTo>
+        <sharedFrom>
+            <group>Solar_Structure</group>
+        </sharedFrom>
+    </sharingOwnerRules>
 </SharingRules>

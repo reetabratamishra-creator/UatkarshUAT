@@ -9,6 +9,7 @@
     <canExploreDataConversationally>false</canExploreDataConversationally>
     <canShareAppsWithCommunities>false</canShareAppsWithCommunities>
     <canViewThumbnailAssets>false</canViewThumbnailAssets>
+    <enableAiSentimentInDcrPref>false</enableAiSentimentInDcrPref>
     <enableAmazonRedshiftOutputConnector>false</enableAmazonRedshiftOutputConnector>
     <enableAnalyticsSharingEnable>true</enableAnalyticsSharingEnable>
     <enableAutoCompleteCombo>true</enableAutoCompleteCombo>
@@ -21,25 +22,30 @@
     <enableDashboardFlexiTable>true</enableDashboardFlexiTable>
     <enableDashboardSubOrgEmailPref>false</enableDashboardSubOrgEmailPref>
     <enableDataCloudReportingPref>true</enableDataCloudReportingPref>
-    <enableDimensionalHierarchyInDcrPref>false</enableDimensionalHierarchyInDcrPref>
+    <enableEasySetupAI>false</enableEasySetupAI>
     <enableEmailReportsToPortalUsers>false</enableEmailReportsToPortalUsers>
     <enableFloatingReportHeaders>true</enableFloatingReportHeaders>
-    <enableIncrementalUpsert>false</enableIncrementalUpsert>
+    <enableHeadlessBrowserServiceTOS>false</enableHeadlessBrowserServiceTOS>
     <enableInsights>false</enableInsights>
-    <enableJoinedReportInDcrPref>false</enableJoinedReportInDcrPref>
+    <enableLightningDashboardLWRPref>false</enableLightningDashboardLWRPref>
     <enableLightningReportBuilder>true</enableLightningReportBuilder>
+    <enableLightningReportLWRPref>false</enableLightningReportLWRPref>
     <enableLotusNotesImages>false</enableLotusNotesImages>
     <enableMassEnableReportBuilder>true</enableMassEnableReportBuilder>
+    <enableNativeTableauLWC>false</enableNativeTableauLWC>
     <enableNewChartsEngine>true</enableNewChartsEngine>
     <enableNullDimension>false</enableNullDimension>
-    <enableOrgCanSeeLivePreviews>false</enableOrgCanSeeLivePreviews>
     <enableOrgCanViewTableau>false</enableOrgCanViewTableau>
     <enableOrgCanViewThumbnailForOA>true</enableOrgCanViewThumbnailForOA>
     <enableOrgHasMobileOfflineEnabled>true</enableOrgHasMobileOfflineEnabled>
     <enableOrgHasWatchlistEnabled>true</enableOrgHasWatchlistEnabled>
+    <enableOrgHierarchy>false</enableOrgHierarchy>
+    <enableOrgHierarchyInDcrPref>false</enableOrgHierarchyInDcrPref>
     <enableOrgWideEmailNotification>false</enableOrgWideEmailNotification>
+    <enablePredictFunction>false</enablePredictFunction>
     <enablePupparazziForNotifications>false</enablePupparazziForNotifications>
     <enableQueryLiveConnectors>true</enableQueryLiveConnectors>
+    <enableRemoteHomeOrgOps>true</enableRemoteHomeOrgOps>
     <enableRemoveFooterForRepDisplay>false</enableRemoveFooterForRepDisplay>
     <enableRemoveFooterFromRepExp>true</enableRemoveFooterFromRepExp>
     <enableReportCdnPref>true</enableReportCdnPref>
@@ -48,7 +54,9 @@
     <enableReportHideXlsExportPref>false</enableReportHideXlsExportPref>
     <enableReportInlineEditPref>true</enableReportInlineEditPref>
     <enableReportNotificationsEnable>true</enableReportNotificationsEnable>
+    <enableReportRecordPreviewOrgPref>false</enableReportRecordPreviewOrgPref>
     <enableReportSubOrgEmailPref>false</enableReportSubOrgEmailPref>
+    <enableReportTypeSearchPref>false</enableReportTypeSearchPref>
     <enableReportingOnSDMPref>false</enableReportingOnSDMPref>
     <enableS1AnalyticsEclairEnable>true</enableS1AnalyticsEclairEnable>
     <enableS3OutputConnector>false</enableS3OutputConnector>
@@ -57,7 +65,15 @@
     <enableSecureImageSharing>false</enableSecureImageSharing>
     <enableSnowflakeOutputConnector>false</enableSnowflakeOutputConnector>
     <enableSummaryFilterOrgPref>false</enableSummaryFilterOrgPref>
+    <enableTNAppAutoInstall>false</enableTNAppAutoInstall>
+    <enableTNAppAutoUpdate>false</enableTNAppAutoUpdate>
+    <enableTableauAgenticTransforms>false</enableTableauAgenticTransforms>
+    <enableTableauAssetThumbnail>false</enableTableauAssetThumbnail>
     <enableTableauHyperOutputConnector>false</enableTableauHyperOutputConnector>
+    <enableTableauSdmAiOptimization>false</enableTableauSdmAiOptimization>
+    <enableTableauSeamlessAuth>false</enableTableauSeamlessAuth>
+    <enableTableauSlackApp>false</enableTableauSlackApp>
+    <enableTableauSlackCollab>false</enableTableauSlackCollab>
     <enableUseOldChartsLookAndFeel>false</enableUseOldChartsLookAndFeel>
     <enableWaveIndexMVDim>false</enableWaveIndexMVDim>
     <enableWaveIndexMVDimV2>false</enableWaveIndexMVDimV2>

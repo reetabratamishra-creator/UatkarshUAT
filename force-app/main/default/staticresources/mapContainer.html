@@ -93,8 +93,8 @@
                 if (currentProvider === 'google') plotGoogleMarkers(data.markers);
                 else if (currentProvider === 'mapbox') plotMapboxMarkers(data.markers);
             } else if (data.type === 'DRAW_PATH') {
-                if (currentProvider === 'google') drawGooglePath(data.path, data.visitNodes || []);
-                else if (currentProvider === 'mapbox') drawMapboxPath(data.path, data.visitNodes || []);
+                if (currentProvider === 'google') drawGooglePath(data.path, data.visitNodes || [], data.punchMarkers || []);
+                else if (currentProvider === 'mapbox') drawMapboxPath(data.path, data.visitNodes || [], data.punchMarkers || []);
             }
         });
 
@@ -165,7 +165,59 @@
             });
         }
 
-        function drawGooglePath(pathCoordinates, visitNodes) {
+        /* ── Helper: deconflict overlapping markers at the same location ─ */
+        function deconflictMarkers(markerList) {
+            if (!markerList || markerList.length <= 1) {
+                return (markerList || []).map(m => Object.assign({ displayLat: Number(m.latitude), displayLng: Number(m.longitude) }, m));
+            }
+
+            // Cluster items within ~3-5 meters (0.00005 deg lat/lng)
+            const clusters = [];
+            markerList.forEach(m => {
+                const lat = Number(m.latitude);
+                const lng = Number(m.longitude);
+                let added = false;
+                for (let c of clusters) {
+                    const dLat = Math.abs(c.centerLat - lat);
+                    const dLng = Math.abs(c.centerLng - lng);
+                    if (dLat < 0.00005 && dLng < 0.00005) {
+                        c.items.push(m);
+                        added = true;
+                        break;
+                    }
+                }
+                if (!added) {
+                    clusters.push({ centerLat: lat, centerLng: lng, items: [m] });
+                }
+            });
+
+            const result = [];
+            clusters.forEach(c => {
+                const count = c.items.length;
+                if (count === 1) {
+                    const item = c.items[0];
+                    result.push(Object.assign({ displayLat: Number(item.latitude), displayLng: Number(item.longitude) }, item));
+                } else if (count === 2) {
+                    const offset = 0.000035; // ~3.5 meters horizontal spread
+                    c.items.forEach((item, idx) => {
+                        const offsetLng = (idx === 0 ? -offset : offset);
+                        result.push(Object.assign({ displayLat: Number(item.latitude), displayLng: Number(item.longitude) + offsetLng }, item));
+                    });
+                } else {
+                    const radius = 0.000040; // ~4 meters radial spread
+                    c.items.forEach((item, idx) => {
+                        const angle = (2 * Math.PI * idx) / count;
+                        result.push(Object.assign({
+                            displayLat: Number(item.latitude) + radius * Math.sin(angle),
+                            displayLng: Number(item.longitude) + radius * Math.cos(angle)
+                        }, item));
+                    });
+                }
+            });
+            return result;
+        }
+
+        function drawGooglePath(pathCoordinates, visitNodes, punchMarkers) {
             if (!map) return;
             if (directionsRenderer) directionsRenderer.setDirections({ routes: [] });
             if (polyline) polyline.setMap(null);
@@ -174,9 +226,10 @@
 
             const hasPath = pathCoordinates && pathCoordinates.length > 0;
             const hasVisits = visitNodes && visitNodes.length > 0;
-            if (!hasPath && !hasVisits) return;
+            const hasPunches = punchMarkers && punchMarkers.length > 0;
+            if (!hasPath && !hasVisits && !hasPunches) return;
 
-            // Draw track polyline only (visits are markers, not path vertices)
+            // Draw track polyline only (visits and punches are markers, not path vertices)
             if (hasPath && pathCoordinates.length >= 2) {
                 polyline = new google.maps.Polyline({
                     path: pathCoordinates,
@@ -191,36 +244,57 @@
             const bounds = new google.maps.LatLngBounds();
             if (hasPath) {
                 pathCoordinates.forEach(c => bounds.extend(c));
-                addGooglePinMarker(pathCoordinates[0], '#10B981', 'S', 'Shift Start');
+            }
+
+            // Gather all markers for collision deconfliction so identical locations sit side-by-side
+            const allItems = [];
+            if (hasPunches) {
+                punchMarkers.forEach(pm => {
+                    allItems.push(Object.assign({ _type: 'punch' }, pm));
+                });
+            } else if (hasPath) {
+                allItems.push({ _type: 'punch', latitude: pathCoordinates[0].lat, longitude: pathCoordinates[0].lng, color: '#10B981', label: 'DI', title: 'Day In', timeLabel: '', address: '' });
                 if (pathCoordinates.length > 1) {
-                    addGooglePinMarker(pathCoordinates[pathCoordinates.length - 1], '#EF4444', 'E', 'Shift End');
+                    allItems.push({ _type: 'punch', latitude: pathCoordinates[pathCoordinates.length - 1].lat, longitude: pathCoordinates[pathCoordinates.length - 1].lng, color: '#EF4444', label: 'DO', title: 'Day Out', timeLabel: '', address: '' });
                 }
             }
             if (hasVisits) {
                 visitNodes.forEach(vn => {
-                    bounds.extend({ lat: vn.latitude, lng: vn.longitude });
-                    addGoogleVisitMarker(vn);
+                    allItems.push(Object.assign({ _type: 'visit' }, vn));
                 });
             }
 
-            if (hasPath || hasVisits) {
-                if ((hasPath ? pathCoordinates.length : 0) + (hasVisits ? visitNodes.length : 0) === 1) {
-                    const only = hasPath
-                        ? pathCoordinates[0]
-                        : { lat: visitNodes[0].latitude, lng: visitNodes[0].longitude };
-                    map.setCenter(only);
-                    map.setZoom(15);
-                } else {
-                    map.fitBounds(bounds, { padding: 60 });
+            const deconflicted = deconflictMarkers(allItems);
+
+            deconflicted.forEach(m => {
+                bounds.extend({ lat: m.displayLat, lng: m.displayLng });
+                if (m._type === 'punch') {
+                    addGooglePinMarker({ lat: m.displayLat, lng: m.displayLng }, m.color || '#10B981', m.label, m.title, m.timeLabel, m.address);
+                } else if (m._type === 'visit') {
+                    addGoogleVisitMarker(m);
                 }
+            });
+
+            const totalPoints = (hasPath ? pathCoordinates.length : 0) + deconflicted.length;
+            if (totalPoints === 1) {
+                const only = deconflicted.length > 0
+                    ? { lat: deconflicted[0].displayLat, lng: deconflicted[0].displayLng }
+                    : pathCoordinates[0];
+                map.setCenter(only);
+                map.setZoom(15);
+            } else if (totalPoints > 1) {
+                map.fitBounds(bounds, { padding: 60 });
             }
         }
 
-        function addGooglePinMarker(pt, color, label, title) {
+        function addGooglePinMarker(pt, color, label, title, timeLabel, address) {
+            const isMultiChar = label && label.length > 1;
+            const fontSize = isMultiChar ? '7.5' : '9';
+            const yPos = isMultiChar ? '16' : '16.5';
             const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">
                 <path d="M16 0C9.37 0 4 5.37 4 12c0 9.5 12 30 12 30s12-20.5 12-30C28 5.37 22.63 0 16 0z" fill="${color}" stroke="#fff" stroke-width="2"/>
                 <circle cx="16" cy="12" r="7" fill="rgba(255,255,255,0.25)"/>
-                <text x="16" y="17" font-family="Arial" font-size="9" font-weight="bold" fill="white" text-anchor="middle">${label}</text>
+                <text x="16" y="${yPos}" font-family="Arial,sans-serif" font-size="${fontSize}" font-weight="bold" fill="white" text-anchor="middle">${label}</text>
             </svg>`;
             const marker = new google.maps.Marker({
                 position: pt,
@@ -232,6 +306,17 @@
                     scaledSize: new google.maps.Size(32, 42)
                 }
             });
+            const infoContent = `<div style="font-family:-apple-system,sans-serif;min-width:150px;padding:4px">
+                <b style="font-size:13px;color:#1a1a2e">${title}</b>
+                ${timeLabel ? '<div style="font-size:11px;color:#555;margin-top:3px">⏰ ' + timeLabel + '</div>' : ''}
+                ${address ? '<div style="font-size:10px;color:#777;margin-top:3px">📍 ' + address + '</div>' : ''}
+            </div>`;
+            const infoWindow = new google.maps.InfoWindow({ content: infoContent, maxWidth: 220 });
+            marker.addListener('click', () => {
+                timelineMarkers.forEach(m => { if (m._infoWindow) m._infoWindow.close(); });
+                infoWindow.open(map, marker);
+            });
+            marker._infoWindow = infoWindow;
             timelineMarkers.push(marker);
         }
 
@@ -253,8 +338,10 @@
                 <span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;margin-top:6px;background:${vn.isActive ? '#D1FAE5' : '#E5E7EB'};color:${vn.isActive ? '#065F46' : '#374151'}">${vn.isActive ? 'Active' : 'Completed'}</span>
             </div>`;
             const infoWindow = new google.maps.InfoWindow({ content: infoContent, maxWidth: 240 });
+            const markerLat = vn.displayLat != null ? vn.displayLat : vn.latitude;
+            const markerLng = vn.displayLng != null ? vn.displayLng : vn.longitude;
             const marker = new google.maps.Marker({
-                position: { lat: vn.latitude, lng: vn.longitude },
+                position: { lat: markerLat, lng: markerLng },
                 map: map,
                 title: 'Visit ' + vn.nodeNumber + ': ' + (vn.clientName || ''),
                 icon: {
@@ -326,7 +413,7 @@
             });
         }
 
-        function drawMapboxPath(pathCoordinates, visitNodes) {
+        function drawMapboxPath(pathCoordinates, visitNodes, punchMarkers) {
             if (!map || currentProvider !== 'mapbox') return;
 
             // Clear old markers and animation
@@ -342,58 +429,63 @@
 
             const hasPath = pathCoordinates && pathCoordinates.length > 0;
             const hasVisits = visitNodes && visitNodes.length > 0;
-            if (!hasPath && !hasVisits) return;
+            const hasPunches = punchMarkers && punchMarkers.length > 0;
+            if (!hasPath && !hasVisits && !hasPunches) return;
 
-            // ── Start / End markers from track path only ───────────
-            if (hasPath) {
-                const startPt = pathCoordinates[0];
-                const startEl = buildPinElement('#10B981', 'S');
-                const startPopup = new mapboxgl.Popup({ offset: 16, closeButton: false })
-                    .setHTML('<b style="font-size:12px">🟢 Shift Start</b>');
-                const startMarker = new mapboxgl.Marker(startEl)
-                    .setLngLat([startPt.lng, startPt.lat])
-                    .setPopup(startPopup)
-                    .addTo(map);
-                timelineMarkers.push(startMarker);
-
+            // Gather all markers for collision deconfliction so identical locations sit side-by-side
+            const allItems = [];
+            if (hasPunches) {
+                punchMarkers.forEach(pm => {
+                    allItems.push(Object.assign({ _type: 'punch' }, pm));
+                });
+            } else if (hasPath) {
+                allItems.push({ _type: 'punch', latitude: pathCoordinates[0].lat, longitude: pathCoordinates[0].lng, color: '#10B981', label: 'DI', title: 'Day In', timeLabel: '', address: '' });
                 if (pathCoordinates.length > 1) {
-                    const endPt = pathCoordinates[pathCoordinates.length - 1];
-                    const endEl = buildPinElement('#EF4444', 'E');
-                    const endPopup = new mapboxgl.Popup({ offset: 16, closeButton: false })
-                        .setHTML('<b style="font-size:12px">🔴 Shift End</b>');
-                    const endMarker = new mapboxgl.Marker(endEl)
-                        .setLngLat([endPt.lng, endPt.lat])
-                        .setPopup(endPopup)
-                        .addTo(map);
-                    timelineMarkers.push(endMarker);
+                    allItems.push({ _type: 'punch', latitude: pathCoordinates[pathCoordinates.length - 1].lat, longitude: pathCoordinates[pathCoordinates.length - 1].lng, color: '#EF4444', label: 'DO', title: 'Day Out', timeLabel: '', address: '' });
                 }
             }
-
-            // ── Numbered visit node markers (not part of polyline) ─
             if (hasVisits) {
                 visitNodes.forEach(vn => {
-                    const vnEl = buildVisitNodeElement(vn.nodeNumber, vn.isActive);
+                    allItems.push(Object.assign({ _type: 'visit' }, vn));
+                });
+            }
+
+            const deconflicted = deconflictMarkers(allItems);
+
+            // ── Plot Punch and Visit Markers Side-by-Side ────────
+            deconflicted.forEach(m => {
+                if (m._type === 'punch') {
+                    const pmEl = buildPinElement(m.color || '#10B981', m.label);
+                    const popup = new mapboxgl.Popup({ offset: 16, closeButton: false })
+                        .setHTML(buildPinPopupHtml(m.title, m.timeLabel, m.address));
+                    const marker = new mapboxgl.Marker(pmEl)
+                        .setLngLat([m.displayLng, m.displayLat])
+                        .setPopup(popup)
+                        .addTo(map);
+                    timelineMarkers.push(marker);
+                } else if (m._type === 'visit') {
+                    const vnEl = buildVisitNodeElement(m.nodeNumber, m.isActive);
                     const popup = new mapboxgl.Popup({
                         offset: 18,
                         closeButton: false,
                         maxWidth: '240px',
                         className: 'unolo-popup'
-                    }).setHTML(buildVisitPopupHtml(vn));
+                    }).setHTML(buildVisitPopupHtml(m));
                     const vnMarker = new mapboxgl.Marker(vnEl)
-                        .setLngLat([vn.longitude, vn.latitude])
+                        .setLngLat([m.displayLng, m.displayLat])
                         .setPopup(popup)
                         .addTo(map);
                     timelineMarkers.push(vnMarker);
-                });
-            }
+                }
+            });
 
             if (!hasPath || pathCoordinates.length < 2) {
-                if (hasPath) {
-                    map.flyTo({ center: [pathCoordinates[0].lng, pathCoordinates[0].lat], zoom: 15 });
-                } else if (hasVisits) {
+                if (deconflicted.length > 0) {
                     const bounds = new mapboxgl.LngLatBounds();
-                    visitNodes.forEach(v => bounds.extend([v.longitude, v.latitude]));
+                    deconflicted.forEach(p => bounds.extend([p.displayLng, p.displayLat]));
                     map.fitBounds(bounds, { padding: 60, maxZoom: 15 });
+                } else if (hasPath) {
+                    map.flyTo({ center: [pathCoordinates[0].lng, pathCoordinates[0].lat], zoom: 15 });
                 }
                 return;
             }
@@ -462,7 +554,10 @@
             // ── Fit bounds ─────────────────────────────────────────
             const bounds = new mapboxgl.LngLatBounds();
             coords.forEach(c => bounds.extend(c));
-            if (visitNodes && visitNodes.length > 0) {
+            if (hasPunches) {
+                punchMarkers.forEach(p => bounds.extend([p.longitude, p.latitude]));
+            }
+            if (hasVisits) {
                 visitNodes.forEach(v => bounds.extend([v.longitude, v.latitude]));
             }
             map.fitBounds(bounds, { padding: { top: 70, bottom: 70, left: 60, right: 60 } });
@@ -472,17 +567,29 @@
         function buildPinElement(color, label) {
             const el = document.createElement('div');
             el.style.cssText = 'cursor:pointer;';
+            const isMultiChar = label && label.length > 1;
+            const fontSize = isMultiChar ? '7' : '8.5';
+            const yPos = isMultiChar ? '14' : '14.5';
             el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="38" viewBox="0 0 28 38">
-                <filter id="drop-shadow">
+                <filter id="drop-shadow-${label}">
                     <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.4)"/>
                 </filter>
                 <path d="M14 0C8.48 0 4 4.48 4 10c0 7.5 10 28 10 28s10-20.5 10-28C24 4.48 19.52 0 14 0z"
-                      fill="${color}" filter="url(#drop-shadow)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
-                <circle cx="14" cy="10" r="6" fill="rgba(255,255,255,0.2)"/>
-                <text x="14" y="14.5" font-family="Arial,sans-serif" font-size="8" font-weight="bold"
+                      fill="${color}" filter="url(#drop-shadow-${label})" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+                <circle cx="14" cy="10" r="6.5" fill="rgba(255,255,255,0.2)"/>
+                <text x="14" y="${yPos}" font-family="Arial,sans-serif" font-size="${fontSize}" font-weight="bold"
                       fill="white" text-anchor="middle">${label}</text>
             </svg>`;
             return el;
+        }
+
+        /* ── Helper: build pin popup HTML ───────────────────────── */
+        function buildPinPopupHtml(title, timeLabel, address) {
+            return `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-width:150px;padding:2px;">
+                <b style="font-size:12px;color:#1a1a2e;line-height:1.3">${title}</b>
+                ${timeLabel ? '<div style="font-size:11px;color:#555;margin-top:3px">⏰ ' + timeLabel + '</div>' : ''}
+                ${address ? '<div style="font-size:10px;color:#777;margin-top:3px">📍 ' + address + '</div>' : ''}
+            </div>`;
         }
 
         /* ── Helper: build numbered visit node element ───────────── */

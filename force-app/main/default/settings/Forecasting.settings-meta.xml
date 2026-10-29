@@ -340,8 +340,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -382,6 +390,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -600,12 +612,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -762,6 +782,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -1071,7 +1099,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -1082,6 +1112,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -1136,8 +1167,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -1177,6 +1210,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -1493,8 +1528,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -1535,6 +1578,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -1753,12 +1800,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -1915,6 +1970,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -2224,7 +2287,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -2235,6 +2300,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -2289,8 +2355,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -2330,6 +2398,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -2650,8 +2720,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -2692,6 +2770,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -2910,12 +2992,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -3072,6 +3162,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -3382,7 +3480,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -3393,6 +3493,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -3447,8 +3548,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -3488,6 +3591,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -3804,8 +3909,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -3846,6 +3959,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -4064,12 +4181,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -4226,6 +4351,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -4535,7 +4668,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -4546,6 +4681,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -4600,8 +4736,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -4641,6 +4779,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -4961,8 +5101,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -5003,6 +5151,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -5221,12 +5373,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -5383,6 +5543,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -5693,7 +5861,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -5704,6 +5874,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -5758,8 +5929,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -5799,6 +5972,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -6115,8 +6290,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -6157,6 +6340,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -6375,12 +6562,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -6537,6 +6732,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -6846,7 +7049,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -6857,6 +7062,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -6911,8 +7117,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -6952,6 +7160,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -7272,8 +7482,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -7314,6 +7532,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -7532,12 +7754,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -7694,6 +7924,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -8004,7 +8242,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -8015,6 +8255,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -8069,8 +8310,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -8110,6 +8353,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -8426,8 +8671,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -8468,6 +8721,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -8686,12 +8943,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -8848,6 +9113,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -9157,7 +9430,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -9168,6 +9443,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -9222,8 +9498,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -9263,6 +9541,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -9583,8 +9863,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -9625,6 +9913,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -9843,12 +10135,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -10005,6 +10305,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -10315,7 +10623,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -10326,6 +10636,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -10380,8 +10691,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -10421,6 +10734,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -10737,8 +11052,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -10779,6 +11102,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -10997,12 +11324,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -11159,6 +11494,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -11468,7 +11811,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -11479,6 +11824,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -11533,8 +11879,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -11574,6 +11922,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -11894,8 +12244,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -11936,6 +12294,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -12154,12 +12516,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -12316,6 +12686,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -12626,7 +13004,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -12637,6 +13017,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -12691,8 +13072,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -12732,6 +13115,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>
@@ -13048,8 +13433,16 @@
             <label>Closed By User</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003llxr</field>
+            <label>Closed Lost count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC20000039QZR</field>
             <label>Closed Lost Date/Time</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lhcZ</field>
+            <label>Closed Won Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039PdU</field>
@@ -13090,6 +13483,10 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002URsw</field>
             <label>Country Code</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo65</field>
+            <label>Created Month</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC20000039HHd</field>
@@ -13308,12 +13705,20 @@
             <label>Manual</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
+            <field>00NC2000003loAv</field>
+            <label>Negotiation Count</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
             <field>00NC2000002v76t</field>
             <label>Notes</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPv</field>
             <label>Nurture/Negotiation</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003lo9J</field>
+            <label>Nurture Count</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002w6n3</field>
@@ -13470,6 +13875,14 @@
         <opportunityListFieldsLabelMappings>
             <field>00NC2000002UOPP</field>
             <label>Project</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wtEI</field>
+            <label>Project_Created_CRM_Sent__c</label>
+        </opportunityListFieldsLabelMappings>
+        <opportunityListFieldsLabelMappings>
+            <field>00NC2000003wp9k</field>
+            <label>Project_Created_HOD_Sent__c</label>
         </opportunityListFieldsLabelMappings>
         <opportunityListFieldsLabelMappings>
             <field>00NC2000003LWch</field>
@@ -13779,7 +14192,9 @@
             <field>00NC2000002k6So</field>
             <field>00NC2000002gnCr</field>
             <field>00NC2000003DGzh</field>
+            <field>00NC2000003llxr</field>
             <field>00NC20000039QZR</field>
+            <field>00NC2000003lhcZ</field>
             <field>00NC20000039PdU</field>
             <field>00NC2000003HPDD</field>
             <field>00NC2000003HQcH</field>
@@ -13790,6 +14205,7 @@
             <field>00NC2000003HUkj</field>
             <field>00NC2000002URst</field>
             <field>00NC2000002URsw</field>
+            <field>00NC2000003lo65</field>
             <field>00NC20000039HHd</field>
             <field>00NC20000039HRJ</field>
             <field>00NC20000039GOo</field>
@@ -13844,8 +14260,10 @@
             <field>00NC200000371vz</field>
             <field>00NC2000003HS7p</field>
             <field>00NC2000002xVTF</field>
+            <field>00NC2000003loAv</field>
             <field>00NC2000002v76t</field>
             <field>00NC2000002UOPv</field>
+            <field>00NC2000003lo9J</field>
             <field>00NC2000002w6n3</field>
             <field>00NC2000002v5E1</field>
             <field>00NC2000002w4je</field>
@@ -13885,6 +14303,8 @@
             <field>00NC2000002gphh</field>
             <field>00NC2000003HPUv</field>
             <field>00NC2000002UOPP</field>
+            <field>00NC2000003wtEI</field>
+            <field>00NC2000003wp9k</field>
             <field>00NC2000003LWch</field>
             <field>00NC2000002gqqf</field>
             <field>00NC20000035kwX</field>

@@ -4,7 +4,7 @@
     <doesEnforceApexCpuTimeLimit>true</doesEnforceApexCpuTimeLimit>
     <doesFormulaEnforceDataAccess>false</doesFormulaEnforceDataAccess>
     <doesFormulaGenerateHtmlOutput>true</doesFormulaGenerateHtmlOutput>
-    <enableAgentforceFlowAutomation>false</enableAgentforceFlowAutomation>
+    <enableAgentforceFlowAutomation>true</enableAgentforceFlowAutomation>
     <enableEmailSimpleRespectProfiles>true</enableEmailSimpleRespectProfiles>
     <enableEmailsimpleSecureProfiles>false</enableEmailsimpleSecureProfiles>
     <enableFlowBREncodedFixEnabled>true</enableFlowBREncodedFixEnabled>
@@ -13,16 +13,18 @@
     <enableFlowFieldFilterEnabled>true</enableFlowFieldFilterEnabled>
     <enableFlowFormulasFixEnabled>true</enableFlowFormulasFixEnabled>
     <enableFlowInterviewSharingEnabled>true</enableFlowInterviewSharingEnabled>
+    <enableFlowListMetadataLargeCapEnabled>false</enableFlowListMetadataLargeCapEnabled>
     <enableFlowNullPreviousValueFix>false</enableFlowNullPreviousValueFix>
     <enableFlowPauseEnabled>false</enableFlowPauseEnabled>
     <enableFlowReactiveChoiceOptions>false</enableFlowReactiveChoiceOptions>
     <enableFlowReactiveScreens>true</enableFlowReactiveScreens>
     <enableFlowUseApexExceptionEmail>false</enableFlowUseApexExceptionEmail>
     <enableFlowViaRestUsesUserCtxt>true</enableFlowViaRestUsesUserCtxt>
+    <enableFlowsLightningApp>true</enableFlowsLightningApp>
     <enableLightningRuntimeEnabled>true</enableLightningRuntimeEnabled>
+    <flowOccurrenceLogging>false</flowOccurrenceLogging>
     <isApexPluginAccessModifierRespected>true</isApexPluginAccessModifierRespected>
     <isEnhancedFlowListViewVisible>true</isEnhancedFlowListViewVisible>
     <isFlowBlockAccessToSessionIDEnabled>true</isFlowBlockAccessToSessionIDEnabled>
     <isManageFlowRequiredForAutomationCharts>false</isManageFlowRequiredForAutomationCharts>
-    <isSupportRollbackOnErrorForApexInvocableActionsEnabled>true</isSupportRollbackOnErrorForApexInvocableActionsEnabled>
 </FlowSettings>

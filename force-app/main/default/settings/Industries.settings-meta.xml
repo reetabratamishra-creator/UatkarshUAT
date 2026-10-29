@@ -3,11 +3,14 @@
     <enableAIAccelerator>false</enableAIAccelerator>
     <enableAccountScoreEnabled>false</enableAccountScoreEnabled>
     <enableAutoIdentifyDocAITemplates>false</enableAutoIdentifyDocAITemplates>
+    <enableChecklistOrgPref>false</enableChecklistOrgPref>
     <enableDontSharePartyprofWPortalOrgPref>false</enableDontSharePartyprofWPortalOrgPref>
+    <enableEventMgmtBudgetEvntTypeFilter>false</enableEventMgmtBudgetEvntTypeFilter>
     <enablePartyProfileParentSharingOrgPref>false</enablePartyProfileParentSharingOrgPref>
     <enablePartyprofParentMultiSharingOrgPref>false</enablePartyprofParentMultiSharingOrgPref>
     <enableScoringFrameworkCRMAPref>false</enableScoringFrameworkCRMAPref>
     <enableScoringFrameworkOrgPref>false</enableScoringFrameworkOrgPref>
+    <enableUseFscPackageDatamodel>false</enableUseFscPackageDatamodel>
     <participantRecordDeactivateUser>PreventDeactivateUserWithParticipantRecords</participantRecordDeactivateUser>
     <partyProfMultiShrPrtnrsOrgPref>false</partyProfMultiShrPrtnrsOrgPref>
     <rlaEditIfAccHasEdit>false</rlaEditIfAccHasEdit>
