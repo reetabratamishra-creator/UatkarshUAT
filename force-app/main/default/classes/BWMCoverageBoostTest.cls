@@ -31,8 +31,8 @@ private class BWMCoverageBoostTest {
     statusBody.setBody('{"statusCode":202}');
     System.assertNotEquals(null, BWM_ApiResponse.parseWhatsAppDirect(statusBody, 'x'));
 
-    Lead leadRecord = new Lead(LastName = 'Boost', Company = 'Co', Status = 'Prospect');
-    insert leadRecord;
+    Lead leadRecord = new Lead(LastName = 'Boost ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Company = 'Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Status = 'Prospect');
+    insert as system leadRecord;
     BWM_MessagingRequest blankRequest = new BWM_MessagingRequest();
     BWM_MessagingRequest twoArg = new BWM_MessagingRequest(
       leadRecord.Id,
@@ -69,8 +69,8 @@ private class BWMCoverageBoostTest {
       }
     );
     Lead briefLead = new Lead(
-      LastName = 'Brief',
-      Company = 'Co',
+      LastName = 'Brief ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
       Department_Name__c = 'Crash Barrier'
     );
@@ -99,18 +99,18 @@ private class BWMCoverageBoostTest {
   @IsTest
   static void coversDispatchersInvocablesAndRouters() {
     Lead leadRecord = new Lead(
-      LastName = 'Invocable',
-      Company = 'Co',
+      LastName = 'Invocable ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
-      Phone = '9876543210'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert leadRecord;
+    insert as system leadRecord;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Invocable Opp',
+      Name = 'Invocable Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = 'Nurture',
       CloseDate = Date.today().addDays(10)
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
 
     BWM_MessagingFutureDispatcher.dispatch(null);
     BWM_MessagingFutureDispatcher.dispatch(new List<BWM_MessagingRequest>());
@@ -138,7 +138,7 @@ private class BWMCoverageBoostTest {
 
     BWM_LeadMessagingTriggerHandler.skipEnqueueForTests = true;
     BWM_LeadMessagingTriggerHandler.handleAfterInsert(
-      new List<Lead>{ new Lead(LastName = 'Skip') }
+      new List<Lead>{ new Lead(LastName = 'Skip ' + String.valueOf(Math.abs(Crypto.getRandomInteger()))) }
     );
     BWM_LeadMessagingTriggerHandler.skipEnqueueForTests = false;
     BWM_LeadMessagingTriggerHandler.handleAfterInsert(null);
@@ -250,8 +250,8 @@ private class BWMCoverageBoostTest {
   @IsTest
   static void coversBrochureFiltersCampaignAndParams() {
     Lead enquiryLead = new Lead(
-      LastName = 'Enquiry',
-      Company = 'Co',
+      LastName = 'Enquiry ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
       Department_Name__c = BWM_EmailConstants.DEPT_ENQUIRY
     );
@@ -354,7 +354,7 @@ private class BWMCoverageBoostTest {
     System.assertNotEquals(
       null,
       BWM_CampaignJourneyParamService.applyCampaignContactParamFixes(
-        new Lead(LastName = 'X', Company = 'Y'),
+        new Lead(LastName = 'X ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Company = 'Y ' + String.valueOf(Math.abs(Crypto.getRandomInteger()))),
         new List<String>{ 'a', 'b' }
       )
     );
@@ -420,8 +420,8 @@ private class BWMCoverageBoostTest {
       BWM_InfobipEmailTemplateService.resolveTemplateIdsForSubject(null)
     );
 
-    Lead leadRecord = new Lead(LastName = 'Log', Company = 'Co', Status = 'Prospect');
-    insert leadRecord;
+    Lead leadRecord = new Lead(LastName = 'Log ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Company = 'Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Status = 'Prospect');
+    insert as system leadRecord;
     BWM_ApiResponse apiResponse = new BWM_ApiResponse();
     apiResponse.code = '200';
     apiResponse.message = 'ok';
@@ -446,36 +446,36 @@ private class BWMCoverageBoostTest {
   @IsTest
   static void coversWaCampSendsSmsAndImagePayload() {
     Lead leadRecord = new Lead(
-      LastName = 'WaCamp',
-      Company = 'Co',
+      LastName = 'WaCamp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
-      Phone = '9876500111'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert leadRecord;
-    Account accountRecord = new Account(Name = 'WaCamp Acc', Phone = '9876500222');
-    insert accountRecord;
+    insert as system leadRecord;
+    Account accountRecord = new Account(Name = 'WaCamp Acc ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10));
+    insert as system accountRecord;
     Contact contactRecord = new Contact(
-      LastName = 'WaCamp C',
+      LastName = 'WaCamp C ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
-      Phone = '9876500333',
-      MobilePhone = '9876500333'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert contactRecord;
+    insert as system contactRecord;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'WaCamp Opp',
+      Name = 'WaCamp Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = 'Nurture',
       CloseDate = Date.today().addDays(7),
       AccountId = accountRecord.Id
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
     Offline_Campaign__c offlineRecord = new Offline_Campaign__c(
-      Name = 'WaCamp Offline',
-      Phone__c = '9876500444',
+      Name = 'WaCamp Offline ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'offline@example.com',
       Department__c = 'Crash Barrier',
       Active__c = true
     );
-    insert offlineRecord;
+    insert as system offlineRecord;
 
     Map<String, Object> templateMeta = new Map<String, Object>{
       'language' => 'en',

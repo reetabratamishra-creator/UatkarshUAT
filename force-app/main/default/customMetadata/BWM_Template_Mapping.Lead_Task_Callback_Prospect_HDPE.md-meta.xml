@@ -28,7 +28,7 @@
     </values>
     <values>
         <field>Journey_Name__c</field>
-        <value xsi:type="xsd:string">prospect_not_responding_dept</value>
+        <value xsi:type="xsd:string">Prospect_not_respond_dept</value>
     </values>
     <values>
         <field>Lead_Source__c</field>
@@ -72,7 +72,7 @@
     </values>
     <values>
         <field>Param7_Field__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">Department_Name__c</value>
     </values>
     <values>
         <field>Param8_Field__c</field>
@@ -88,7 +88,7 @@
     </values>
     <values>
         <field>RCS_Template_Name__c</field>
-        <value xsi:type="xsd:string">Prosp_nt_resp_dept</value>
+        <value xsi:type="xsd:string">pol_nt_res_pros_lea</value>
     </values>
     <values>
         <field>Recipient_Type__c</field>
@@ -116,6 +116,6 @@
     </values>
     <values>
         <field>WhatsApp_Template_Name__c</field>
-        <value xsi:type="xsd:string">prospect_not_responding_dept</value>
+        <value xsi:type="xsd:string">poly_nt_res_pros_lead</value>
     </values>
 </CustomMetadata>

@@ -3,10 +3,14 @@ import saveExpenseData from '@salesforce/apex/NewExpenseFormController.saveExpen
 import getEligibility from '@salesforce/apex/NewExpenseFormController.getEligibility';
 import getPrivateVehicleExpenseLines from '@salesforce/apex/NewExpenseFormController.getPrivateVehicleExpenseLines';
 import discardFile from '@salesforce/apex/NewExpenseFormController.discardFile';
+import getMyExpenseIdByName from '@salesforce/apex/NewExpenseFormController.getMyExpenseIdByName';
+import getExpenseForEdit from '@salesforce/apex/NewExpenseFormController.getExpenseForEdit';
+import resubmitExpenseData from '@salesforce/apex/NewExpenseFormController.resubmitExpenseData';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import USER_ID from '@salesforce/user/Id';
 
-export default class NewExpenseForm extends LightningElement {
+export default class NewExpenseForm extends NavigationMixin(LightningElement) {
 
     @track isSaving = false;
     @track isLoadingEligibility = true;
@@ -99,6 +103,7 @@ export default class NewExpenseForm extends LightningElement {
             });
 
             this.refreshAllRowCalculations();
+            this.tryLoadExpenseForEdit();
         } else if (error) {
             this.eligibility = null;
             this.eligibilityError = this.getErrorMessage(error);
@@ -157,7 +162,7 @@ export default class NewExpenseForm extends LightningElement {
     }
 
     get isSubmitDisabled() {
-        return this.isSaving || !this.hasEligibility || this.isLoadingEligibility;
+        return this.isSaving || !this.hasEligibility || this.isLoadingEligibility || this.isEditBlocked;
     }
 
     get allCitySuggestions() {
@@ -319,7 +324,7 @@ export default class NewExpenseForm extends LightningElement {
         const val = event.target.value;
         this.formData[fieldName] = val;
 
-        if (fieldName === 'endDate' && val) {
+        if (fieldName === 'endDate' && val && !this.isEditMode) {
             this.validateTravelEndDate(val, true);
         }
 
@@ -385,7 +390,8 @@ export default class NewExpenseForm extends LightningElement {
             endDate: this.formData.endDate
         })
             .then(data => {
-                this.privateVehicleLines = (data || []).map(item => {
+                const records = this.isEditMode ? this.mergeExistingPvLines(data) : (data || []);
+                this.privateVehicleLines = records.map(item => {
                     const isSelected = this.selectedPrivateVehicleLineIds.includes(item.Id);
                     const travelDate = item.Date__c || item.Start_Date__c || '';
                     return {
@@ -575,6 +581,7 @@ export default class NewExpenseForm extends LightningElement {
                 this.evaluateRow(type, row);
             });
         });
+        this.applyLodgingOverlapFlags();
         this.updateIterableArray();
     }
 
@@ -681,13 +688,53 @@ export default class NewExpenseForm extends LightningElement {
         row.amountClass = isOverLimit ? 'amount-field amount-exceeded' : 'amount-field';
     }
 
+    // ---------- Lodging overlapping dates ----------
+    // Overlapping Lodging stays are allowed but need a justification. Runs after evaluateRow,
+    // so the existing limit-exceeded rule (justification + approval upload) is left untouched.
+    applyLodgingOverlapFlags() {
+        const rows = this.lineDataMap.Lodging || [];
+        const isValidRange = r => r.startDate && r.endDate && r.endDate >= r.startDate;
+
+        rows.forEach((row, i) => {
+            const overlaps = [];
+            if (isValidRange(row)) {
+                rows.forEach((other, j) => {
+                    // Only compare with earlier rows: the later (repeating) entry carries the justification
+                    if (j >= i || !isValidRange(other)) return;
+                    // ISO yyyy-mm-dd strings compare chronologically; ranges are inclusive (same as day count)
+                    if (row.startDate <= other.endDate && other.startDate <= row.endDate) {
+                        const from = row.startDate > other.startDate ? row.startDate : other.startDate;
+                        const to = row.endDate < other.endDate ? row.endDate : other.endDate;
+                        const period = from === to
+                            ? this.formatDisplayDate(from)
+                            : `${this.formatDisplayDate(from)} to ${this.formatDisplayDate(to)}`;
+                        overlaps.push(`${period} (with Row ${j + 1})`);
+                    }
+                });
+            }
+
+            row.hasDateOverlap = overlaps.length > 0;
+            row.overlapMessage = row.hasDateOverlap
+                ? `These dates are overlapping: ${overlaps.join(', ')}. Are you sure you want to proceed?`
+                : '';
+            row.requiresJustificationOnly = row.hasDateOverlap && !row.requiresJustificationAndProof;
+        });
+    }
+
+    formatDisplayDate(isoDate) {
+        const d = new Date(isoDate + 'T00:00:00');
+        if (Number.isNaN(d.getTime())) return isoDate;
+        return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
     updateIterableArray() {
         this.selectedTypesArray = Object.keys(this.lineDataMap).map(key => {
             const items = this.lineDataMap[key].map(item => {
                 return {
                     ...item,
                     hasBills: item.bills && item.bills.length > 0,
-                    hasProofs: item.proofs && item.proofs.length > 0
+                    hasProofs: item.proofs && item.proofs.length > 0,
+                    showJustificationSection: !!(item.requiresJustificationAndProof || item.requiresJustificationOnly)
                 };
             });
             return {
@@ -743,11 +790,14 @@ export default class NewExpenseForm extends LightningElement {
     handleRemoveBill(event) {
         const { type, index, fileId, documentId } = event.target.dataset;
         const row = this.lineDataMap[type][parseInt(index, 10)];
+        const removedFile = row && row.bills ? row.bills.find(f => f.id === fileId) : null;
         if (row && row.bills) {
             row.bills = row.bills.filter(f => f.id !== fileId && (!documentId || f.documentId !== documentId));
             this.updateIterableArray();
         }
-        if (documentId) {
+        if (removedFile && removedFile.isExisting) {
+            this.markExistingFileRemoved(removedFile.documentId);
+        } else if (documentId) {
             discardFile({ documentId }).catch(() => {});
         }
     }
@@ -755,20 +805,26 @@ export default class NewExpenseForm extends LightningElement {
     handleRemoveProof(event) {
         const { type, index, fileId, documentId } = event.target.dataset;
         const row = this.lineDataMap[type][parseInt(index, 10)];
+        const removedFile = row && row.proofs ? row.proofs.find(f => f.id === fileId) : null;
         if (row && row.proofs) {
             row.proofs = row.proofs.filter(f => f.id !== fileId && (!documentId || f.documentId !== documentId));
             this.updateIterableArray();
         }
-        if (documentId) {
+        if (removedFile && removedFile.isExisting) {
+            this.markExistingFileRemoved(removedFile.documentId);
+        } else if (documentId) {
             discardFile({ documentId }).catch(() => {});
         }
     }
 
     discardRowFiles(row) {
         if (!row) return;
+        if (this.isEditMode) {
+            this.markRowRemovedForEdit(row);
+        }
         const docIds = [
-            ...(row.bills || []).map(f => f.documentId),
-            ...(row.proofs || []).map(f => f.documentId)
+            ...(row.bills || []).filter(f => !f.isExisting).map(f => f.documentId),
+            ...(row.proofs || []).filter(f => !f.isExisting).map(f => f.documentId)
         ].filter(Boolean);
 
         docIds.forEach(documentId => {
@@ -801,7 +857,7 @@ export default class NewExpenseForm extends LightningElement {
             return;
         }
 
-        if (!this.validateTravelEndDate(this.formData.endDate, true)) {
+        if (!this.isEditMode && !this.validateTravelEndDate(this.formData.endDate, true)) {
             return;
         }
 
@@ -927,6 +983,12 @@ export default class NewExpenseForm extends LightningElement {
                         this.showToast('Error', `Proof upload is mandatory for ${rowLabel}`, 'error');
                         return;
                     }
+                } else if (item.requiresJustificationOnly) {
+                    // Lodging with overlapping dates (within limit): justification only, approval upload optional
+                    if (!item.justification || !item.justification.trim()) {
+                        this.showToast('Error', `Justification is mandatory for ${rowLabel} as its dates overlap with another Lodging entry`, 'error');
+                        return;
+                    }
                 }
 
                 // Combine all files for this line
@@ -936,18 +998,21 @@ export default class NewExpenseForm extends LightningElement {
                         documentId: b.documentId,
                         base64Data: b.base64Data,
                         extension: b.extension,
-                        fileType: 'Bill'
+                        fileType: 'Bill',
+                        isExisting: !!b.isExisting
                     })),
                     ...proofFiles.map(p => ({
                         fileName: p.fileName,
                         documentId: p.documentId,
                         base64Data: p.base64Data,
                         extension: p.extension,
-                        fileType: 'Proof'
+                        fileType: 'Proof',
+                        isExisting: !!p.isExisting
                     }))
                 ];
 
                 flattenedLines.push({
+                    lineId: item.lineId || null,
                     expenseType: item.name === 'Private Vehicle' ? 'Own Vehicle' : item.name,
                     amount: amount,
                     startDate: item.startDate,
@@ -977,11 +1042,17 @@ export default class NewExpenseForm extends LightningElement {
             privateVehicleLineIds: this.selectedPrivateVehicleLineIds
         };
 
+        if (this.isEditMode) {
+            this.resubmitExpense(payload);
+            return;
+        }
+
         this.isSaving = true;
         saveExpenseData({ payload: JSON.stringify(payload) })
             .then((result) => {
                 this.showToast('Success', `Expense claim ${result} created successfully`, 'success');
                 this.resetForm();
+                this.navigateToNewExpense(result);
             })
             .catch(error => {
                 this.showToast('Error saving record', this.getErrorMessage(error), 'error');
@@ -989,6 +1060,24 @@ export default class NewExpenseForm extends LightningElement {
             .finally(() => {
                 this.isSaving = false;
             });
+    }
+
+    // After a new submission, open the created Expense record (same as after a resubmit).
+    // Navigation is best-effort: if the lookup fails the user simply stays on the reset form.
+    navigateToNewExpense(expenseName) {
+        getMyExpenseIdByName({ expenseName })
+            .then(expenseId => {
+                if (!expenseId) return;
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__recordPage',
+                    attributes: {
+                        recordId: expenseId,
+                        objectApiName: 'Expense__c',
+                        actionName: 'view'
+                    }
+                });
+            })
+            .catch(() => {});
     }
 
     resetForm() {
@@ -1019,4 +1108,238 @@ export default class NewExpenseForm extends LightningElement {
     showToast(title, message, variant) {
         this.dispatchEvent(new ShowToastEvent({ title, message, variant }));
     }
+
+    // =====================================================================
+    // ===== EDIT MODE (rejected expense resubmission) =====================
+    // Active only when opened from myExpenses with ?c__expenseId=<Expense__c Id>.
+    // =====================================================================
+
+    editExpenseId = null;
+    @track isLoadingEdit = false;
+    @track editLoadError = null;
+    @track editExpenseName = '';
+    @track editExpenseStatus = '';
+    @track editExpenseRemark = '';
+    editDataLoaded = false;
+    existingPvLines = [];
+    removedLineIds = [];
+    removedDocumentIds = [];
+
+    @wire(CurrentPageReference)
+    wiredPageReference(pageRef) {
+        const expenseId = pageRef && pageRef.state ? pageRef.state.c__expenseId : null;
+        if (expenseId && expenseId !== this.editExpenseId) {
+            this.editExpenseId = expenseId;
+            this.editDataLoaded = false;
+            this.editLoadError = null;
+            this.tryLoadExpenseForEdit();
+        }
+    }
+
+    get isEditMode() {
+        return !!this.editExpenseId;
+    }
+
+    // Submit stays disabled until the rejected expense is loaded (never falls back to create)
+    get isEditBlocked() {
+        return this.isEditMode && (!this.editDataLoaded || this.isLoadingEdit);
+    }
+
+    get cardTitle() {
+        return this.isEditMode ? `Edit Expense Claim ${this.editExpenseName || ''}` : 'Expense Claim';
+    }
+
+    get cardSubtitle() {
+        return this.isEditMode
+            ? 'Correct the details below and resubmit for approval'
+            : 'Submit your travel & reimbursement details';
+    }
+
+    get submitButtonLabel() {
+        return this.isEditMode ? 'Resubmit Expense Claim' : 'Submit Expense Claim';
+    }
+
+    get showEditBanner() {
+        return this.isEditMode && this.editDataLoaded;
+    }
+
+    get hasEditRemark() {
+        return !!this.editExpenseRemark;
+    }
+
+    // Eligibility is needed first so defaults and limits evaluate exactly as in create mode
+    tryLoadExpenseForEdit() {
+        if (!this.editExpenseId || !this.eligibility || this.editDataLoaded || this.isLoadingEdit) {
+            return;
+        }
+        this.loadExpenseForEdit();
+    }
+
+    loadExpenseForEdit() {
+        this.isLoadingEdit = true;
+        getExpenseForEdit({ expenseId: this.editExpenseId })
+            .then(data => {
+                this.applyExpenseForEdit(data);
+            })
+            .catch(error => {
+                this.editLoadError = this.getErrorMessage(error);
+                this.showToast('Error', this.editLoadError, 'error');
+            })
+            .finally(() => {
+                this.isLoadingEdit = false;
+            });
+    }
+
+    applyExpenseForEdit(data) {
+        const exp = data.expense || {};
+        const lines = data.lines || [];
+
+        const lineWithCity = lines.find(l => !l.isPrivateVehicle && l.line.City__c);
+        const city = lineWithCity ? lineWithCity.line.City__c : '';
+
+        this.formData = {
+            subject: exp.Subject__c || '',
+            startDate: exp.Travel_Start_Date__c || null,
+            endDate: exp.Travel_End_Date__c || null,
+            city: city,
+            cityTier: this.resolveCityTier(city)
+        };
+        this.editExpenseName = exp.Name || '';
+        this.editExpenseStatus = exp.Status__c || '';
+        this.editExpenseRemark = exp.Remark__c || '';
+        this.removedLineIds = [];
+        this.removedDocumentIds = [];
+
+        const lineDataMap = {};
+        const pvLines = [];
+        lines.forEach(editLine => {
+            if (editLine.isPrivateVehicle) {
+                pvLines.push(editLine.line);
+                return;
+            }
+            const type = editLine.line.Expense_Type__c;
+            if (!lineDataMap[type]) {
+                lineDataMap[type] = [];
+            }
+            lineDataMap[type].push(this.mapLineToRow(editLine.line, editLine.files || []));
+        });
+
+        this.lineDataMap = lineDataMap;
+        this.existingPvLines = pvLines;
+        this.selectedPrivateVehicleLineIds = pvLines.map(l => l.Id);
+        this.isPrivateVehicleSelected = pvLines.length > 0;
+        this.privateVehicleLines = [];
+
+        const activeTypes = new Set(Object.keys(lineDataMap));
+        if (pvLines.length > 0) {
+            activeTypes.add('Private Vehicle');
+        }
+        this.expenseTypeOptions = this.expenseTypeOptions.map(opt => ({
+            ...opt,
+            checked: activeTypes.has(opt.value)
+        }));
+
+        this.editDataLoaded = true;
+        this.refreshAllRowCalculations();
+
+        if (this.isPrivateVehicleSelected && this.hasTravelDates) {
+            this.fetchPrivateVehicleExpenses();
+        }
+    }
+
+    // Builds a UI row exactly like createNewRow, then overlays the saved line values
+    mapLineToRow(line, files) {
+        const type = line.Expense_Type__c;
+        const row = this.createNewRow(type);
+        row.lineId = line.Id;
+        row.amount = line.Amount__c;
+        row.startDate = line.Start_Date__c || line.Date__c || null;
+        row.endDate = type === 'Lodging' ? (line.End_Date__c || null) : null;
+        if (row.isAir || row.isTrain) {
+            row.selectedValue = line.Travel_Class__c || row.selectedValue;
+        } else if (row.isRoadways) {
+            row.selectedValue = line.Vehicle_Type__c || row.selectedValue;
+        }
+        row.distanceKm = line.Distance_KM__c != null ? line.Distance_KM__c : null;
+        row.justification = line.Justification__c || '';
+        row.miscellaneousCost = line.Miscellaneous_Cost__c || '';
+
+        files.forEach(f => {
+            const fileObj = {
+                id: Date.now() + Math.random().toString(),
+                fileName: f.fileName,
+                documentId: f.documentId,
+                extension: f.extension,
+                fileType: f.fileType,
+                isExisting: true
+            };
+            if (f.fileType === 'Proof') {
+                row.proofs.push(fileObj);
+            } else {
+                row.bills.push(fileObj);
+            }
+        });
+        return row;
+    }
+
+    // Private Vehicle lines already on the rejected expense are not returned by the New/Draft query
+    mergeExistingPvLines(data) {
+        const fetched = data || [];
+        const fetchedIds = new Set(fetched.map(item => item.Id));
+        const existing = this.existingPvLines.filter(item => !fetchedIds.has(item.Id));
+        return [...existing, ...fetched];
+    }
+
+    // Existing files are only deleted on resubmit, so leaving the page without saving loses nothing
+    markExistingFileRemoved(documentId) {
+        if (documentId && !this.removedDocumentIds.includes(documentId)) {
+            this.removedDocumentIds = [...this.removedDocumentIds, documentId];
+        }
+    }
+
+    markRowRemovedForEdit(row) {
+        if (row.lineId && !this.removedLineIds.includes(row.lineId)) {
+            this.removedLineIds = [...this.removedLineIds, row.lineId];
+        }
+        [...(row.bills || []), ...(row.proofs || [])]
+            .filter(f => f.isExisting)
+            .forEach(f => this.markExistingFileRemoved(f.documentId));
+    }
+
+    resubmitExpense(payload) {
+        const editPayload = {
+            ...payload,
+            expenseId: this.editExpenseId,
+            removedLineIds: this.removedLineIds,
+            removedDocumentIds: this.removedDocumentIds
+        };
+
+        this.isSaving = true;
+        resubmitExpenseData({ payload: JSON.stringify(editPayload) })
+            .then(result => {
+                this.showToast('Success', `Expense claim ${result} resubmitted successfully`, 'success');
+                // Expense is no longer Rejected: block a second resubmit from this page
+                this.editDataLoaded = false;
+                this.navigateToExpenseRecord();
+            })
+            .catch(error => {
+                this.showToast('Error resubmitting record', this.getErrorMessage(error), 'error');
+            })
+            .finally(() => {
+                this.isSaving = false;
+            });
+    }
+
+    navigateToExpenseRecord() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.editExpenseId,
+                objectApiName: 'Expense__c',
+                actionName: 'view'
+            }
+        });
+    }
+
+    // ===== END EDIT MODE =================================================
 }

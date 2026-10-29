@@ -62,7 +62,7 @@ public with sharing class LeadManagementController {
     }
 
     /**
-     * @description Searches non-Qualified Leads by name, stage, department, campaign, lost reason, and created date range.
+     * @description Searches Leads by name, stage, department, campaign, lost reason, and created date range.
      * @param searchTerm Optional Lead Name LIKE filter.
      * @param stages Optional list of Lead Status values to include.
      * @param departmentFilter Optional Department_Name__c LIKE filter.
@@ -110,7 +110,7 @@ public with sharing class LeadManagementController {
 
         String soql =
             'SELECT Id, Name, Status, Email, Phone, Department_Name__c, Lost_Reason__c, Campaign_Name__c, CreatedDate' +
-            ' FROM Lead WHERE Id != null AND Status != \'Qualified\'';
+            ' FROM Lead WHERE Id != null';
 
         if (namePattern != null) {
             soql += ' AND Name LIKE :namePattern';
@@ -148,15 +148,14 @@ public with sharing class LeadManagementController {
     }
 
     /**
-     * @description Returns non-Qualified Leads ordered by CreatedDate descending for the management grid.
-     * @return List of Lead records excluding Qualified status.
+     * @description Returns Leads ordered by CreatedDate descending for the management grid.
+     * @return List of Lead records, including Qualified status.
      */
     @AuraEnabled(cacheable=true)
     public static List<Lead> getLeads() {
         return [
             SELECT Id, Name, Status, Email, Phone, Department_Name__c, Lost_Reason__c, Campaign_Name__c, CreatedDate
             FROM Lead
-            WHERE Status != 'Qualified'
             ORDER BY CreatedDate DESC
         ];
     }
@@ -176,6 +175,20 @@ public with sharing class LeadManagementController {
             return BWM_CampaignEmailService.sendToLeads(leadIds, infobipTemplateId);
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static BWM_CampaignEmailService.SendCampaignEmailResult sendLeadCampaignEmailScheduled(
+        List<Id> leadIds,
+        String infobipTemplateId,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendLeadCampaignEmail(leadIds, infobipTemplateId);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
         }
     }
 
@@ -213,6 +226,26 @@ public with sharing class LeadManagementController {
         String journeyName
     ) {
         return BWM_CampaignJourneyService.sendToLeads(leadIds, journeyName);
+    }
+
+    /**
+     * @description Starts the selected campaign journey at the given UTC schedule time.
+     * @param leadIds Lead Ids to enroll in the journey.
+     * @param journeyName Name of the journey definition to send.
+     * @param scheduledDateTime UTC timestamp yyyy-MM-ddTHH:mm:ssZ written to scheduledatetime.
+     * @return SendJourneyResult from BWM_CampaignJourneyService.
+     */
+    @AuraEnabled
+    public static BWM_JourneyDefinitionService.SendJourneyResult sendLeadJourneyScheduled(
+        List<Id> leadIds,
+        String journeyName,
+        String scheduledDateTime
+    ) {
+        return BWM_CampaignJourneyService.sendToLeads(
+            leadIds,
+            journeyName,
+            scheduledDateTime
+        );
     }
 
     /**
@@ -287,6 +320,20 @@ public with sharing class LeadManagementController {
         return LeadManagementRcsService.sendToLeads(leadIds, templateName);
     }
 
+    @AuraEnabled
+    public static LeadManagementRcsService.SendRcsResult sendLeadRcsScheduled(
+        List<Id> leadIds,
+        String templateName,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendLeadRcs(leadIds, templateName);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
+    }
+
     /**
      * @description Loads approved SMS template options for Lead campaign sends.
      * @return List of SmsTemplateOption values.
@@ -308,6 +355,20 @@ public with sharing class LeadManagementController {
         String templateName
     ) {
         return LeadManagementSmsService.sendToLeads(leadIds, templateName);
+    }
+
+    @AuraEnabled
+    public static LeadManagementSmsService.SendSmsResult sendLeadSmsScheduled(
+        List<Id> leadIds,
+        String templateName,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendLeadSms(leadIds, templateName);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
     }
 
     /**

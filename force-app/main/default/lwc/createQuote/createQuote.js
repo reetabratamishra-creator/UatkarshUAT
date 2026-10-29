@@ -92,7 +92,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
     @track isSteelPipeModalOpen = false;
     @track isSolarStructureModalOpen = false;
     @track solarStructureUom = 'Weight';
- // STEEL PIPE ACCESS - Deepanjan (22nd September 2026)
+    // STEEL PIPE ACCESS - Deepanjan (22nd September 2026)
     // User.Can_Use_Steel_Pipe_Domestic__c / _Export__c. false = blocked until the
     // wire confirms the tick (safe-fail).
     @track canUseSteelPipeDomestic = false;
@@ -142,13 +142,13 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
     @track showRejectModal = false;
 
     // ── QUOTE CLONE modal state - Deepanjan (7th September 2026) ──
-    @track showCloneModal    = false;
-    @track cloneSearchTerm   = '';
-    @track cloneOppOptions   = [];     // search results (own, open opportunities)
-    @track cloneSelectedOpp  = null;   // { id, name, stageName, accountName }
-    @track cloneSearching    = false;
-    @track cloneCreating     = false;
-    _cloneSearchTimer        = null;
+    @track showCloneModal = false;
+    @track cloneSearchTerm = '';
+    @track cloneOppOptions = [];     // search results (own, open opportunities)
+    @track cloneSelectedOpp = null;   // { id, name, stageName, accountName }
+    @track cloneSearching = false;
+    @track cloneCreating = false;
+    _cloneSearchTimer = null;
     @track rejectionReason = '';
     approvalQuoteId = null;
     @track isAwaitingDueDate = false;
@@ -201,7 +201,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
     }
 
     // 👉 UPDATE THIS LINE to include both fields in the array
-        @wire(getRecord, { recordId: USER_ID, fields: [CAN_VIEW_RATES_FIELD, CAN_VIEW_APPROVALS_FIELD], optionalFields: [CAN_USE_SP_DOMESTIC_FIELD, CAN_USE_SP_EXPORT_FIELD] })
+    @wire(getRecord, { recordId: USER_ID, fields: [CAN_VIEW_RATES_FIELD, CAN_VIEW_APPROVALS_FIELD], optionalFields: [CAN_USE_SP_DOMESTIC_FIELD, CAN_USE_SP_EXPORT_FIELD] })
     wiredUser({ error, data }) {
         if (data) {
             this.hasRateAccessFromUser = data.fields.Access_to_Quote_Rate_Manager__c.value === true;
@@ -209,11 +209,11 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
             // 👉 ADD THIS LINE to check the new approval field safely
             this.hasApprovalAccess = data.fields.Can_View_Approvals__c ? data.fields.Can_View_Approvals__c.value === true : false;
 
-                        // STEEL PIPE ACCESS - Deepanjan (22nd September 2026)
+            // STEEL PIPE ACCESS - Deepanjan (22nd September 2026)
             const spDom = data.fields.Can_Use_Steel_Pipe_Domestic__c;
             const spExp = data.fields.Can_Use_Steel_Pipe_Export__c;
             this.canUseSteelPipeDomestic = !!(spDom && spDom.value === true);
-            this.canUseSteelPipeExport   = !!(spExp && spExp.value === true);
+            this.canUseSteelPipeExport = !!(spExp && spExp.value === true);
 
         } else if (error) {
             console.error('Error fetching user access:', error);
@@ -513,7 +513,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
                     year: 'numeric', month: 'short', day: 'numeric'
                 }) : '',
 
-                                // Approver column: who it is waiting on while In Review, who approved it once
+                // Approver column: who it is waiting on while In Review, who approved it once
                 // Approved; both names already come back from getQuotesByOpportunity.
                 // Deepanjan (18th September 2026)
                 approverName: (quote.Pending_Approver__r && quote.Pending_Approver__r.Name)
@@ -609,7 +609,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
         // Find the quote currently open on the screen
         const activeQuote = this.opportunityQuotes.find(q => q.Id === this.quoteId);
         if (activeQuote) {
-            return activeQuote.IsSyncing === true;
+            return activeQuote.IsSyncing === true && activeQuote.Finalized_Quote__c === true;
         }
         return false;
     }
@@ -637,7 +637,8 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
             // Call Apex to process files and transition stage
             await finalizeQuoteAndAttachDocs({
                 opportunityId: this.recordId,
-                quoteId: this.quoteId
+                quoteId: this.quoteId,
+                calledfrom: 'finalizeQuoteButton'
             });
             this.dispatchEvent(
                 new ShowToastEvent({
@@ -672,7 +673,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
     // cloneQuote -> toast; same opportunity refreshes the list, another one
     // navigates there so the user lands on the new quote's home.
     // ═══════════════════════════════════════════════════════════════════════
-            get showCloneQuoteButton() {
+    get showCloneQuoteButton() {
         // Approved OR finalized (IsSyncing). Self-guarded so it never throws while the
         // quote list is still loading. Deepanjan (16th September 2026)
         if (!this.quoteId) return false;
@@ -686,7 +687,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
         if (!o) return '';
         const parts = [];
         if (o.accountName) parts.push(`Account: ${o.accountName}`);
-        if (o.stageName)   parts.push(`Stage: ${o.stageName}`);
+        if (o.stageName) parts.push(`Stage: ${o.stageName}`);
         return parts.join('  ·  ');
     }
 
@@ -697,7 +698,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
 
     get cloneComboboxClass() {
         return 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click'
-             + (this.showCloneDropdown ? ' slds-is-open' : '');
+            + (this.showCloneDropdown ? ' slds-is-open' : '');
     }
 
     get hasCloneOppOptions() {
@@ -714,10 +715,10 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
     }
 
     async handleOpenCloneModal() {
-        this.cloneSearchTerm  = '';
-        this.cloneOppOptions  = [];
+        this.cloneSearchTerm = '';
+        this.cloneOppOptions = [];
         this.cloneSelectedOpp = null;
-        this.showCloneModal   = true;
+        this.showCloneModal = true;
         try {
             const cur = await getOpportunityForClone({ opportunityId: this.recordId });
             if (cur) this.cloneSelectedOpp = cur;
@@ -739,7 +740,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
         clearTimeout(this._cloneSearchTimer);
         if (term.trim().length < 2) {
             this.cloneOppOptions = [];
-            this.cloneSearching  = false;
+            this.cloneSearching = false;
             return;
         }
         this.cloneSearching = true;
@@ -762,8 +763,8 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
         const pick = (this.cloneOppOptions || []).find(o => o.id === id);
         if (!pick) return;
         this.cloneSelectedOpp = pick;
-        this.cloneOppOptions  = [];
-        this.cloneSearchTerm  = '';
+        this.cloneOppOptions = [];
+        this.cloneSearchTerm = '';
     }
 
     handleCloneClearOpp() {
@@ -808,7 +809,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
         return activeQuote ? activeQuote.Status === 'Approved' : false;
     }
 
-        // Offer document may be VIEWED any time after save, but DOWNLOADED only once the
+    // Offer document may be VIEWED any time after save, but DOWNLOADED only once the
     // quote is Approved or finalized. Handed to c-quote-excel-generator. Deepanjan (18th September 2026)
     get canDownloadOffer() {
         const q = (this.opportunityQuotes || []).find(x => x && x.Id === this.quoteId);
@@ -939,6 +940,11 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
         this.isApplying = true;
         this._setApplyStep('Approving quote...', 20);
         this._runApprovalChain([
+            ['updating quote details...', 45, () => finalizeQuoteAndAttachDocs({
+                opportunityId: this.recordId,
+                quoteId: this.quoteId,
+                calledfrom: 'approveQuoteButton'
+            })],
             ['Capturing offer total...', 55, () => this.captureTotals()],
             ['Notifying submitter...', 80, () => this.notifyApproval(approvedQuoteId, submitterId, 'APPROVED')],
             ['Refreshing quotes...', 92, () => this.refreshQuotes()]
@@ -1726,7 +1732,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
         const sectionId = event.currentTarget.dataset.section;
         const selectedValue = event.detail.value;
 
-                // STEEL PIPE ACCESS - Deepanjan (22nd September 2026): Market type Domestic/Export
+        // STEEL PIPE ACCESS - Deepanjan (22nd September 2026): Market type Domestic/Export
         // is refused without the matching User checkbox; combobox goes back, nothing runs.
         if (this.selectedPicklistValue === 'Steel Pipes - Department' && fieldApiName === 'market_type') {
             const spBlock = this._steelPipeBlockMsg(selectedValue);
@@ -2060,7 +2066,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
 
             console.log('[Domestic] folderApiName:', folderApiName, '| rootValue:', rootValue);
 
-                        // STEEL PIPE ACCESS - Deepanjan (22nd September 2026)
+            // STEEL PIPE ACCESS - Deepanjan (22nd September 2026)
             const spBlock = this._steelPipeBlockMsg(rootValue);
             if (spBlock) {
                 this.showToast('Access Denied', spBlock, 'error');
@@ -3528,7 +3534,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
         console.log('Modal closed');
     }
 
-        // Today as yyyy-mm-dd in the USER'S local time — feeds the date input's min and the
+    // Today as yyyy-mm-dd in the USER'S local time — feeds the date input's min and the
     // APPLY check. Local getters on purpose: toISOString() is UTC, so between 00:00 and
     // 05:30 IST it would still say "yesterday". Deepanjan (16th September 2026)
     get expirationMinDate() {
@@ -3549,14 +3555,14 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
             return;
         }
 
-                // ...and can never be in the past. Both sides are yyyy-mm-dd strings, so a plain
+        // ...and can never be in the past. Both sides are yyyy-mm-dd strings, so a plain
         // string compare is a correct date compare. Deepanjan (16th September 2026)
         if (this.expirationDate < this.expirationMinDate) {
             this.showToast('Invalid Date', 'Expiration Date cannot be earlier than today.', 'error');
             return;
         }
 
-                // STEEL PIPE ACCESS - Deepanjan (22nd September 2026): a quote whose Market type
+        // STEEL PIPE ACCESS - Deepanjan (22nd September 2026): a quote whose Market type
         // this user may not use (e.g. someone else's quote reopened) cannot be APPLIED.
         if (this.selectedPicklistValue === 'Steel Pipes - Department') {
             const spBlock = this._steelPipeBlockMsg(this.modalSavedData && this.modalSavedData.market_type);
@@ -4106,7 +4112,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
             // demanded here is exactly the set the modal's own Apply demanded.
             // Deepanjan (5th September 2026)
             const requiredTpl = tpl.filter(f => f && f.apiName && f.required && !f.formula && !f.readOnly
-                                                && !f.cloneFrom && !INTERCEPTOR_DERIVED.has(f.apiName));
+                && !f.cloneFrom && !INTERCEPTOR_DERIVED.has(f.apiName));
             if (requiredTpl.length === 0) continue;
             const ctrlAllows = (f, n) => {
                 if (!f.controllingField) return true;
@@ -4241,8 +4247,8 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
 
         const d = this.modalSavedData || {};
         const PRODUCTS = [
-            { name: 'Angular',            pfx: 'agl_' },
-            { name: 'Tubular',            pfx: 'tub_' },
+            { name: 'Angular', pfx: 'agl_' },
+            { name: 'Tubular', pfx: 'tub_' },
             { name: 'Tubular Signalling', pfx: 'tsg_' }
         ];
 
@@ -4263,15 +4269,15 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
             : GATE_ON.indexOf(String(v === undefined || v === null ? '' : v).trim().toLowerCase()) >= 0;
 
         const parts = PRODUCTS.filter(p => hasLines(p.name))
-                              .map(p => ({ name: p.name, on: gateOn(d[p.pfx + 'payment_terms_req']) }));
+            .map(p => ({ name: p.name, on: gateOn(d[p.pfx + 'payment_terms_req']) }));
 
         if (parts.length < 2) return true;   // single product - nothing to reconcile
 
-        const on  = parts.filter(p => p.on).map(p => p.name);
+        const on = parts.filter(p => p.on).map(p => p.name);
         const off = parts.filter(p => !p.on).map(p => p.name);
         if (on.length === 0 || off.length === 0) return true;   // all on, or all off
 
-        const onVerb  = on.length > 1 ? 'have' : 'has';
+        const onVerb = on.length > 1 ? 'have' : 'has';
         const offVerb = off.length > 1 ? 'do' : 'does';
         this.showToast(
             'Telecom Tower - Interest Component Mismatch',
@@ -4585,7 +4591,9 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
             if (this.isDomesticOrExport) {
                 // The Smart Naming Trick: Combine specs for the Database Name
                 let descriptiveName = currentName;
-                if (line.designation && line.designation !== '') {
+                if ((line.pipe_class === 'Core' || line.isCorePipe) && line.size_nb) {
+                    descriptiveName = line.size_nb;
+                } else if (line.designation && line.designation !== '') {
                     descriptiveName = `${line.designation} | ${line.size_nb} | ${line.standard_spec_grade} | ${line.pipe_class}`;
                 }
 
@@ -4600,6 +4608,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
                     unitListPrice: finalListPrice,
                     expenses: line.expenses || 0,
                     discount: calculatedDiscount,
+                    discount_percent: calculatedDiscount,
                     margin: currentMargin,
                     added_up: line.added_up || '',
                     tolerance: line.tolerance || ''
@@ -4616,6 +4625,8 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
                     unitCost: currentCost, unitPrice: currentPrice,
                     unitListPrice: finalListPrice,
                     discount: calculatedDiscount,
+                    discount_percent: calculatedDiscount,
+                    discountPercent: calculatedDiscount,
                     expenses: line.expenses || 0,
                     netPrice: currentPrice,
                     listPrice: finalListPrice,
@@ -4644,6 +4655,8 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
 
                     // Export Fields
                     od: line.od || 0,
+                    customOD: line.customOD || line.custom_od || 0,
+                    custom_od: line.customOD || line.custom_od || 0,
                     wall_thickness: line.wall_thickness || 0,
                     grade: line.grade || '',
                     pipe_length: line.pipe_length || 0,
@@ -4656,7 +4669,15 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
                     price_fc: line.price_fc || 0,
                     total_fob_fc: line.total_fob_fc || 0,
                     total_fob_inr: line.total_fob_inr || 0,
-                    freight_type: line.freight_type || ''
+                    freight_type: line.freight_type || '',
+                    cost_price_fc: line.cost_price_fc || line.costPriceFc || 0,
+                    quoted_price_fc: line.quoted_price_fc || line.quotedPriceFc || 0,
+                    cutoff_price_fc: line.cutoff_price_fc || line.cutoffPriceFc || 0,
+                    tolerance_amount: line.tolerance_amount || line.toleranceAmount || 0,
+                    net_fob_fc: line.net_fob_fc || line.netFobFc || 0,
+                    net_fob_inr: line.net_fob_inr || line.netFobInr || 0,
+                    price_per_mt: line.price_per_mt || line.pricePerMt || 0,
+                    cfr: line.cfr || 0
                 });
             }
 
@@ -5076,7 +5097,7 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
             this.showToast('Required', 'Please enter a submit message.', 'error');
             return;
         }
-        
+
         // 1. Close the popover
         this.isSubmitPopoverOpen = false;
 
@@ -5532,14 +5553,28 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
 
         // Format the lines precisely for your central engine
         const lineItems = configuredPipes.map((pipe, idx) => {
+            const unitPrice = pipe.quotedPriceFc || pipe.priceFc || pipe.pricePerPiece || pipe.pricePerMeter || 0;
+            const costPrice = pipe.costPriceFc || unitPrice;
+            const listPrice = costPrice;
+            const discount = (pipe.discountPercent !== undefined && pipe.discountPercent !== null)
+                ? Number(pipe.discountPercent)
+                : ((pipe.discount !== undefined && pipe.discount !== null)
+                    ? Number(pipe.discount)
+                    : (listPrice > 0 ? Number((((listPrice - unitPrice) / listPrice) * 100).toFixed(2)) : 0));
+
             return {
                 itemName: `Export Steel Pipe ${idx + 1}: ${pipe.designation} ${pipe.standardSpecGrade}`,
                 weight: pipe.totalWeight,
                 quantity: pipe.totalPieces,
                 realization: 0,
-                unitPrice: pipe.pricePerPiece || pipe.pricePerMeter || 0,
-                unitCost: 0,
-                listPrice: 0,
+                unitPrice: unitPrice,
+                unitCost: costPrice,
+                listPrice: listPrice,
+                unitListPrice: listPrice,
+                discount: discount,
+                discount_percent: discount,
+                discountPercent: discount,
+                uom: pipe.uom || pipe.priceInputType || 'EA',
                 designation: pipe.designation,
                 standard_spec_grade: pipe.standardSpecGrade,
                 manual_standard: pipe.manualStandard,
@@ -5550,6 +5585,8 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
                 pipe_class: (pipe.seriesShape !== 'Manual' && pipe.seriesShape !== 'NA') ? pipe.seriesShape : (pipe.wallThickness ? pipe.wallThickness : ''),
 
                 od: pipe.od,
+                customOD: pipe.customOD || pipe.custom_od || 0,
+                custom_od: pipe.customOD || pipe.custom_od || 0,
                 shape: pipe.seriesShape,
                 wall_thickness: pipe.wallThickness,
                 schedule: pipe.schedule,
@@ -5559,20 +5596,51 @@ export default class CreateQuote extends NavigationMixin(LightningElement) {   /
                 kg_per_meter: pipe.kgPerMeter,
                 total_meters: pipe.totalMeters,
                 total_weight: pipe.totalWeight,
-                price_input_type: pipe.priceInputType,
+                price_input_type: pipe.priceInputType || pipe.uom || '',
                 currency_code: pipe.currencyCode,
                 exchange_rate: pipe.exchangeRate,
-                price_fc: pipe.priceFc,
+                price_fc: pipe.priceFc || unitPrice,
                 price_per_piece: pipe.pricePerPiece,
                 price_per_meter: pipe.pricePerMeter,
+                price_per_mt: pipe.pricePerMt,
                 total_fob_fc: pipe.totalFobFc,
                 total_fob_inr: pipe.totalFobInr,
                 freight_type: pipe.freightType,
                 reflect_in_offer_doc: 'Yes',
-                rate: pipe.priceFc,
+                rate: pipe.priceFc || unitPrice,
                 gst: 0,
-                price_per_uom: pipe.pricePerPiece,
-                total_price: pipe.totalFobFc
+                price_per_uom: unitPrice,
+                total_price: pipe.totalFobFc,
+
+                // Export-specific fields
+                cost_price_fc: pipe.costPriceFc || 0,
+                costPriceFc: pipe.costPriceFc || 0,
+                quoted_price_fc: pipe.quotedPriceFc || unitPrice,
+                quotedPriceFc: pipe.quotedPriceFc || unitPrice,
+                cutoff_price_fc: pipe.cutoffPriceFc || 0,
+                cutoffPriceFc: pipe.cutoffPriceFc || 0,
+                tolerance: pipe.tolerance || 0,
+                tolerance_percent: pipe.tolerance || 0,
+                toleranceAmount: pipe.toleranceAmount || 0,
+                tolerance_amount: pipe.toleranceAmount || 0,
+                non_tolerance_price_per_mt: pipe.nonTolerancePricePerMt || 0,
+                ex_works: pipe.exWorks || 0,
+                net_fob_inr: pipe.netFobInr || 0,
+                net_fob_fc: pipe.netFobFc || 0,
+                netFobInr: pipe.netFobInr || 0,
+                netFobFc: pipe.netFobFc || 0,
+                incentive: pipe.incentive || 0,
+                rodtep_addon: pipe.rodtepAddon || 0,
+                rodtep: pipe.rodtep || 0,
+                freight_fc: pipe.freightFc || 0,
+                ihc: pipe.ihc || 0,
+                container_tonnage: pipe.containerTonnage || 0,
+                commission_percent: pipe.commissionPercent || 0,
+                commission_value: pipe.commissionValue || 0,
+                freight_cost: pipe.freightCost || 0,
+                inspection_charges: pipe.inspectionCharges || 0,
+                other_charges: pipe.otherCharges || 0,
+                cfr: pipe.cfr || 0
             };
         });
 

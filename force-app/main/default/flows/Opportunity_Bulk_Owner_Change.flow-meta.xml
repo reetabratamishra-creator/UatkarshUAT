@@ -346,10 +346,10 @@
             <name>User_Department_matched_with_Record</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Loop_Check_Departments.Department_NameFormula__c</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <leftValueReference>IsUserDeptMismatched</leftValueReference>
+                <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>$User.Department</elementReference>
+                    <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <conditions>
@@ -561,6 +561,11 @@ VERSION 12 was created from version 10 - department mismatch bug solved</descrip
     AND({!First_Dept} = &quot;Steel Tubular Poles&quot;, INCLUDES({!Get_Running_User.Departments__c}, &quot;Steel_Tubular_Pole_Department&quot;)),
     AND({!First_Dept} = &quot;Transmission &amp; Telecom Tower&quot;, INCLUDES({!Get_Running_User.Departments__c}, &quot;Transmission_Tower_Department&quot;))
 )</expression>
+    </formulas>
+    <formulas>
+        <name>IsUserDeptMismatched</name>
+        <dataType>Boolean</dataType>
+        <expression>NOT(CONTAINS({!$User.Department}, {!Loop_Check_Departments.Department_NameFormula__c}))</expression>
     </formulas>
     <formulas>
         <name>Mapped_Dept</name>

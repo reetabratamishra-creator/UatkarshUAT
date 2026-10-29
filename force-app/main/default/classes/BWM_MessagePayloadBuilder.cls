@@ -5,6 +5,44 @@
  * @date          2026-08-06
  */
 public without sharing class BWM_MessagePayloadBuilder {
+  /**
+   * @description SMS variable values for a campaign send, using the auto-journey mapping.
+   */
+  public static Map<String, Object> smsMappingsForCampaign(
+    BWM_Template_Mapping__mdt mapping,
+    SObject record
+  ) {
+    if (mapping == null || record == null) {
+      return new Map<String, Object>();
+    }
+    List<String> params = BWM_FieldValueResolver.resolveParamsForRecord(record, mapping);
+    params = BWM_CampaignJourneyParamService.applyMessagingContactParamFixes(
+      record,
+      params,
+      mapping
+    );
+    return resolveSmsVariableMappings(mapping, record, params);
+  }
+
+  /**
+   * @description RCS body values for a campaign send, using the auto-journey mapping.
+   */
+  public static Map<String, Object> rcsBodyForCampaign(
+    BWM_Messaging_Settings__mdt settings,
+    BWM_Template_Mapping__mdt mapping,
+    SObject record
+  ) {
+    if (mapping == null || record == null) {
+      return new Map<String, Object>();
+    }
+    Map<String, Object> node = buildRcsJourneyNode(settings, mapping, record, false);
+    Map<String, Object> data = (Map<String, Object>) node.get('data');
+    Object bodyData = data == null ? null : data.get('bodyData');
+    return bodyData instanceof Map<String, Object>
+      ? (Map<String, Object>) bodyData
+      : new Map<String, Object>();
+  }
+
   public static String buildJourneyPayloadForRecord(
     BWM_Messaging_Settings__mdt settings,
     BWM_Template_Mapping__mdt mapping,
@@ -54,6 +92,8 @@ public without sharing class BWM_MessagePayloadBuilder {
       params,
       mapping
     );
+    // RCS and SMS keep the auto-journey values. Campaign blank-fill applies to WhatsApp only.
+    List<String> messagingParams = params;
     if (forCampaignSend == true) {
       params = BWM_CampaignJourneyParamService.fillBlankSecondaryContactParams(
         record,
@@ -83,7 +123,7 @@ public without sharing class BWM_MessagePayloadBuilder {
           settings,
           mapping,
           record,
-          forCampaignSend == true
+          false
         )
       );
       nodeIndex++;
@@ -95,7 +135,7 @@ public without sharing class BWM_MessagePayloadBuilder {
         buildSmsJourneyNode(
           mapping,
           record,
-          params
+          messagingParams
         )
       );
     }
@@ -247,6 +287,7 @@ public without sharing class BWM_MessagePayloadBuilder {
         mapping
       );
     }
+    blankStringMap(bodyData);
 
     return new Map<String, Object>{
       'templateType' => 'RCSMESSAGE',
@@ -284,7 +325,7 @@ public without sharing class BWM_MessagePayloadBuilder {
    * @description Builds SMS journey variableMappings from journey JSON tokens,
    *              falling back to template Param fields only when compatible.
    *              Phone tokens (e.g. Lead.Owner.Phone) resolve Owner Mobile/Phone;
-   *              blank stays blank — never Param1 Owner.Name via index alignment.
+   *              blank becomes a space — never Param1 Owner.Name via index alignment.
    */
   private static Map<String, Object> resolveSmsVariableMappings(
     BWM_Template_Mapping__mdt mapping,
@@ -319,7 +360,7 @@ public without sharing class BWM_MessagePayloadBuilder {
         } else if (String.isBlank(value) && paramFallbackMappings.containsKey(key)) {
           value = nullToEmptyTrim(paramFallbackMappings.get(key));
         }
-        variableMappings.put(key, value);
+        variableMappings.put(key, blankChannelSlot(value));
       }
       if (!variableMappings.isEmpty()) {
         return variableMappings;
@@ -382,7 +423,7 @@ public without sharing class BWM_MessagePayloadBuilder {
           BWM_FieldValueResolver.resolveSmsOwnerPhoneSlot(record, value)
         );
       }
-      variableMappings.put(String.valueOf(index + 1), value);
+      variableMappings.put(String.valueOf(index + 1), blankChannelSlot(value));
     }
     return variableMappings;
   }
@@ -473,30 +514,125 @@ public without sharing class BWM_MessagePayloadBuilder {
   }
 
   /**
-   * @description Owner-phone SMS slots: owner Mobile/Phone digits only. Blank when
-   *              empty — never CRM or other fallback numbers, never unresolved token
-   *              text (e.g. Lead.Owner.Phone) in the outbound mapping value.
+   * @description Owner-phone SMS slots: owner Mobile/Phone digits only. A single
+   *              space when empty so Bluewave does not keep the template sample
+   *              (e.g. Lead.Owner.Phone). Never CRM or other fallback numbers.
    */
   private static String finalizeSmsJourneyOwnerPhoneValue(String value) {
-    if (looksLikeUnresolvedOwnerPhoneToken(value)) {
-      return '';
-    }
-    if (String.isBlank(value)) {
-      return '';
+    return blankChannelSlot(value);
+  }
+
+  /**
+   * @description Empty merge values and leftover field tokens (Lead.Owner.Phone)
+   *              become a single space so Bluewave does not keep the template sample.
+   */
+  public static String blankChannelSlot(String value) {
+    if (String.isBlank(value) || isUnresolvedMergeToken(value)) {
+      return ' ';
     }
     return value.trim();
   }
 
-  private static Boolean looksLikeUnresolvedOwnerPhoneToken(String value) {
+  /**
+   * @description Replaces blank SMS and RCS merge values on a resolved journey
+   *              document. WhatsApp nodes are left unchanged.
+   */
+  public static Map<String, Object> blankMissingSmsAndRcsValues(
+    Map<String, Object> payload
+  ) {
+    if (payload == null) {
+      return payload;
+    }
+    Map<String, Object> journeyPayload = (Map<String, Object>) payload.get(
+      'journeypayload'
+    );
+    if (journeyPayload == null) {
+      return payload;
+    }
+    Map<String, Object> nodes = (Map<String, Object>) journeyPayload.get('nodes');
+    if (nodes == null) {
+      return payload;
+    }
+    for (String nodeKey : nodes.keySet()) {
+      Map<String, Object> node = (Map<String, Object>) nodes.get(nodeKey);
+      if (node == null) {
+        continue;
+      }
+      String templateType = (String) node.get('templateType');
+      Map<String, Object> data = (Map<String, Object>) node.get('data');
+      if (data == null) {
+        continue;
+      }
+      if (templateType == 'SMS') {
+        blankStringMap(data.get('variableMappings'));
+      } else if (templateType == 'RCSMESSAGE') {
+        blankStringMap(data.get('bodyData'));
+      }
+    }
+    return payload;
+  }
+
+  private static void blankStringMap(Object rawMap) {
+    if (!(rawMap instanceof Map<String, Object>)) {
+      return;
+    }
+    Map<String, Object> values = (Map<String, Object>) rawMap;
+    for (String key : values.keySet()) {
+      Object rawValue = values.get(key);
+      if (rawValue != null && !(rawValue instanceof String)) {
+        continue;
+      }
+      values.put(key, blankChannelSlot(rawValue == null ? '' : (String) rawValue));
+    }
+  }
+
+  private static Boolean isUnresolvedMergeToken(String value) {
     if (String.isBlank(value)) {
       return false;
     }
-    String normalized = value.trim().toLowerCase();
-    if (!normalized.contains('owner') || !normalized.contains('phone')) {
-      return false;
-    }
-    return value.replaceAll('[^0-9]', '').length() < 10;
+    return MERGE_TOKENS.contains(value.trim().toLowerCase());
   }
+
+  private static final Set<String> MERGE_TOKENS = new Set<String>{
+    'lead.owner',
+    'lead.owner.name',
+    'lead.owner.phone',
+    'lead.owner.email',
+    'lead_owner',
+    'lead_owner_name',
+    'lead_owner_phone',
+    'lead_owner_email',
+    'owner.name',
+    'owner.phone',
+    'owner.email',
+    'owner.mobilephone',
+    'opportunity.owner',
+    'opportunity.owner.name',
+    'opportunity.owner.phone',
+    'opportunity.owner.email',
+    'opportunity.owner.number',
+    'opportunity_owner',
+    'opportunity_owner_name',
+    'opportunity_owner_phone',
+    'opportunity_owner_number',
+    'opportunity_owner_email',
+    'department.name',
+    'department.crm.name',
+    'department.crm.phone',
+    'department.crm.email',
+    'department.crm.number',
+    'department.crm.call',
+    'department_name_1',
+    'department_name_2',
+    'department_name_3',
+    'department_crm_name',
+    'department_crm_phone',
+    'department_crm_email',
+    'department_crm_number',
+    'product_brief',
+    'rudra_number',
+    'bhagyashree_number'
+  };
 
   /**
    * WhatsApp/Bluewave leave literal {{n}} when value is empty. A single space

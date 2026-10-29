@@ -18,9 +18,6 @@
         <sobjectType>Tender_Ai_Summary_Json__c</sobjectType>
     </queueSobject>
     <queueSobject>
-        <sobjectType>Tender_Docoment_Details__c</sobjectType>
-    </queueSobject>
-    <queueSobject>
         <sobjectType>Tender__c</sobjectType>
     </queueSobject>
 </Queue>

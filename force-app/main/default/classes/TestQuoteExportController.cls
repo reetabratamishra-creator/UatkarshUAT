@@ -857,6 +857,186 @@ private class TestQuoteExportController {
     }
 
     @IsTest
+    static void testPebDynamicBuildingMetadataAndFallbacks() {
+        Opportunity opp = [SELECT Id, AccountId FROM Opportunity WHERE Name = 'Test Opp' LIMIT 1];
+        
+        // 1. With full building description
+        Map<String, Object> bd = new Map<String, Object>{
+            'clientInfo' => new Map<String, Object>{
+                'clientName' => 'Lal Baba Engineers Ltd.',
+                'projectLocation' => 'Haldia, West Bengal',
+                'buildingName' => 'Industrial Shed'
+            }
+        };
+        Map<String, Object> qData1 = pebQuoteData();
+        qData1.put('_buildingDescription', bd);
+        Quote q1 = newQuote('PEB Full BD', opp.Id, null, JSON.serialize(qData1));
+        insert q1;
+
+        Test.startTest();
+        QuoteExportController c1 = new QuoteExportController(stdCtrl(q1.Id));
+
+        Assert.areEqual('M/s. Lal Baba Engineers Ltd.', c1.effectiveBuyerName, 'Buyer name with M/s. prefix');
+        Assert.areEqual('Haldia, West Bengal', c1.effectiveProjectLocation, 'Project location from building description');
+        Assert.areEqual('Industrial Shed', c1.effectiveBuildingName, 'Building name from building description');
+        Assert.areEqual('Sub: Offer for design, manufacture and supply of Industrial Shed at Haldia, West Bengal.', c1.pebSubjectLine, 'Full subject line');
+
+        // 2. Test Address_Book__c fallback on Opportunity
+        Address_Book__c oppAb = new Address_Book__c(
+            Opportunity__c = opp.Id,
+            Country__c = 'India',
+            State__c = 'West Bengal',
+            City__c = 'Amta',
+            Primary_Address__c = true
+        );
+        insert oppAb;
+
+        Map<String, Object> qData2 = pebQuoteData();
+        Quote q2 = newQuote('PEB Opp AB', opp.Id, null, JSON.serialize(qData2));
+        insert q2;
+
+        QuoteExportController c2 = new QuoteExportController(stdCtrl(q2.Id));
+        Assert.areEqual('M/s. Test Account', c2.effectiveBuyerName, 'Buyer falls back to Account name');
+        Assert.areEqual('Amta, West Bengal', c2.effectiveProjectLocation, 'Location falls back to Opp Address Book');
+        Assert.areEqual('', c2.effectiveBuildingName, 'Building name falls back to empty');
+        Assert.areEqual('Sub: Offer for design, manufacture and supply at Amta, West Bengal.', c2.pebSubjectLine, 'Subject line without building name');
+
+        // 3. Test blank project site in building description falls back to Address Book and NOT the next item
+        Map<String, Object> bd3 = new Map<String, Object>{
+            'clientInfo' => new Map<String, Object>{
+                'clientName' => 'txt',
+                'projectLocation' => '', // blank in table
+                'buildingName' => 'Industrial Shed'
+            }
+        };
+        Map<String, Object> qData3 = pebQuoteData();
+        qData3.put('_buildingDescription', bd3);
+        Quote q3 = newQuote('PEB Blank Site BD', opp.Id, null, JSON.serialize(qData3));
+        insert q3;
+
+        QuoteExportController c3 = new QuoteExportController(stdCtrl(q3.Id));
+        Assert.areEqual('M/s. txt', c3.effectiveBuyerName, 'Buyer is txt');
+        Assert.areEqual('Amta, West Bengal', c3.effectiveProjectLocation, 'Blank site correctly falls back to Address Book and NOT next item');
+        Assert.areEqual('Industrial Shed', c3.effectiveBuildingName, 'Building name is Industrial Shed');
+        Assert.areEqual('Sub: Offer for design, manufacture and supply of Industrial Shed at Amta, West Bengal.', c3.pebSubjectLine, 'Subject has building name and address book site');
+
+        // 4. Test corrupted table artifact like 'Opening' in building description is rejected and falls back to Address Book
+        Map<String, Object> bd4 = new Map<String, Object>{
+            'clientInfo' => new Map<String, Object>{
+                'clientName' => 'txt',
+                'projectLocation' => 'Opening', // corrupted table header artifact
+                'buildingName' => 'Industrial Shed'
+            }
+        };
+        Map<String, Object> qData4 = pebQuoteData();
+        qData4.put('_buildingDescription', bd4);
+        Quote q4 = newQuote('PEB Corrupted Opening BD', opp.Id, null, JSON.serialize(qData4));
+        insert q4;
+
+        QuoteExportController c4 = new QuoteExportController(stdCtrl(q4.Id));
+        Assert.areEqual('Amta, West Bengal', c4.effectiveProjectLocation, 'Opening header correctly rejected and falls back to Address Book');
+
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testPebUniversalDocSections() {
+        Opportunity opp = [SELECT Id FROM Opportunity WHERE Name = 'Test Opp' LIMIT 1];
+
+        List<Map<String, Object>> mockSections = new List<Map<String, Object>>{
+            new Map<String, Object>{
+                'title' => '(A) DESIGN CRITERIA',
+                'sectionType' => 'chapter',
+                'notes' => new List<String>{ 'Design note 1' }
+            },
+            new Map<String, Object>{
+                'title' => '(B) Project Summary:',
+                'sectionType' => 'table',
+                'colCount' => 2,
+                'tableHeaders' => new List<String>(),
+                'tableRows' => new List<Map<String, Object>>{
+                    new Map<String, Object>{ 'c1' => 'Total no. of Buildings', 'c2' => '01' }
+                }
+            },
+            new Map<String, Object>{
+                'title' => '',
+                'subtitle' => '(if more than one building or more than one area)',
+                'sectionType' => 'table',
+                'colCount' => 3,
+                'tableHeaders' => new List<String>{ 'UTILITY OF BUILDING.', 'No. OF BUILDING', 'Total Area (Sqm.)' },
+                'tableRows' => new List<Map<String, Object>>{
+                    new Map<String, Object>{ 'c1' => 'Factory Cum Warehouse', 'c2' => '1', 'c3' => '20600' },
+                    new Map<String, Object>{ 'c1' => '', 'c2' => 'Total area', 'c3' => '20600', 'isSubHeader' => false }
+                }
+            },
+            new Map<String, Object>{
+                'title' => 'C.1.8.7 Accessories:',
+                'sectionType' => 'table',
+                'colCount' => 4,
+                'tableHeaders' => new List<String>{ '', 'Description', 'Quantity', 'Remarks' },
+                'tableRows' => new List<Map<String, Object>>{
+                    new Map<String, Object>{ 'c1' => '1', 'c2' => 'Sky Light', 'c3' => '16 Nos.', 'c4' => 'Polycarbonate' }
+                }
+            },
+            new Map<String, Object>{
+                'title' => 'D.1 Building technical notes:',
+                'sectionType' => 'list',
+                'listItems' => new List<String>{ '1. Grid line C/C dimensions' }
+            }
+        };
+
+        Map<String, Object> bd = new Map<String, Object>{
+            'docSections' => mockSections
+        };
+        Map<String, Object> qData = pebQuoteData();
+        qData.put('_buildingDescription', bd);
+        Quote q = newQuote('PEB Universal Sections', opp.Id, null, JSON.serialize(qData));
+        insert q;
+
+        Test.startTest();
+        QuoteExportController c = new QuoteExportController(stdCtrl(q.Id));
+        Test.stopTest();
+
+        Assert.areEqual(5, c.docSections.size(), 'Should parse 5 doc sections');
+        
+        // Chapter check
+        QuoteExportController.DocSection sec1 = c.docSections[0];
+        Assert.isTrue(sec1.isChapter, 'Sec 1 is chapter');
+        Assert.areEqual('(A) DESIGN CRITERIA', sec1.title);
+        Assert.areEqual(1, sec1.notes.size());
+
+        // Project Summary Box check
+        QuoteExportController.DocSection sec2 = c.docSections[1];
+        Assert.isTrue(sec2.isTable, 'Sec 2 is table');
+        Assert.isTrue(sec2.isProjectSummaryBox, 'Sec 2 is project summary box');
+        Assert.areEqual('45%', sec2.w1, 'Project summary box w1 is 45%');
+        Assert.areEqual('55%', sec2.w2, 'Project summary box w2 is 55%');
+
+        // Project Summary Table check
+        QuoteExportController.DocSection sec3 = c.docSections[2];
+        Assert.isTrue(sec3.isTable, 'Sec 3 is table');
+        Assert.isTrue(sec3.isProjectSummaryTable, 'Sec 3 is project summary table');
+        Assert.areEqual('35%', sec3.w1, 'Utility col w1 is 35%');
+        Assert.areEqual('30%', sec3.w2, 'No of bldg w2 is 30%');
+        Assert.areEqual('35%', sec3.w3, 'Total area w3 is 35%');
+
+        // Accessories Table check
+        QuoteExportController.DocSection sec4 = c.docSections[3];
+        Assert.isTrue(sec4.isTable, 'Sec 4 is table');
+        Assert.isTrue(sec4.isFirstColSrNo, 'Sec 4 detects first col as Sr No');
+        Assert.areEqual('5%', sec4.w1, 'Sr No col w1 is 5%');
+        Assert.areEqual('25%', sec4.w2, 'Desc col w2 is 25%');
+        Assert.areEqual('35%', sec4.w3, 'Qty col w3 is 35%');
+        Assert.areEqual('35%', sec4.w4, 'Remarks col w4 is 35%');
+
+        // List check
+        QuoteExportController.DocSection sec5 = c.docSections[4];
+        Assert.isTrue(sec5.isList, 'Sec 5 is list');
+        Assert.areEqual('D.1 Building technical notes:', sec5.title);
+        Assert.areEqual(1, sec5.listItems.size());
+    }
+
+    @IsTest
     static void testDefaultsAndFallbacks() {
         Test.startTest();
         QuoteExportController c = ctrlFor('Defaults');
@@ -964,5 +1144,62 @@ private class TestQuoteExportController {
         Assert.areEqual('Advance days. 100% Advance before dispatch', results.get('Cr Advance'), 'Crash advance branch');
         Assert.areEqual('Custom Term', results.get('Cr Other'), 'Crash passthrough branch');
         Assert.areEqual('100% advance along with PI.', results.get('Cr Default'), 'Crash default branch');
+    }
+
+    @IsTest
+    static void testMergedCellsTableHtml() {
+        Quote q = [SELECT Id FROM Quote WHERE Name = 'Solar Pcs' LIMIT 1];
+        
+        Map<String, Object> secMap = new Map<String, Object>{
+            'title' => 'C.1.2 Bracing System .',
+            'sectionType' => 'table',
+            'colCount' => 3,
+            'colWidths' => new List<Object>{ '6%', '44%', '50%' },
+            'tableHeaders' => new List<Object>(),
+            'tableRows' => new List<Object>{
+                new Map<String, Object>{
+                    'c1' => '1', 'r1Span' => 3, 'c2' => 'Roof', 'c3' => 'Rod'
+                },
+                new Map<String, Object>{
+                    'skipC1' => true, 'c2' => 'Side Columns up to Crane/Mezzanine/ Opening', 'c3' => 'Pipe'
+                },
+                new Map<String, Object>{
+                    'skipC1' => true, 'c2' => 'Side Columns over Crane/Mezzanine/ Opening', 'c3' => ''
+                },
+                new Map<String, Object>{
+                    'c1' => '2', 'r1Span' => 1, 'c2' => 'Intermediate Columns up to Crane/Mezzanine/ Opening', 'c3' => ''
+                },
+                new Map<String, Object>{
+                    'c1' => '3', 'r1Span' => 1, 'c2' => 'Intermediate Columns over Crane/Mezzanine/ Opening', 'c3' => ''
+                }
+            }
+        };
+
+        Map<String, Object> qVal = new Map<String, Object>{
+            '_buildingDescription' => new Map<String, Object>{
+                'docSections' => new List<Object>{ secMap }
+            }
+        };
+
+        q.Quote_Value__c = JSON.serialize(qVal);
+        update q;
+
+        Test.startTest();
+        QuoteExportController c = new QuoteExportController(stdCtrl(q.Id));
+        Test.stopTest();
+
+        Assert.areEqual(1, c.docSections.size(), 'One doc section parsed');
+        QuoteExportController.DocSection sec = c.docSections[0];
+        Assert.areEqual(3, sec.colCount, '3 columns');
+        Assert.areEqual(3, sec.colWidths.size(), 'Custom widths applied');
+        Assert.areEqual(5, sec.tableRows.size(), '5 table rows');
+        Assert.areEqual(3, sec.tableRows[0].r1Span, 'Row 1 has rowspan 3');
+        Assert.isTrue(sec.tableRows[1].skipC1, 'Row 2 skips C1');
+        Assert.isTrue(sec.tableRows[2].skipC1, 'Row 3 skips C1');
+
+        String html = sec.tableHtml;
+        Assert.isTrue(html.contains('rowspan="3"'), 'HTML contains rowspan 3');
+        Assert.isTrue(html.contains('vertical-align: middle;'), 'HTML contains vertical-align middle for spanned row');
+        Assert.isTrue(html.contains('width: 6%'), 'HTML uses custom colWidth 6%');
     }
 }

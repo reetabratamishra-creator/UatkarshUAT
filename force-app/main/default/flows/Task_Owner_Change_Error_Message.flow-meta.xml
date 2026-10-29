@@ -73,10 +73,10 @@
             <name>if_different_department</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>get_Parent_record.Department_Name__c</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <leftValueReference>IsDifferentDeptLead</leftValueReference>
+                <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>$Record.Owner:User.Department</elementReference>
+                    <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -95,10 +95,10 @@
             <name>if_different_department_0</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>get_Parent_record_0.Department_Name__c</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <leftValueReference>IsDifferentDeptOpp</leftValueReference>
+                <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>$Record.Owner:User.Department</elementReference>
+                    <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -109,6 +109,16 @@
     </decisions>
     <description>v2-typo changes</description>
     <environments>Default</environments>
+    <formulas>
+        <name>IsDifferentDeptLead</name>
+        <dataType>Boolean</dataType>
+        <expression>NOT(CONTAINS({!$Record.Owner:User.Department}, TEXT({!get_Parent_record.Department_Name__c})))</expression>
+    </formulas>
+    <formulas>
+        <name>IsDifferentDeptOpp</name>
+        <dataType>Boolean</dataType>
+        <expression>NOT(CONTAINS({!$Record.Owner:User.Department}, TEXT({!get_Parent_record_0.Department_Name__c})))</expression>
+    </formulas>
     <interviewLabel>Task:Owner Change Error Message {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Task:Owner Change Error Message</label>
     <processMetadataValues>

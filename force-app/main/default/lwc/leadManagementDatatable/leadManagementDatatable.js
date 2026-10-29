@@ -18,14 +18,22 @@ import getRcsTemplates from '@salesforce/apex/LeadManagementController.getRcsTem
 import getSmsTemplates from '@salesforce/apex/LeadManagementController.getSmsTemplates';
 import sendLeadEmails from '@salesforce/apex/LeadManagementController.sendLeadEmails';
 import getBluewaveEmailTemplates from '@salesforce/apex/LeadManagementController.getBluewaveEmailTemplates';
-import sendLeadCampaignEmail from '@salesforce/apex/LeadManagementController.sendLeadCampaignEmail';
+import sendLeadCampaignEmail from '@salesforce/apex/LeadManagementController.sendLeadCampaignEmailScheduled';
 import getCampaignJourneys from '@salesforce/apex/LeadManagementController.getCampaignJourneys';
-import sendLeadJourney from '@salesforce/apex/LeadManagementController.sendLeadJourney';
-import sendLeadWhatsApp from '@salesforce/apex/BWM_WaCampCtrlA.sendLeadWhatsApp';
-import sendLeadRcs from '@salesforce/apex/LeadManagementController.sendLeadRcs';
-import sendLeadSms from '@salesforce/apex/LeadManagementController.sendLeadSms';
-import createCampaignWithMembers from '@salesforce/apex/BWM_CustomCampaignMemberCtrl.createCampaignWithMembers';
+import sendLeadJourney from '@salesforce/apex/LeadManagementController.sendLeadJourneyScheduled';
+import sendLeadWhatsApp from '@salesforce/apex/BWM_WaCampCtrlA.sendLeadWhatsAppScheduled';
+import sendLeadRcs from '@salesforce/apex/LeadManagementController.sendLeadRcsScheduled';
+import sendLeadSms from '@salesforce/apex/LeadManagementController.sendLeadSmsScheduled';
+import createCampaignWithMembers from '@salesforce/apex/BWM_CustomCampaignMemberCtrl.createScheduledCampaignWithMembers';
 import { SEND_ACTION, MEMBER_TYPE, trackCampaignMembers } from 'c/campaignSendActions';
+import {
+    changedFieldCount,
+    dateChipLabel,
+    filtersMatch,
+    listChipLabel,
+    optionLabels,
+    presetRange
+} from 'c/campaignFilterUi';
 
 const COLUMNS = [
     {
@@ -67,6 +75,8 @@ export default class LeadManagementDatatable extends LightningElement {
     campaignFilter = '';
     fromDate;
     toDate;
+    datePreset = '';
+    appliedFilters;
 
     isEmailModalOpen = false;
     isSendingEmail = false;
@@ -107,6 +117,7 @@ export default class LeadManagementDatatable extends LightningElement {
     smsTemplateSearch = '';
 
     isCampaignNameModalOpen = false;
+    collectJourneySchedule = false;
     pendingSendAction = null;
 
     /**
@@ -227,6 +238,7 @@ export default class LeadManagementDatatable extends LightningElement {
      */
     async loadLeads(notifyWhenEmpty) {
         this.isLoading = true;
+        const requestedFilters = this.buildFilterState();
 
         try {
             const data = await searchLeads({
@@ -251,6 +263,7 @@ export default class LeadManagementDatatable extends LightningElement {
                 LostReason: row.Lost_Reason__c || '',
                 CampaignName: row.Campaign_Name__c || ''
             }));
+            this.appliedFilters = requestedFilters;
 
             if (notifyWhenEmpty && this.leads.length === 0) {
                 this.showToast('Search', 'No leads match your search criteria.', 'info');
@@ -341,6 +354,7 @@ export default class LeadManagementDatatable extends LightningElement {
      */
     handleFromDateChange(event) {
         this.fromDate = event.target.value;
+        this.datePreset = 'custom';
     }
 
     /**
@@ -350,6 +364,94 @@ export default class LeadManagementDatatable extends LightningElement {
      */
     handleToDateChange(event) {
         this.toDate = event.target.value;
+        this.datePreset = 'custom';
+    }
+
+    handleStagePill(event) {
+        const value = event.currentTarget.dataset.value;
+        const next = new Set(this.selectedStages || []);
+        if (next.has(value)) {
+            next.delete(value);
+        } else {
+            next.add(value);
+        }
+        this.selectedStages = [...next];
+        if (!this.showLostReasonFilter) {
+            this.selectedLostReasons = [];
+        }
+    }
+
+    handleDatePreset(event) {
+        const preset = event.currentTarget.dataset.preset;
+        this.datePreset = preset;
+        if (preset === 'custom') {
+            return;
+        }
+        const range = presetRange(preset);
+        this.fromDate = range.fromDate;
+        this.toDate = range.toDate;
+    }
+
+    handleResetFilters() {
+        this.searchTerm = '';
+        this.campaignFilter = '';
+        this.selectedStages = [];
+        this.selectedDepartments = [];
+        this.selectedCustomerCategories = [];
+        this.selectedCountry = '';
+        this.selectedStates = [];
+        this.selectedLostReasons = [];
+        this.fromDate = null;
+        this.toDate = null;
+        this.datePreset = '';
+        this.handleSearch();
+    }
+
+    handleRemoveAppliedChip(event) {
+        const key = event.currentTarget.dataset.key;
+        if (key === 'search') {
+            this.searchTerm = '';
+        } else if (key === 'campaign') {
+            this.campaignFilter = '';
+        } else if (key === 'stages') {
+            this.selectedStages = [];
+            this.selectedLostReasons = [];
+        } else if (key === 'dates') {
+            this.fromDate = null;
+            this.toDate = null;
+            this.datePreset = '';
+        } else if (key === 'departments') {
+            this.selectedDepartments = [];
+        } else if (key === 'categories') {
+            this.selectedCustomerCategories = [];
+        } else if (key === 'country') {
+            this.selectedCountry = '';
+            this.selectedStates = [];
+        } else if (key === 'states') {
+            this.selectedStates = [];
+        } else if (key === 'lost') {
+            this.selectedLostReasons = [];
+        }
+        this.handleSearch();
+    }
+
+    handleClearSelection() {
+        this.selectedRows = [];
+    }
+
+    buildFilterState() {
+        return {
+            searchTerm: this.searchTerm || '',
+            campaignFilter: this.campaignFilter || '',
+            stages: this.selectedStages || [],
+            departments: this.selectedDepartments || [],
+            categories: this.selectedCustomerCategories || [],
+            country: this.selectedCountry || '',
+            states: this.showStateFilter ? this.selectedStates || [] : [],
+            lostReasons: this.showLostReasonFilter ? this.selectedLostReasons || [] : [],
+            fromDate: this.fromDate || '',
+            toDate: this.toDate || ''
+        };
     }
 
     /**
@@ -454,14 +556,15 @@ export default class LeadManagementDatatable extends LightningElement {
         this.openCampaignNameModal(SEND_ACTION.BLUEWAVE_EMAIL);
     }
 
-    async executeSendBluewaveEmail(campaignName) {
+    async executeSendBluewaveEmail(campaignName, scheduledDateTime) {
         const leadIds = this.selectedRows.map((row) => row.Id);
         this.isSendingBluewaveEmail = true;
 
         try {
             const result = await sendLeadCampaignEmail({
                 leadIds,
-                infobipTemplateId: this.selectedBluewaveTemplateId
+                infobipTemplateId: this.selectedBluewaveTemplateId,
+                scheduledDateTime
             });
 
             let message = `${result.sentCount} campaign email(s) sent successfully.`;
@@ -479,7 +582,7 @@ export default class LeadManagementDatatable extends LightningElement {
             );
 
             if (result.sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isBluewaveEmailModalOpen = false;
                 this.selectedBluewaveTemplateId = null;
             }
@@ -579,14 +682,15 @@ export default class LeadManagementDatatable extends LightningElement {
         this.openCampaignNameModal(SEND_ACTION.JOURNEY);
     }
 
-    async executeSendCampaignJourney(campaignName) {
+    async executeSendCampaignJourney(campaignName, scheduledDateTime) {
         const leadIds = this.selectedRows.map((row) => row.Id);
         this.isSendingCampaignJourney = true;
 
         try {
             const result = await sendLeadJourney({
                 leadIds,
-                journeyName: this.selectedCampaignJourneyName
+                journeyName: this.selectedCampaignJourneyName,
+                scheduledDateTime
             });
 
             let message = `${result.sentCount} journey message(s) queued in Bluewave.`;
@@ -607,7 +711,7 @@ export default class LeadManagementDatatable extends LightningElement {
             );
 
             if (result.sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isCampaignJourneyModalOpen = false;
                 this.selectedCampaignJourneyName = null;
             }
@@ -1003,7 +1107,7 @@ export default class LeadManagementDatatable extends LightningElement {
         this.openCampaignNameModal(SEND_ACTION.MESSAGES);
     }
 
-    async executeSendMessages(campaignName) {
+    async executeSendMessages(campaignName, scheduledDateTime) {
         const leadIds = this.selectedRows.map((row) => row.Id);
         const sendRcs = !!this.selectedRcsTemplateName;
         const sendSms = !!this.selectedSmsTemplateName;
@@ -1017,7 +1121,8 @@ export default class LeadManagementDatatable extends LightningElement {
             try {
                 whatsAppResult = await sendLeadWhatsApp({
                     leadIds,
-                    templateName: this.selectedWhatsAppTemplateName
+                    templateName: this.selectedWhatsAppTemplateName,
+                    scheduledDateTime
                 });
             } catch (whatsAppError) {
                 whatsAppResult = {
@@ -1031,7 +1136,8 @@ export default class LeadManagementDatatable extends LightningElement {
                 try {
                     rcsResult = await sendLeadRcs({
                         leadIds,
-                        templateName: this.selectedRcsTemplateName
+                        templateName: this.selectedRcsTemplateName,
+                        scheduledDateTime
                     });
                 } catch (rcsError) {
                     rcsResult = {
@@ -1046,7 +1152,8 @@ export default class LeadManagementDatatable extends LightningElement {
                 try {
                     smsResult = await sendLeadSms({
                         leadIds,
-                        templateName: this.selectedSmsTemplateName
+                        templateName: this.selectedSmsTemplateName,
+                        scheduledDateTime
                     });
                 } catch (smsError) {
                     smsResult = {
@@ -1095,7 +1202,7 @@ export default class LeadManagementDatatable extends LightningElement {
             );
 
             if (totalSent > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isJourneyModalOpen = false;
                 this.journeyModalMode = 'campaign';
                 this.journeyModalStep = 'whatsapp';
@@ -1118,14 +1225,15 @@ export default class LeadManagementDatatable extends LightningElement {
         this.openCampaignNameModal(SEND_ACTION.RCS_ONLY);
     }
 
-    async executeSendRcsOnly(campaignName) {
+    async executeSendRcsOnly(campaignName, scheduledDateTime) {
         const leadIds = this.selectedRows.map((row) => row.Id);
         this.isSendingWhatsApp = true;
 
         try {
             const rcsResult = await sendLeadRcs({
                 leadIds,
-                templateName: this.selectedRcsTemplateName
+                templateName: this.selectedRcsTemplateName,
+                scheduledDateTime
             });
 
             const sentCount = rcsResult.sentCount || 0;
@@ -1145,7 +1253,7 @@ export default class LeadManagementDatatable extends LightningElement {
             this.showToast('Send RCS', message, sentCount > 0 ? 'success' : 'warning');
 
             if (sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isJourneyModalOpen = false;
                 this.journeyModalMode = 'campaign';
                 this.journeyModalStep = 'whatsapp';
@@ -1168,14 +1276,15 @@ export default class LeadManagementDatatable extends LightningElement {
         this.openCampaignNameModal(SEND_ACTION.SMS_ONLY);
     }
 
-    async executeSendSmsOnly(campaignName) {
+    async executeSendSmsOnly(campaignName, scheduledDateTime) {
         const leadIds = this.selectedRows.map((row) => row.Id);
         this.isSendingWhatsApp = true;
 
         try {
             const smsResult = await sendLeadSms({
                 leadIds,
-                templateName: this.selectedSmsTemplateName
+                templateName: this.selectedSmsTemplateName,
+                scheduledDateTime
             });
 
             const sentCount = smsResult.sentCount || 0;
@@ -1195,7 +1304,7 @@ export default class LeadManagementDatatable extends LightningElement {
             this.showToast('Send SMS', message, sentCount > 0 ? 'success' : 'warning');
 
             if (sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isJourneyModalOpen = false;
                 this.journeyModalMode = 'campaign';
                 this.journeyModalStep = 'whatsapp';
@@ -1212,12 +1321,19 @@ export default class LeadManagementDatatable extends LightningElement {
 
     openCampaignNameModal(action) {
         this.pendingSendAction = action;
+        this.collectJourneySchedule =
+            action === 'bluewaveEmail' ||
+            action === 'journey' ||
+            action === 'messages' ||
+            action === 'rcsOnly' ||
+            action === 'smsOnly';
         this.isCampaignNameModalOpen = true;
     }
 
     closeCampaignNameModal() {
         this.isCampaignNameModalOpen = false;
         this.pendingSendAction = null;
+        this.collectJourneySchedule = false;
         const modal = this.template.querySelector('c-campaign-name-modal');
         if (modal) {
             modal.reset();
@@ -1232,24 +1348,25 @@ export default class LeadManagementDatatable extends LightningElement {
 
     async handleCampaignNameModalConfirm(event) {
         const campaignName = event.detail.campaignName;
+        const scheduledDateTime = event.detail.scheduledDateTime;
         const action = this.pendingSendAction;
 
         try {
             switch (action) {
                 case SEND_ACTION.BLUEWAVE_EMAIL:
-                    await this.executeSendBluewaveEmail(campaignName);
+                    await this.executeSendBluewaveEmail(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.JOURNEY:
-                    await this.executeSendCampaignJourney(campaignName);
+                    await this.executeSendCampaignJourney(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.MESSAGES:
-                    await this.executeSendMessages(campaignName);
+                    await this.executeSendMessages(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.RCS_ONLY:
-                    await this.executeSendRcsOnly(campaignName);
+                    await this.executeSendRcsOnly(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.SMS_ONLY:
-                    await this.executeSendSmsOnly(campaignName);
+                    await this.executeSendSmsOnly(campaignName, scheduledDateTime);
                     break;
                 default:
                     break;
@@ -1261,7 +1378,7 @@ export default class LeadManagementDatatable extends LightningElement {
         }
     }
 
-    async trackCampaignMembersForSelection(campaignName) {
+    async trackCampaignMembersForSelection(campaignName, scheduledDateTime) {
         const recordIds = this.selectedRows.map((row) => row.Id);
         await trackCampaignMembers(
             createCampaignWithMembers,
@@ -1269,7 +1386,8 @@ export default class LeadManagementDatatable extends LightningElement {
             MEMBER_TYPE.LEAD,
             recordIds,
             (title, message, variant) => this.showToast(title, message, variant),
-            (error) => this.extractError(error)
+            (error) => this.extractError(error),
+            scheduledDateTime
         );
     }
 
@@ -1651,6 +1769,71 @@ export default class LeadManagementDatatable extends LightningElement {
 
     get totalRecordCount() {
         return this.leads.length;
+    }
+
+    get selectedRowIds() {
+        return (this.selectedRows || []).map((row) => row.Id);
+    }
+
+    get stagePills() {
+        const selected = new Set(this.selectedStages || []);
+        return (this.stageOptions || []).map((option) => ({
+            label: option.label,
+            value: option.value,
+            className: selected.has(option.value) ? 'pill pill_selected' : 'pill'
+        }));
+    }
+
+    get datePresetPills() {
+        return [
+            { label: 'Last 7 days', value: '7' },
+            { label: 'Last 30 days', value: '30' },
+            { label: 'This quarter', value: 'quarter' },
+            { label: 'Custom', value: 'custom' }
+        ].map((pill) => ({
+            ...pill,
+            className: this.datePreset === pill.value ? 'pill pill_selected' : 'pill'
+        }));
+    }
+
+    get showCustomDates() {
+        return this.datePreset === 'custom';
+    }
+
+    get filtersAreStale() {
+        return (
+            !!this.appliedFilters &&
+            !this.isLoading &&
+            !filtersMatch(this.buildFilterState(), this.appliedFilters)
+        );
+    }
+
+    get staleFilterMessage() {
+        const count = changedFieldCount(this.buildFilterState(), this.appliedFilters);
+        return `${count} ${count === 1 ? 'filter' : 'filters'} changed. Results below are out of date.`;
+    }
+
+    get appliedChips() {
+        const applied = this.appliedFilters;
+        if (!applied) {
+            return [];
+        }
+        const chips = [];
+        const pushChip = (key, label) => {
+            if (label) {
+                chips.push({ key, label });
+            }
+        };
+        pushChip('search', applied.searchTerm);
+        pushChip('campaign', applied.campaignFilter);
+        pushChip('stages', listChipLabel(optionLabels(applied.stages, this.stageOptions)));
+        pushChip('dates', dateChipLabel(applied.fromDate, applied.toDate));
+        pushChip('departments', listChipLabel(optionLabels(applied.departments, this.departmentOptions)));
+        pushChip('categories', listChipLabel(optionLabels(applied.categories, this.customerCategoryOptions)));
+        pushChip('country', listChipLabel(optionLabels(applied.country ? [applied.country] : [], this.countryOptions)));
+        pushChip('states', listChipLabel(optionLabels(applied.states, this.stateOptions)));
+        pushChip('lost', listChipLabel(optionLabels(applied.lostReasons, this.lostReasonOptions)));
+        return chips;
     }
 
     get selectedRecordCount() {

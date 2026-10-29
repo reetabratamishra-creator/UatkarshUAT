@@ -570,4 +570,271 @@ private class NewExpenseFormControllerTest {
             System.assertEquals(0, docs.size(), 'ContentDocument should be deleted');
         }
     }
+
+    @isTest
+    static void testGetMyExpenseIdByName() {
+        User u = getTestUser();
+        System.runAs(u) {
+            Expense__c exp = new Expense__c(Subject__c = 'Lookup trip', Status__c = 'Pending HOD Approval', Employee__c = u.Id);
+            insert exp;
+            String expName = [SELECT Name FROM Expense__c WHERE Id = :exp.Id].Name;
+
+            Test.startTest();
+            Id foundId = NewExpenseFormController.getMyExpenseIdByName(expName);
+            Id blankId = NewExpenseFormController.getMyExpenseIdByName('');
+            Id missingId = NewExpenseFormController.getMyExpenseIdByName('NO-SUCH-EXPENSE');
+            Test.stopTest();
+
+            System.assertEquals(exp.Id, foundId);
+            System.assertEquals(null, blankId);
+            System.assertEquals(null, missingId);
+        }
+    }
+
+    // ===== EDIT MODE (rejected expense resubmission) =====
+
+    private static Id createFileOn(Id linkedEntityId, String title, String fileType) {
+        ContentVersion cv = new ContentVersion(
+            Title = title,
+            PathOnClient = title + '.pdf',
+            VersionData = Blob.valueOf(title),
+            FirstPublishLocationId = linkedEntityId,
+            Description = fileType
+        );
+        insert cv;
+        return [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id].ContentDocumentId;
+    }
+
+    @isTest
+    static void testGetExpenseForEdit_Success() {
+        User u = getTestUser();
+        System.runAs(u) {
+            Expense__c exp = new Expense__c(
+                Subject__c = 'Rejected trip',
+                Status__c = 'Rejected by HOD',
+                Employee__c = u.Id,
+                Remark__c = 'Please attach proof',
+                Travel_Start_Date__c = Date.today(),
+                Travel_End_Date__c = Date.today()
+            );
+            insert exp;
+
+            Expense_Line__c airLine = new Expense_Line__c(
+                Expense__c = exp.Id, Expense_Type__c = 'Air', Amount__c = 5000,
+                Start_Date__c = Date.today(), Travel_Class__c = 'Business', City__c = 'Delhi'
+            );
+            Expense_Line__c pvLine = new Expense_Line__c(
+                Expense__c = exp.Id, Expense_Type__c = 'Own Vehicle', Amount__c = 80,
+                Date__c = Date.today(), Vehicle_Type__c = '2-Wheeler', Is_Private_Vehicle_Expense__c = true
+            );
+            insert new List<Expense_Line__c>{ airLine, pvLine };
+            createFileOn(airLine.Id, 'air_ticket', 'Bill');
+            createFileOn(airLine.Id, 'approval_mail', 'Proof');
+            createFileOn(airLine.Id, 'legacy_file', null);
+
+            Test.startTest();
+            NewExpenseFormController.ExpenseEditData data = NewExpenseFormController.getExpenseForEdit(exp.Id);
+            Test.stopTest();
+
+            System.assertEquals('Please attach proof', data.expense.Remark__c);
+            System.assertEquals(2, data.lines.size());
+            for (NewExpenseFormController.ExpenseEditLine editLine : data.lines) {
+                if (editLine.line.Id == pvLine.Id) {
+                    System.assertEquals(true, editLine.isPrivateVehicle);
+                } else {
+                    System.assertEquals(false, editLine.isPrivateVehicle);
+                    System.assertEquals(3, editLine.files.size());
+                    Integer bills = 0;
+                    Integer proofs = 0;
+                    for (NewExpenseFormController.ExpenseEditFile f : editLine.files) {
+                        if (f.fileType == 'Proof') {
+                            proofs++;
+                        } else {
+                            bills++;
+                        }
+                    }
+                    System.assertEquals(1, proofs, 'Tagged proof should load as Proof');
+                    System.assertEquals(2, bills, 'Bill and untagged legacy file should load as Bill');
+                }
+            }
+        }
+    }
+
+    @isTest
+    static void testGetExpenseForEdit_KeepsEntryOrderAndJustification() {
+        User u = getTestUser();
+        System.runAs(u) {
+            Expense__c exp = new Expense__c(Subject__c = 'Overlap trip', Status__c = 'Rejected by HOD', Employee__c = u.Id);
+            insert exp;
+
+            Date day1 = Date.today();
+            // Inserted in one DML (same CreatedDate), like saveExpenseData does
+            List<Expense_Line__c> lodgingLines = new List<Expense_Line__c>{
+                new Expense_Line__c(Expense__c = exp.Id, Expense_Type__c = 'Lodging', Amount__c = 1000,
+                    Start_Date__c = day1, End_Date__c = day1.addDays(2)),
+                new Expense_Line__c(Expense__c = exp.Id, Expense_Type__c = 'Lodging', Amount__c = 1000,
+                    Start_Date__c = day1.addDays(1), End_Date__c = day1.addDays(3),
+                    Justification__c = 'Shifted hotel mid-stay')
+            };
+            insert lodgingLines;
+
+            Test.startTest();
+            NewExpenseFormController.ExpenseEditData data = NewExpenseFormController.getExpenseForEdit(exp.Id);
+            Test.stopTest();
+
+            System.assertEquals(2, data.lines.size());
+            System.assertEquals(lodgingLines[0].Id, data.lines[0].line.Id, 'Lines must come back in entry order');
+            System.assertEquals(lodgingLines[1].Id, data.lines[1].line.Id, 'Lines must come back in entry order');
+            System.assertEquals('Shifted hotel mid-stay', data.lines[1].line.Justification__c);
+        }
+    }
+
+    @isTest
+    static void testGetExpenseForEdit_NotRejected() {
+        User u = getTestUser();
+        System.runAs(u) {
+            Expense__c exp = new Expense__c(Subject__c = 'Pending trip', Status__c = 'Pending HOD Approval', Employee__c = u.Id);
+            insert exp;
+
+            Boolean threw = false;
+            Test.startTest();
+            try {
+                NewExpenseFormController.getExpenseForEdit(exp.Id);
+            } catch (AuraHandledException e) {
+                threw = true;
+                System.assertEquals(NewExpenseFormController.EDIT_NOT_ALLOWED_MSG, e.getMessage());
+            }
+            Test.stopTest();
+            System.assert(threw, 'Non-rejected expense must not be editable');
+        }
+    }
+
+    @isTest
+    static void testResubmitExpenseData_NotOwner() {
+        User u = getTestUser();
+        Expense__c exp = new Expense__c(Subject__c = 'Other user trip', Status__c = 'Rejected by HOD', Employee__c = UserInfo.getUserId());
+        insert exp;
+
+        System.runAs(u) {
+            Boolean threw = false;
+            Test.startTest();
+            try {
+                NewExpenseFormController.resubmitExpenseData(JSON.serialize(new Map<String, Object>{
+                    'expenseId' => exp.Id,
+                    'subject' => 'Hijack',
+                    'lines' => new List<Object>()
+                }));
+            } catch (AuraHandledException e) {
+                threw = true;
+            }
+            Test.stopTest();
+            System.assert(threw, 'Another user\'s expense must not be resubmittable');
+        }
+    }
+
+    @isTest
+    static void testResubmitExpenseData_Success() {
+        User u = getTestUser();
+        System.runAs(u) {
+            Date travelDay = Date.today();
+            Expense__c exp = new Expense__c(
+                Subject__c = 'Rejected trip',
+                Status__c = 'Rejected by HR',
+                Employee__c = u.Id,
+                Remark__c = 'Amount too high',
+                Travel_Start_Date__c = travelDay,
+                Travel_End_Date__c = travelDay
+            );
+            insert exp;
+
+            Expense_Line__c airLine = new Expense_Line__c(
+                Expense__c = exp.Id, Expense_Type__c = 'Air', Amount__c = 9000, Approved_Amount__c = 9000,
+                Start_Date__c = travelDay, Travel_Class__c = 'Economy', City__c = 'Delhi', City_Tier__c = 'Tier 1'
+            );
+            Expense_Line__c foodLine = new Expense_Line__c(
+                Expense__c = exp.Id, Expense_Type__c = 'Fooding', Amount__c = 400,
+                Start_Date__c = travelDay, City__c = 'Delhi', City_Tier__c = 'Tier 1'
+            );
+            Expense_Line__c pvKept = new Expense_Line__c(
+                Expense__c = exp.Id, Expense_Type__c = 'Own Vehicle', Amount__c = 80, Approved_Amount__c = 0,
+                Date__c = travelDay, Vehicle_Type__c = '2-Wheeler', Is_Private_Vehicle_Expense__c = true
+            );
+            Expense_Line__c pvUnticked = new Expense_Line__c(
+                Expense__c = exp.Id, Expense_Type__c = 'Own Vehicle', Amount__c = 40,
+                Date__c = travelDay, Vehicle_Type__c = '2-Wheeler', Is_Private_Vehicle_Expense__c = true
+            );
+            insert new List<Expense_Line__c>{ airLine, foodLine, pvKept, pvUnticked };
+
+            Id keptAirDoc = createFileOn(airLine.Id, 'air_ticket', 'Bill');
+            Id removedAirDoc = createFileOn(airLine.Id, 'old_ticket', 'Bill');
+            Id foodDoc = createFileOn(foodLine.Id, 'food_bill', 'Bill');
+            Id stagedDoc = createFileOn(u.Id, 'hotel_bill', null);
+
+            Map<String, Object> editedAir = new Map<String, Object>{
+                'lineId' => airLine.Id,
+                'expenseType' => 'Air',
+                'amount' => 6000,
+                'startDate' => String.valueOf(travelDay),
+                'travelClass' => 'Economy',
+                'files' => new List<Object>{
+                    new Map<String, Object>{ 'documentId' => keptAirDoc, 'fileName' => 'air_ticket.pdf', 'fileType' => 'Bill', 'isExisting' => true }
+                }
+            };
+            Map<String, Object> newLodging = new Map<String, Object>{
+                'expenseType' => 'Lodging',
+                'amount' => 2500,
+                'startDate' => String.valueOf(travelDay),
+                'endDate' => String.valueOf(travelDay),
+                'files' => new List<Object>{
+                    new Map<String, Object>{ 'documentId' => stagedDoc, 'fileName' => 'hotel_bill.pdf', 'fileType' => 'Bill' }
+                }
+            };
+            Map<String, Object> payload = new Map<String, Object>{
+                'expenseId' => exp.Id,
+                'subject' => 'Rejected trip - corrected',
+                'startDate' => String.valueOf(travelDay),
+                'endDate' => String.valueOf(travelDay),
+                'city' => 'Delhi',
+                'cityTier' => 'Tier 1',
+                'lines' => new List<Object>{ editedAir, newLodging },
+                'privateVehicleLineIds' => new List<Object>{ pvKept.Id },
+                'removedLineIds' => new List<Object>{ foodLine.Id },
+                'removedDocumentIds' => new List<Object>{ removedAirDoc, foodDoc }
+            };
+
+            Test.startTest();
+            String expName = NewExpenseFormController.resubmitExpenseData(JSON.serialize(payload));
+            Test.stopTest();
+
+            System.assertNotEquals(null, expName);
+
+            Expense__c savedExp = [SELECT Status__c, Subject__c, Remark__c, Submitted_Date__c FROM Expense__c WHERE Id = :exp.Id];
+            System.assertEquals('Pending HOD Approval', savedExp.Status__c);
+            System.assertEquals('Rejected trip - corrected', savedExp.Subject__c);
+            System.assertEquals('Amount too high', savedExp.Remark__c, 'Remark should be kept');
+            System.assertEquals(Date.today(), savedExp.Submitted_Date__c);
+
+            Expense_Line__c savedAir = [SELECT Amount__c, Approved_Amount__c FROM Expense_Line__c WHERE Id = :airLine.Id];
+            System.assertEquals(6000, savedAir.Amount__c);
+            System.assertEquals(6000, savedAir.Approved_Amount__c);
+
+            System.assertEquals(0, [SELECT COUNT() FROM Expense_Line__c WHERE Id = :foodLine.Id], 'Removed line should be deleted');
+            System.assertEquals(0, [SELECT COUNT() FROM ContentDocument WHERE Id IN :new Set<Id>{ removedAirDoc, foodDoc }], 'Removed files should be deleted');
+            System.assertEquals(1, [SELECT COUNT() FROM ContentDocumentLink WHERE LinkedEntityId = :airLine.Id AND ContentDocumentId = :keptAirDoc], 'Kept file should stay linked once');
+
+            Expense_Line__c lodging = [SELECT Id, Bill_Attached__c FROM Expense_Line__c WHERE Expense__c = :exp.Id AND Expense_Type__c = 'Lodging'];
+            System.assertEquals(true, lodging.Bill_Attached__c);
+            System.assertEquals(1, [SELECT COUNT() FROM ContentDocumentLink WHERE LinkedEntityId = :lodging.Id AND ContentDocumentId = :stagedDoc]);
+            System.assertEquals('Bill', [SELECT Description FROM ContentVersion WHERE ContentDocumentId = :stagedDoc AND IsLatest = true].Description, 'New file should be tagged');
+
+            Expense_Line__c savedPvKept = [SELECT Expense__c, Approved_Amount__c FROM Expense_Line__c WHERE Id = :pvKept.Id];
+            System.assertEquals(exp.Id, savedPvKept.Expense__c);
+            System.assertEquals(80, savedPvKept.Approved_Amount__c);
+
+            Expense_Line__c savedPvUnticked = [SELECT Expense__c, Expense__r.Status__c, Expense__r.Is_Private_Vehicle_Expense__c FROM Expense_Line__c WHERE Id = :pvUnticked.Id];
+            System.assertNotEquals(exp.Id, savedPvUnticked.Expense__c, 'Unticked PV line should leave the resubmitted expense');
+            System.assertEquals('New', savedPvUnticked.Expense__r.Status__c);
+            System.assertEquals(true, savedPvUnticked.Expense__r.Is_Private_Vehicle_Expense__c);
+        }
+    }
 }

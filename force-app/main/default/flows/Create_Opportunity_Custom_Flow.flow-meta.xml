@@ -1877,16 +1877,38 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Department_Name1</leftValueReference>
-                <operator>EqualTo</operator>
+                <leftValueReference>$User.Department</leftValueReference>
+                <operator>Contains</operator>
                 <rightValue>
-                    <elementReference>$User.Department</elementReference>
+                    <elementReference>Department_Name1</elementReference>
                 </rightValue>
             </conditions>
             <connector>
                 <targetReference>Assign_the_user_as_Opportunity_owner</targetReference>
             </connector>
             <label>Utkarsh CRM Head same Department</label>
+        </rules>
+        <rules>
+            <name>Utkarsh_HOD_same_Department</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Profile.Name</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Utkarsh HOD</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$User.Department</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <elementReference>Department_Name1</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_the_user_as_Opportunity_owner</targetReference>
+            </connector>
+            <label>Utkarsh HOD same Department</label>
         </rules>
         <rules>
             <name>Utkarsh_CRM_Head_different_Department</name>
@@ -1909,28 +1931,6 @@
                 <targetReference>Owner_Selection</targetReference>
             </connector>
             <label>Utkarsh CRM Head different Department</label>
-        </rules>
-        <rules>
-            <name>Utkarsh_HOD_same_Department</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>$Profile.Name</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <stringValue>Utkarsh HOD</stringValue>
-                </rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>Department_Name1</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <elementReference>$User.Department</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_the_user_as_Opportunity_owner</targetReference>
-            </connector>
-            <label>Utkarsh HOD same Department</label>
         </rules>
         <rules>
             <name>Utkarsh_HOD_different_Department</name>
@@ -1965,10 +1965,10 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Department_Name1</leftValueReference>
-                <operator>EqualTo</operator>
+                <leftValueReference>$User.Department</leftValueReference>
+                <operator>Contains</operator>
                 <rightValue>
-                    <elementReference>$User.Department</elementReference>
+                    <elementReference>Department_Name1</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -2009,10 +2009,10 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Department_Name1</leftValueReference>
-                <operator>EqualTo</operator>
+                <leftValueReference>$User.Department</leftValueReference>
+                <operator>Contains</operator>
                 <rightValue>
-                    <elementReference>$User.Department</elementReference>
+                    <elementReference>Department_Name1</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -2053,10 +2053,10 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Department_Name1</leftValueReference>
-                <operator>EqualTo</operator>
+                <leftValueReference>$User.Department</leftValueReference>
+                <operator>Contains</operator>
                 <rightValue>
-                    <elementReference>$User.Department</elementReference>
+                    <elementReference>Department_Name1</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -2098,7 +2098,7 @@
             </conditions>
             <conditions>
                 <leftValueReference>$User.Department</leftValueReference>
-                <operator>EqualTo</operator>
+                <operator>Contains</operator>
                 <rightValue>
                     <elementReference>Department_Name1</elementReference>
                 </rightValue>
@@ -2141,10 +2141,10 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Department_Name1</leftValueReference>
-                <operator>EqualTo</operator>
+                <leftValueReference>$User.Department</leftValueReference>
+                <operator>Contains</operator>
                 <rightValue>
-                    <elementReference>$User.Department</elementReference>
+                    <elementReference>Department_Name1</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -2250,7 +2250,7 @@
             <label>yes</label>
         </rules>
     </decisions>
-    <description>created from v39- navigate to opp action added 
+    <description>created from v39-  Sukriti Das Guard
 created from  v38- zone dependency on country 
 created from v37- record type for admins
 created from v26 - Tender opportunity will only have Tender value
@@ -3736,14 +3736,11 @@ Input validation for opp info fixing</description>
     <screens>
         <name>ending_screen</name>
         <label>ending_screen</label>
-        <locationX>1715</locationX>
-        <locationY>2096</locationY>
+        <locationX>1588</locationX>
+        <locationY>2072</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
-        <connector>
-            <targetReference>navigate_to_Opportunity</targetReference>
-        </connector>
         <fields>
             <name>ending_message</name>
             <fieldText>&lt;p&gt;&lt;strong style=&quot;font-size: 16px; color: rgb(40, 167, 69);&quot;&gt;Success!&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;The Opportunity has been successfully created.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;• &lt;strong&gt;Opportunity: &lt;/strong&gt;&lt;a href=&quot;https://{!removeLastElevenChracters}lightning.force.com/lightning/r/Opportunity/{!OpportunityId}/view&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;&lt;strong&gt;Click to visit&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;</fieldText>
@@ -6232,7 +6229,7 @@ Input validation for opp info fixing</description>
             <targetReference>Select_Opportunity_record_type</targetReference>
         </connector>
     </start>
-    <status>Obsolete</status>
+    <status>Active</status>
     <variables>
         <name>colAddressBooks</name>
         <dataType>SObject</dataType>

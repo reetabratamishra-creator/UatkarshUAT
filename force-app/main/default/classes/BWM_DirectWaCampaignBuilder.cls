@@ -60,7 +60,10 @@ public without sharing class BWM_DirectWaCampaignBuilder {
       payload.put('from', settings.WhatsApp_From__c.trim());
     }
 
-    return JSON.serialize(payload);
+    return BWM_JourneyDefinitionService.applyScheduledDateTime(
+      JSON.serialize(payload),
+      BWM_CampaignScheduleContext.scheduledDateTime
+    );
   }
 
   private static List<String> resolveCampaignDirectParams(

@@ -20,7 +20,7 @@
     </values>
     <values>
         <field>Product_Brief__c</field>
-        <value xsi:type="xsd:string">Built for lighting and power distribution across highways, urban streets, and industrial areas. Galvanised for corrosion resistance with long operational life and minimal maintenance. Types: Swaged Poles | Lighting Poles | GI Poles | MS Poles | Solar lighting poles etc.</value>
+        <value xsi:type="xsd:string">We provide durable galvanised poles for lighting and power distribution across highways, streets, and industrial areas. Types: Swaged Poles | Lighting Poles | GI Poles | MS Poles | Solar lighting poles etc</value>
     </values>
     <values>
         <field>Static_Resource_Name__c</field>

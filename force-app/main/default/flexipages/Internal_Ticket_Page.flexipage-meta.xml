@@ -9,12 +9,7 @@
                         <valueListItems>
                             <value>Case.Change_Ticket_Owner</value>
                             <visibilityRule>
-                                <booleanFilter>(1 OR 2 OR 3) AND 4</booleanFilter>
-                                <criteria>
-                                    <leftValue>{!$User.Profile.Name}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>Utkarsh Admin</rightValue>
-                                </criteria>
+                                <booleanFilter>(1 OR 2 OR 4 OR 5) AND 3</booleanFilter>
                                 <criteria>
                                     <leftValue>{!$User.Profile.Name}</leftValue>
                                     <operator>EQUAL</operator>
@@ -30,31 +25,15 @@
                                     <operator>NE</operator>
                                     <rightValue>Resolved</rightValue>
                                 </criteria>
-                            </visibilityRule>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Case.Resolve_Case</value>
-                            <visibilityRule>
-                                <booleanFilter>1 AND (2 OR 3 OR 4)</booleanFilter>
                                 <criteria>
-                                    <leftValue>{!Record.Status}</leftValue>
-                                    <operator>NE</operator>
-                                    <rightValue>Resolved</rightValue>
+                                    <leftValue>{!$User.Profile.Name}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Utkarsh HOD</rightValue>
                                 </criteria>
                                 <criteria>
                                     <leftValue>{!$User.Profile.Name}</leftValue>
                                     <operator>EQUAL</operator>
-                                    <rightValue>Utkarsh Admin</rightValue>
-                                </criteria>
-                                <criteria>
-                                    <leftValue>{!$User.Profile.Name}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>System Administrator</rightValue>
-                                </criteria>
-                                <criteria>
-                                    <leftValue>{!Record.isCaseOwner__c}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>true</rightValue>
+                                    <rightValue>CRM Head</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
@@ -106,7 +85,35 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
-                            <value>Share</value>
+                            <value>Case.Resolve_Ticket</value>
+                            <visibilityRule>
+                                <booleanFilter>1 AND (2 OR 3 OR 4 OR 5)</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!Record.Status}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Resolved</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!$User.Profile.Name}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>System Administrator</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!$User.Profile.Name}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>CRM Head</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!$User.Profile.Name}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Utkarsh HOD</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.isCaseOwner__c}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>true</rightValue>
+                                </criteria>
+                            </visibilityRule>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>

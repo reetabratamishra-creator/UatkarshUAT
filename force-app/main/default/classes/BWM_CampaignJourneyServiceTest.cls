@@ -39,28 +39,28 @@ private class BWM_CampaignJourneyServiceTest {
       new BWM_MessagingCalloutMock(SUCCESS_BODY, '{"code":"200","message":"unused"}')
     );
 
-    Account accountRecord = new Account(Name = 'Campaign Opp Account');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'Campaign Opp Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())));
+    insert as system accountRecord;
 
     Contact contactRecord = new Contact(
-      LastName = 'Campaign Opp Contact',
+      LastName = 'Campaign Opp Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
-      Phone = '9876543211',
-      MobilePhone = '9876543211'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert contactRecord;
+    insert as system contactRecord;
 
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Campaign Opp',
+      Name = 'Campaign Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = 'Nurture',
       CloseDate = Date.today().addDays(30),
       AccountId = accountRecord.Id,
       Department_Name__c = 'Crash Barrier',
-      Phone__c = '9876543211'
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
 
-    insert new OpportunityContactRole(
+    insert as system new OpportunityContactRole(
       OpportunityId = opportunityRecord.Id,
       ContactId = contactRecord.Id,
       IsPrimary = true,
@@ -87,11 +87,11 @@ private class BWM_CampaignJourneyServiceTest {
     );
 
     Contact contactRecord = new Contact(
-      LastName = 'Campaign Contact',
-      Phone = '9876543212',
-      MobilePhone = '9876543212'
+      LastName = 'Campaign Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert contactRecord;
+    insert as system contactRecord;
 
     Test.startTest();
     BWM_JourneyDefinitionService.SendJourneyResult result =
@@ -107,8 +107,8 @@ private class BWM_CampaignJourneyServiceTest {
   @IsTest
   static void sendToAccountsSkipsWhenPhoneMissing() {
     BWM_JourneyDefinitionService.clearCache();
-    Account accountRecord = new Account(Name = 'No Phone Account');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'No Phone Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())));
+    insert as system accountRecord;
 
     Test.startTest();
     BWM_JourneyDefinitionService.SendJourneyResult result =
@@ -131,13 +131,13 @@ private class BWM_CampaignJourneyServiceTest {
     );
 
     Offline_Campaign__c offlineRecord = new Offline_Campaign__c(
-      Name = 'Offline Campaign Journey',
-      Phone__c = '9876543213',
+      Name = 'Offline Campaign Journey ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'offline@test.com',
       Department__c = 'Crash Barrier',
       Active__c = true
     );
-    insert offlineRecord;
+    insert as system offlineRecord;
 
     Test.startTest();
     BWM_JourneyDefinitionService.SendJourneyResult result =
@@ -190,15 +190,15 @@ private class BWM_CampaignJourneyServiceTest {
   private static Lead insertLead(String phone) {
     BWM_LeadMessagingTriggerHandler.skipEnqueueForTests = true;
     Lead leadRecord = new Lead(
-      LastName = 'Campaign Journey',
-      Company = 'Test Co',
-      Company_Name__c = 'Test Co',
+      LastName = 'Campaign Journey ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company_Name__c = 'Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
       Department_Name__c = 'Crash Barrier',
       Phone = phone,
-      Email = 'test@example.com'
+      Email = 'test+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
     );
-    insert leadRecord;
+    insert as system leadRecord;
     BWM_LeadMessagingTriggerHandler.skipEnqueueForTests = false;
     return leadRecord;
   }

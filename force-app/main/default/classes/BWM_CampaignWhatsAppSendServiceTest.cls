@@ -18,11 +18,11 @@ private class BWM_CampaignWhatsAppSendServiceTest {
     );
 
     Contact contactRecord = new Contact(
-      LastName = 'Campaign WhatsApp',
-      Phone = '9876543210',
-      Email = 'contact@test.com'
+      LastName = 'Campaign WhatsApp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'contact+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@test.com'
     );
-    insert contactRecord;
+    insert as system contactRecord;
     contactRecord = [
       SELECT Id, Name, Phone, MobilePhone, Email, Owner.Name, Owner.Phone, Owner.Email
       FROM Contact
@@ -55,10 +55,10 @@ private class BWM_CampaignWhatsAppSendServiceTest {
     );
 
     Account accountRecord = new Account(
-      Name = 'Campaign WhatsApp Account',
-      Phone = '9876543215'
+      Name = 'Campaign WhatsApp Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert accountRecord;
+    insert as system accountRecord;
     accountRecord = [
       SELECT Id, Name, Phone, Owner.Name, Owner.Phone, Owner.Email
       FROM Account
@@ -80,8 +80,8 @@ private class BWM_CampaignWhatsAppSendServiceTest {
 
   @IsTest
   static void sendToRecordsSkipsWhenPhoneMissing() {
-    Contact contactRecord = new Contact(LastName = 'No Phone Contact');
-    insert contactRecord;
+    Contact contactRecord = new Contact(LastName = 'No Phone Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())));
+    insert as system contactRecord;
     contactRecord = [
       SELECT Id, Name, Phone, MobilePhone, Email, Owner.Name, Owner.Phone, Owner.Email
       FROM Contact
@@ -114,12 +114,12 @@ private class BWM_CampaignWhatsAppSendServiceTest {
     );
 
     Contact contactRecord = new Contact(
-      LastName = 'Campaign WhatsApp Fail',
-      Phone = '9876543216',
-      MobilePhone = '9876543216',
-      Email = 'fail@test.com'
+      LastName = 'Campaign WhatsApp Fail ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'fail+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@test.com'
     );
-    insert contactRecord;
+    insert as system contactRecord;
     contactRecord = [
       SELECT Id, Name, Phone, MobilePhone, Email, Owner.Name, Owner.Phone, Owner.Email
       FROM Contact

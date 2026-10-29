@@ -16,6 +16,7 @@ const DESIGNATION_OPTIONS = [
 const STANDARD_OPTIONS = [
     { label: "ASTM A53", value: "ASTM A53" },
     { label: "ASTM A 135", value: "ASTM A 135" },
+    { label: "ASTM A 252", value: "ASTM A 252" },
     { label: "ASTM A 500", value: "ASTM A 500" },
     { label: "ASTM A 795", value: "ASTM A 795" },
     { label: "ISO 65", value: "ISO 65" },
@@ -37,6 +38,8 @@ const GRADE_TOLERANCE_MAP = {
     "Grade B": 12.5
 };
 
+const DEFAULT_TOLERANCE = 8.0;
+
 const SERIES_OPTIONS = [
     { label: "Light", value: "Light" },
     { label: "Medium", value: "Medium" },
@@ -48,8 +51,17 @@ const END_FINISH_OPTIONS = [
     { label: "Plain End", value: "Plain End" },
     { label: "Beveled End", value: "Beveled End" },
     { label: "Screwed & Socket", value: "Screwed & Socket" },
-    { label: "Grooved End", value: "Grooved End" }
+    { label: "Grooved End", value: "Grooved End" },
+    { label: "Threaded", value: "Threaded" }
 ];
+
+const END_FINISH_RATE_MAP = {
+    "Plain End": 0,
+    "Beveled End": 0,
+    "Screwed & Socket": 0,
+    "Grooved End": 0,
+    "Threaded": 0
+};
 
 const UOM_OPTIONS = [
     { label: "MT", value: "MT" },
@@ -110,12 +122,59 @@ const CATALOG_MAP = {
     "BS 1387|Light|100": { "od": 113.9, "wt": 3.6 }, "BS 1387|Medium|100": { "od": 115, "wt": 4.5 }, "BS 1387|Heavy|100": { "od": 115, "wt": 5.4 },
     "BS 1387|Medium|125": { "od": 140.8, "wt": 5 }, "BS 1387|Heavy|125": { "od": 140.8, "wt": 5.4 },
     "BS 1387|Medium|150": { "od": 166.5, "wt": 5 }, "BS 1387|Heavy|150": { "od": 166.5, "wt": 5.4 },
+
+    "ISO 65|Light Series 1|15": { "od": 21.3, "wt": 2.3 }, "ISO 65|Light 1|15": { "od": 21.3, "wt": 2.3 },
+    "ISO 65|Light Series 1|20": { "od": 26.9, "wt": 2.3 }, "ISO 65|Light 1|20": { "od": 26.9, "wt": 2.3 },
+    "ISO 65|Light Series 1|25": { "od": 33.7, "wt": 2.9 }, "ISO 65|Light 1|25": { "od": 33.7, "wt": 2.9 },
+    "ISO 65|Light Series 1|32": { "od": 42.4, "wt": 2.9 }, "ISO 65|Light 1|32": { "od": 42.4, "wt": 2.9 },
+    "ISO 65|Light Series 1|40": { "od": 48.3, "wt": 2.9 }, "ISO 65|Light 1|40": { "od": 48.3, "wt": 2.9 },
+    "ISO 65|Light Series 1|50": { "od": 60.3, "wt": 3.2 }, "ISO 65|Light 1|50": { "od": 60.3, "wt": 3.2 },
+    "ISO 65|Light Series 1|65": { "od": 76.1, "wt": 3.2 }, "ISO 65|Light 1|65": { "od": 76.1, "wt": 3.2 },
+    "ISO 65|Light Series 1|80": { "od": 88.9, "wt": 3.6 }, "ISO 65|Light 1|80": { "od": 88.9, "wt": 3.6 },
+    "ISO 65|Light Series 1|100": { "od": 114.3, "wt": 4 }, "ISO 65|Light 1|100": { "od": 114.3, "wt": 4 },
+
+    "ISO 65|Light Series 2|15": { "od": 21.3, "wt": 2 }, "ISO 65|Light 2|15": { "od": 21.3, "wt": 2 },
+    "ISO 65|Light Series 2|20": { "od": 26.9, "wt": 2.3 }, "ISO 65|Light 2|20": { "od": 26.9, "wt": 2.3 },
+    "ISO 65|Light Series 2|25": { "od": 33.7, "wt": 2.6 }, "ISO 65|Light 2|25": { "od": 33.7, "wt": 2.6 },
+    "ISO 65|Light Series 2|32": { "od": 42.4, "wt": 2.6 }, "ISO 65|Light 2|32": { "od": 42.4, "wt": 2.6 },
+    "ISO 65|Light Series 2|40": { "od": 48.3, "wt": 2.9 }, "ISO 65|Light 2|40": { "od": 48.3, "wt": 2.9 },
+    "ISO 65|Light Series 2|50": { "od": 60.3, "wt": 2.9 }, "ISO 65|Light 2|50": { "od": 60.3, "wt": 2.9 },
+    "ISO 65|Light Series 2|65": { "od": 76.1, "wt": 3.2 }, "ISO 65|Light 2|65": { "od": 76.1, "wt": 3.2 },
+    "ISO 65|Light Series 2|80": { "od": 88.9, "wt": 3.2 }, "ISO 65|Light 2|80": { "od": 88.9, "wt": 3.2 },
+    "ISO 65|Light Series 2|100": { "od": 114.3, "wt": 3.6 }, "ISO 65|Light 2|100": { "od": 114.3, "wt": 3.6 },
+
+    "ISO 65|Medium|15": { "od": 21.3, "wt": 2.6 }, "ISO 65|Medium Series|15": { "od": 21.3, "wt": 2.6 },
+    "ISO 65|Medium|20": { "od": 26.9, "wt": 2.6 }, "ISO 65|Medium Series|20": { "od": 26.9, "wt": 2.6 },
+    "ISO 65|Medium|25": { "od": 33.7, "wt": 3.2 }, "ISO 65|Medium Series|25": { "od": 33.7, "wt": 3.2 },
+    "ISO 65|Medium|32": { "od": 42.4, "wt": 3.2 }, "ISO 65|Medium Series|32": { "od": 42.4, "wt": 3.2 },
+    "ISO 65|Medium|40": { "od": 48.3, "wt": 3.2 }, "ISO 65|Medium Series|40": { "od": 48.3, "wt": 3.2 },
+    "ISO 65|Medium|50": { "od": 60.3, "wt": 3.6 }, "ISO 65|Medium Series|50": { "od": 60.3, "wt": 3.6 },
+    "ISO 65|Medium|65": { "od": 76.1, "wt": 3.6 }, "ISO 65|Medium Series|65": { "od": 76.1, "wt": 3.6 },
+    "ISO 65|Medium|80": { "od": 88.9, "wt": 4 }, "ISO 65|Medium Series|80": { "od": 88.9, "wt": 4 },
+    "ISO 65|Medium|100": { "od": 114.3, "wt": 4.5 }, "ISO 65|Medium Series|100": { "od": 114.3, "wt": 4.5 },
+    "ISO 65|Medium|125": { "od": 139.7, "wt": 5 }, "ISO 65|Medium Series|125": { "od": 139.7, "wt": 5 },
+    "ISO 65|Medium|150": { "od": 165.1, "wt": 5 }, "ISO 65|Medium Series|150": { "od": 165.1, "wt": 5 },
+
+    "ISO 65|Heavy|15": { "od": 21.3, "wt": 3.2 }, "ISO 65|Heavy Series|15": { "od": 21.3, "wt": 3.2 },
+    "ISO 65|Heavy|20": { "od": 26.9, "wt": 3.2 }, "ISO 65|Heavy Series|20": { "od": 26.9, "wt": 3.2 },
+    "ISO 65|Heavy|25": { "od": 33.7, "wt": 4 }, "ISO 65|Heavy Series|25": { "od": 33.7, "wt": 4 },
+    "ISO 65|Heavy|32": { "od": 42.4, "wt": 4 }, "ISO 65|Heavy Series|32": { "od": 42.4, "wt": 4 },
+    "ISO 65|Heavy|40": { "od": 48.3, "wt": 4 }, "ISO 65|Heavy Series|40": { "od": 48.3, "wt": 4 },
+    "ISO 65|Heavy|50": { "od": 60.3, "wt": 4.5 }, "ISO 65|Heavy Series|50": { "od": 60.3, "wt": 4.5 },
+    "ISO 65|Heavy|65": { "od": 76.1, "wt": 4.5 }, "ISO 65|Heavy Series|65": { "od": 76.1, "wt": 4.5 },
+    "ISO 65|Heavy|80": { "od": 88.9, "wt": 5 }, "ISO 65|Heavy Series|80": { "od": 88.9, "wt": 5 },
+    "ISO 65|Heavy|100": { "od": 114.3, "wt": 5.4 }, "ISO 65|Heavy Series|100": { "od": 114.3, "wt": 5.4 },
+    "ISO 65|Heavy|125": { "od": 139.7, "wt": 5.4 }, "ISO 65|Heavy Series|125": { "od": 139.7, "wt": 5.4 },
+    "ISO 65|Heavy|150": { "od": 165.1, "wt": 5.4 }, "ISO 65|Heavy Series|150": { "od": 165.1, "wt": 5.4 },
     
     "ASTM A53|Schedule 10|300": { "od": 323.9, "wt": 6.35 }, "ASTM A53|Schedule 10|350": { "od": 355.6, "wt": 6.35 },
     "ASTM A53|Schedule 20|200": { "od": 219.1, "wt": 6.35 }, "ASTM A53|Schedule 20|250": { "od": 273.0, "wt": 6.35 }, "ASTM A53|Schedule 20|300": { "od": 323.9, "wt": 6.35 }, "ASTM A53|Schedule 20|350": { "od": 355.6, "wt": 7.92 }, "ASTM A53|Schedule 20|400": { "od": 406.4, "wt": 7.92 },
     "ASTM A53|Schedule 30|200": { "od": 219.1, "wt": 7.04 }, "ASTM A53|Schedule 30|250": { "od": 273.0, "wt": 7.80 }, "ASTM A53|Schedule 30|300": { "od": 323.9, "wt": 8.38 }, "ASTM A53|Schedule 30|350": { "od": 355.6, "wt": 9.52 }, "ASTM A53|Schedule 30|400": { "od": 406.4, "wt": 9.52 },
     "ASTM A53|Schedule 40|15": { "od": 21.3, "wt": 2.77 }, "ASTM A53|Schedule 40|20": { "od": 26.7, "wt": 2.87 }, "ASTM A53|Schedule 40|25": { "od": 33.4, "wt": 3.38 }, "ASTM A53|Schedule 40|32": { "od": 42.2, "wt": 3.56 }, "ASTM A53|Schedule 40|40": { "od": 48.3, "wt": 3.68 }, "ASTM A53|Schedule 40|50": { "od": 60.3, "wt": 3.91 }, "ASTM A53|Schedule 40|65": { "od": 73.0, "wt": 5.16 }, "ASTM A53|Schedule 40|80": { "od": 88.9, "wt": 5.49 }, "ASTM A53|Schedule 40|90": { "od": 101.6, "wt": 5.74 }, "ASTM A53|Schedule 40|100": { "od": 114.3, "wt": 6.02 }, "ASTM A53|Schedule 40|125": { "od": 141.3, "wt": 6.55 }, "ASTM A53|Schedule 40|150": { "od": 168.3, "wt": 7.11 }, "ASTM A53|Schedule 40|200": { "od": 219.1, "wt": 8.18 }, "ASTM A53|Schedule 40|250": { "od": 273.0, "wt": 9.27 }, "ASTM A53|Schedule 40|300": { "od": 323.9, "wt": 10.31 }, "ASTM A53|Schedule 40|350": { "od": 355.6, "wt": 11.13 }, "ASTM A53|Schedule 40|400": { "od": 406.4, "wt": 12.7 },
     "ASTM A53|Schedule 60|200": { "od": 219.1, "wt": 10.31 },
+    "AS 1074|Extra Light|15": { "od": 21.4, "wt": 2 }, "AS 1074|Extra Light|20": { "od": 26.9, "wt": 2.3 }, "AS 1074|Extra Light|25": { "od": 33.8, "wt": 2.6 },
+    "AS 1074|Extra Light|32": { "od": 42.5, "wt": 2.6 }, "AS 1074|Extra Light|40": { "od": 48.4, "wt": 2.9 }, "AS 1074|Extra Light|50": { "od": 60.2, "wt": 2.9 },
+    "AS 1074|Extra Light|65": { "od": 76, "wt": 3.2 }, "AS 1074|Extra Light|80": { "od": 88.7, "wt": 3.2 }, "AS 1074|Extra Light|100": { "od": 113.9, "wt": 3.6 },
     "AS 1074|Light|15": { "od": 21.4, "wt": 2 }, "AS 1074|Light|20": { "od": 26.9, "wt": 2.3 }, "AS 1074|Light|25": { "od": 33.8, "wt": 2.6 },
     "AS 1074|Light|32": { "od": 42.5, "wt": 2.6 }, "AS 1074|Light|40": { "od": 48.4, "wt": 2.9 }, "AS 1074|Light|50": { "od": 60.2, "wt": 2.9 },
     "AS 1074|Light|65": { "od": 76, "wt": 3.2 }, "AS 1074|Light|80": { "od": 88.7, "wt": 3.2 }, "AS 1074|Light|100": { "od": 113.9, "wt": 3.6 },
@@ -159,8 +218,129 @@ export default class SteelPipeExportConfig extends LightningElement {
         return this.showCalculations ? 'brand' : 'border-filled';
     }
 
+    get odColWidthNum() {
+        let maxChars = 2; // "OD"
+        if (this.pipes && this.pipes.length > 0) {
+            this.pipes.forEach(p => {
+                let len = (p.od !== undefined && p.od !== null && p.od !== '') ? String(p.od).length : 0;
+                if (len > maxChars) maxChars = len;
+            });
+        }
+        return Math.max(140, 140 + Math.max(0, maxChars - 6) * 10);
+    }
+
+    get odColStyle() {
+        const w = this.odColWidthNum;
+        return `width: ${w}px; min-width: ${w}px;`;
+    }
+
+    get ihcColWidthNum() {
+        let maxChars = 3; // "IHC"
+        if (this.pipes && this.pipes.length > 0) {
+            this.pipes.forEach(p => {
+                let len = (p.ihc !== undefined && p.ihc !== null && p.ihc !== '') ? String(p.ihc).length : 0;
+                if (len > maxChars) maxChars = len;
+            });
+        }
+        return Math.max(160, 160 + Math.max(0, maxChars - 6) * 10);
+    }
+
+    get ihcColStyle() {
+        const w = this.ihcColWidthNum;
+        return `width: ${w}px; min-width: ${w}px;`;
+    }
+
+    get cfrColWidthNum() {
+        let maxChars = 9; // "CFR VALUE"
+        if (this.pipes && this.pipes.length > 0) {
+            this.pipes.forEach(p => {
+                let len = (p.cfr !== undefined && p.cfr !== null && p.cfr !== '') ? String(p.cfr).length : 0;
+                if (len > maxChars) maxChars = len;
+            });
+        }
+        return Math.max(160, 160 + Math.max(0, maxChars - 7) * 12);
+    }
+
+    get cfrColStyle() {
+        const w = this.cfrColWidthNum;
+        return `width: ${w}px; min-width: ${w}px;`;
+    }
+
     get tableWidthStyle() {
-        return this.showCalculations ? 'width: 100%; min-width: 4980px;' : 'width: 100%; min-width: 4220px;';
+        const dynamicExtra = (this.odColWidthNum - 140) + (this.ihcColWidthNum - 160) + (this.cfrColWidthNum - 160);
+        const baseWidth = this.showCalculations ? 6115 : 5260;
+        const totalW = baseWidth + dynamicExtra;
+        return `width: ${totalW}px; min-width: ${totalW}px;`;
+    }
+
+    getBlackSteelRate() {
+        if (this.dynamicBaseRates) {
+            if (this.dynamicBaseRates['Black Steel'] !== undefined) {
+                return parseFloat(this.dynamicBaseRates['Black Steel']) || 0;
+            }
+            if (this.dynamicBaseRates['Black Metal'] !== undefined) {
+                return parseFloat(this.dynamicBaseRates['Black Metal']) || 0;
+            }
+        }
+        return 62.5;
+    }
+
+    getGiRate() {
+        if (this.dynamicBaseRates) {
+            if (this.dynamicBaseRates['Galvanized Iron (GI)'] !== undefined) {
+                return parseFloat(this.dynamicBaseRates['Galvanized Iron (GI)']) || 0;
+            }
+            if (this.dynamicBaseRates['GI'] !== undefined) {
+                return parseFloat(this.dynamicBaseRates['GI']) || 0;
+            }
+        }
+        return 70;
+    }
+
+    getBaseRateForSteelType(steelType) {
+        if (steelType === 'Galvanized Iron (GI)') {
+            return this.getGiRate();
+        }
+        if (steelType === 'Black Steel') {
+            return this.getBlackSteelRate();
+        }
+        if (this.dynamicBaseRates && this.dynamicBaseRates[steelType] !== undefined) {
+            return parseFloat(this.dynamicBaseRates[steelType]) || 0;
+        }
+        return 0;
+    }
+
+    isExtraLightSeries(seriesShape) {
+        if (!seriesShape) return false;
+        let s = String(seriesShape).trim().toUpperCase();
+        return s === 'EXTRA LIGHT' || s.includes('EXTRA LIGHT') || s === 'LIGHT SERIES 2' || s === 'LIGHT 2' || s === 'L2';
+    }
+
+    isLightSeries(seriesShape) {
+        if (!seriesShape) return false;
+        let s = String(seriesShape).trim().toUpperCase();
+        return s === 'LIGHT' || s === 'LIGHT 1' || s === 'LIGHT 2' || s === 'L1' || s === 'L2' || s.includes('LIGHT');
+    }
+
+    getCurrencyDelta(currencyCode, seriesShape) {
+        if (!this.isLightSeries(seriesShape)) {
+            return 0;
+        }
+        let code = (currencyCode || this.globalCurrencyCode || 'USD').toUpperCase();
+        let key = `Light Series Delta (${code})`;
+        let delta = 0;
+        if (this.dynamicBaseRates && this.dynamicBaseRates[key] !== undefined) {
+            delta = parseFloat(this.dynamicBaseRates[key]) || 0;
+        } else {
+            let altKey = `Delta (${code})`;
+            if (this.dynamicBaseRates && this.dynamicBaseRates[altKey] !== undefined) {
+                delta = parseFloat(this.dynamicBaseRates[altKey]) || 0;
+            }
+        }
+        if (this.isExtraLightSeries(seriesShape)) {
+            delta = delta * 2;
+        }
+        return delta;
     }
 
     getDesignationOptions(steelType) {
@@ -179,6 +359,51 @@ export default class SteelPipeExportConfig extends LightningElement {
             ];
         }
         return DESIGNATION_OPTIONS;
+    }
+
+    renderedCallback() {
+        if (this._seriesStyleInjected) return;
+        try {
+            const styleId = 'steel-pipe-export-series-wrap';
+            if (!document.getElementById(styleId)) {
+                const style = document.createElement('style');
+                style.id = styleId;
+                style.textContent = `
+                    .series-combobox button.slds-combobox__input {
+                        white-space: normal !important;
+                        height: auto !important;
+                        min-height: 32px !important;
+                        line-height: 1.25 !important;
+                        padding-top: 4px !important;
+                        padding-bottom: 4px !important;
+                    }
+                    .series-combobox button.slds-combobox__input .slds-truncate {
+                        white-space: normal !important;
+                        overflow: visible !important;
+                        text-overflow: clip !important;
+                        word-break: break-word !important;
+                    }
+                    .series-combobox .slds-listbox__option-text {
+                        white-space: normal !important;
+                        word-break: break-word !important;
+                    }
+                    .tolerance-col .slds-form-element__help,
+                    lightning-input[data-field="tolerance"] .slds-form-element__help {
+                        white-space: normal !important;
+                        word-break: break-word !important;
+                        line-height: 1.15 !important;
+                        font-size: 0.72rem !important;
+                        overflow: visible !important;
+                        display: block !important;
+                        margin-top: 2px !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            this._seriesStyleInjected = true;
+        } catch (e) {
+            console.warn('Could not inject series combobox styles', e);
+        }
     }
 
     async connectedCallback() {
@@ -210,6 +435,18 @@ export default class SteelPipeExportConfig extends LightningElement {
                             if (this.dynamicBaseRates['Incentive (%)'] !== undefined) {
                                 this.globalIncentivePercent = parseFloat(this.dynamicBaseRates['Incentive (%)']) || 0;
                             }
+
+                            if (this.pipes && this.pipes.length > 0) {
+                                this.pipes.forEach(pipe => {
+                                    pipe.rawMaterialCost = Number((this.getBlackSteelRate() * 1000).toFixed(2));
+                                    let liveBaseRate = this.getBaseRateForSteelType(pipe.steelType);
+                                    if (liveBaseRate > 0) {
+                                        pipe.ratePerKgInr = liveBaseRate;
+                                    }
+                                    pipe.ratePerMtInr = Number((pipe.ratePerKgInr * 1000).toFixed(2));
+                                    this.calculatePipe(pipe);
+                                });
+                            }
                         } catch (e) {
                             console.error('Error parsing JSON Config', e);
                         }
@@ -237,6 +474,9 @@ export default class SteelPipeExportConfig extends LightningElement {
                 let pipe = this.createEmptyPipe(index);
                 
                 pipe.steelType = savedPipe.steel_type || savedPipe.steelType || 'Black Steel';
+                pipe.isBlackSteel = pipe.steelType === 'Black Steel';
+                pipe.isGalvanized = pipe.steelType === 'Galvanized Iron (GI)';
+                pipe.isStainlessSteel = pipe.steelType === 'Stainless Steel';
                 pipe.designationOptions = this.getDesignationOptions(pipe.steelType);
                 
                 pipe.designation = savedPipe.pipe_designation || savedPipe.designation || 'MS ERW';
@@ -246,31 +486,58 @@ export default class SteelPipeExportConfig extends LightningElement {
                 pipe.standardSpecGrade = savedStd;
                 
                 pipe.manualStandard = savedPipe.manual_standard || '';
-                pipe.grade = savedPipe.grade || 'Grade A';
+                let isManualGrade = (pipe.standardSpecGrade === 'ASTM A 252');
+                pipe.isManualGrade = isManualGrade;
+                pipe.grade = isManualGrade
+                    ? (savedPipe.grade !== undefined && savedPipe.grade !== null ? savedPipe.grade : '')
+                    : (savedPipe.grade || 'Grade A');
                 pipe.sizeNb = savedPipe.size_nb || savedPipe.sizeNb || '';
-                pipe.od = savedPipe.od || 0;
-                pipe.customOD = savedPipe.custom_od || savedPipe.customOD || 0;
+                pipe.od = parseFloat(savedPipe.od) || 0;
+                pipe.customOD = parseFloat(savedPipe.custom_od !== undefined ? savedPipe.custom_od : savedPipe.customOD) || 0;
+                pipe.customWallThickness = parseFloat(savedPipe.custom_wall_thickness !== undefined ? savedPipe.custom_wall_thickness : (savedPipe.customWallThickness !== undefined ? savedPipe.customWallThickness : savedPipe.customWT)) || 0;
                 pipe.wallThickness = savedPipe.wall_thickness || savedPipe.wallThickness || 0;
                 pipe.endFinish = savedPipe.end_finish || savedPipe.endFinish || 'Plain End';
+                pipe.endFinishRate = savedPipe.end_finish_rate !== undefined ? parseFloat(savedPipe.end_finish_rate) : (END_FINISH_RATE_MAP[pipe.endFinish] || 0);
                 pipe.pipeLength = savedPipe.pipe_length || savedPipe.pipeLength || 1;
                 pipe.totalPieces = savedPipe.total_pieces || savedPipe.totalPieces || 1;
                 
                 pipe.uom = savedPipe.uom || savedPipe.priceInputType || 'MT';
                 
                 // Retrieve native INR rate seamlessly (no forced shields, just direct retrieval)
+                let liveBaseRate = this.getBaseRateForSteelType(pipe.steelType);
                 let savedRate = savedPipe.ratePerKgInr !== undefined ? savedPipe.ratePerKgInr : (savedPipe.price_inr || savedPipe.ratePerKgFc || savedPipe.price_fc || savedPipe.priceFc);
-                if (savedRate === undefined || savedRate === null) {
-                    savedRate = this.dynamicBaseRates[pipe.steelType] || 0;
-                }
-                pipe.ratePerKgInr = savedRate;
+                pipe.ratePerKgInr = liveBaseRate > 0 ? liveBaseRate : (savedRate || 0);
+                pipe.ratePerMtInr = Number((pipe.ratePerKgInr * 1000).toFixed(2));
+                pipe.rawMaterialCost = savedPipe.rawMaterialCost !== undefined ? savedPipe.rawMaterialCost : Number((this.getBlackSteelRate() * 1000).toFixed(2));
 
-                // Tolerance respects standard mapping (no forced 0 for MT)
-                pipe.maxTolerance = GRADE_TOLERANCE_MAP[pipe.grade] || 10.0;
-                pipe.tolerance = savedPipe.tolerance !== undefined ? savedPipe.tolerance : pipe.maxTolerance;
+                // Tolerance: default 8%, max allowed 12.5%
+                pipe.maxTolerance = GRADE_TOLERANCE_MAP[pipe.grade] || 12.5;
+                pipe.tolerance = savedPipe.tolerance !== undefined ? savedPipe.tolerance : DEFAULT_TOLERANCE;
+                if (pipe.tolerance > pipe.maxTolerance) {
+                    pipe.tolerance = pipe.maxTolerance;
+                }
+                pipe.toleranceAmount = savedPipe.toleranceAmount !== undefined ? savedPipe.toleranceAmount : 0;
+                pipe.nonTolerancePricePerMt = savedPipe.nonTolerancePricePerMt !== undefined ? savedPipe.nonTolerancePricePerMt : 0;
+                pipe.exWorks = savedPipe.exWorks !== undefined ? savedPipe.exWorks : 0;
+                pipe.netFobInr = savedPipe.netFobInr !== undefined ? savedPipe.netFobInr : 0;
+                pipe.netFobFc = savedPipe.netFobFc !== undefined ? savedPipe.netFobFc : 0;
+                pipe.deltaFc = savedPipe.deltaFc !== undefined ? savedPipe.deltaFc : 0;
+                pipe.incentive = savedPipe.incentive !== undefined ? savedPipe.incentive : (savedPipe.incentiveAddon || 0);
                 
+                let savedHasCustom = savedPipe.hasCustomQuotedPrice;
+                if (savedHasCustom !== undefined) {
+                    pipe.hasCustomQuotedPrice = savedHasCustom === true;
+                } else {
+                    let savedQuoted = parseFloat(savedPipe.quotedPriceFc || savedPipe.quoted_price_fc);
+                    let savedCutoff = parseFloat(savedPipe.cutoffPriceFc || savedPipe.cutoff_price_fc || savedPipe.pricePerMt || savedPipe.price_per_mt_fc);
+                    if (!isNaN(savedQuoted) && !isNaN(savedCutoff) && Math.abs(savedQuoted - savedCutoff) > 0.01) {
+                        pipe.hasCustomQuotedPrice = true;
+                    } else {
+                        pipe.hasCustomQuotedPrice = false;
+                    }
+                }
                 pipe.quotedPriceFc = savedPipe.quotedPriceFc || savedPipe.quoted_price_fc;
                 pipe.discountPercent = savedPipe.discountPercent || savedPipe.discount_percent || 0;
-                pipe.hasCustomQuotedPrice = !!pipe.quotedPriceFc;
 
                 pipe.pricePerMt = savedPipe.pricePerMt || savedPipe.price_per_mt_fc || 0;
                 pipe.costPriceFc = savedPipe.costPriceFc || 0;
@@ -283,15 +550,22 @@ export default class SteelPipeExportConfig extends LightningElement {
                 pipe.commissionPercent = savedPipe.commissionPercent || 0;
                 pipe.inspectionCharges = savedPipe.inspectionCharges || 0;
                 pipe.otherCharges = savedPipe.otherCharges || 0;
+                pipe.rodtepPercent = savedPipe.rodtepPercent !== undefined ? parseFloat(savedPipe.rodtepPercent) : this.globalRodtepPercent;
+                pipe.incentivePercent = savedPipe.incentivePercent !== undefined ? parseFloat(savedPipe.incentivePercent) : this.globalIncentivePercent;
                 
                 pipe.showGrade = (pipe.standardSpecGrade && pipe.standardSpecGrade.startsWith('ASTM'));
-                pipe.showManualStandard = ['AS 1074', 'EN 10255', 'BS 1387', 'AS 1163', 'EN 10219', 'ASTM A 135', 'ASTM A 500', 'ASTM A 795', 'EN 39'].includes(pipe.standardSpecGrade);
+                pipe.showManualStandard = ['AS 1074', 'EN 10255', 'BS 1387', 'AS 1163', 'EN 10219', 'ASTM A 135', 'ASTM A 252', 'ASTM A 500', 'ASTM A 795', 'EN 39'].includes(pipe.standardSpecGrade);
                 
                 let isAstm = pipe.standardSpecGrade && pipe.standardSpecGrade.startsWith('ASTM');
                 let isNaSeries = this.isStandardNASeries(pipe.standardSpecGrade);
                 
                 pipe.isAstm = isAstm;
-                pipe.seriesShape = isNaSeries ? 'NA' : (savedPipe.shape || savedPipe.seriesShape || 'Manual');
+                let savedShape = savedPipe.shape || savedPipe.seriesShape || 'Manual';
+                if (pipe.standardSpecGrade === 'ISO 65') {
+                    if (savedShape === 'Light 1') savedShape = 'Light Series 1';
+                    else if (savedShape === 'Light 2') savedShape = 'Light Series 2';
+                }
+                pipe.seriesShape = isNaSeries ? 'NA' : savedShape;
                 pipe.isSeriesDisabled = this.isReadOnly || isNaSeries;
                 
                 if (isNaSeries) {
@@ -328,6 +602,7 @@ export default class SteelPipeExportConfig extends LightningElement {
                 this.calculatePipe(p);
                 this.pipes.push(p);
             }
+            this.pipes = [...this.pipes];
         }
     }
 
@@ -339,18 +614,23 @@ export default class SteelPipeExportConfig extends LightningElement {
 
         return {
             id: index,
-            key: `pipe_${index}_${Date.now()}`,
+            key: `pipe_${index}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
             
             steelType: defaultSteelType,
+            isBlackSteel: true,
+            isGalvanized: false,
+            isStainlessSteel: false,
             designation: 'MS ERW',
             standardSpecGrade: defaultStandard,
             showManualStandard: false,
             manualStandard: '',
             showGrade: true,
+            isManualGrade: false,
             grade: 'Grade A',
             sizeNb: '',
             od: 0,
             customOD: 0,
+            customWallThickness: 0,
             seriesShape: defaultSeriesShape,
             isSeriesDisabled: true,
             isThicknessReadOnly: true,
@@ -364,6 +644,7 @@ export default class SteelPipeExportConfig extends LightningElement {
             schedule: defaultSchedule,
             
             endFinish: 'Plain End',
+            endFinishRate: 0,
             pipeLength: 1,
             totalPieces: 1,
             kgPerMeter: 0,
@@ -371,10 +652,19 @@ export default class SteelPipeExportConfig extends LightningElement {
             totalWeight: 0,
             
             uom: 'MT',
-            ratePerKgInr: this.dynamicBaseRates[defaultSteelType] || 0,
+            ratePerKgInr: this.getBaseRateForSteelType(defaultSteelType),
+            ratePerMtInr: Number((this.getBaseRateForSteelType(defaultSteelType) * 1000).toFixed(2)),
+            rawMaterialCost: Number((this.getBlackSteelRate() * 1000).toFixed(2)),
 
-            tolerance: GRADE_TOLERANCE_MAP["Grade A"] || 10.0,
-            maxTolerance: GRADE_TOLERANCE_MAP["Grade A"],
+            tolerance: DEFAULT_TOLERANCE,
+            toleranceAmount: 0,
+            nonTolerancePricePerMt: 0,
+            exWorks: 0,
+            netFobInr: 0,
+            netFobFc: 0,
+            deltaFc: 0,
+            incentive: 0,
+            maxTolerance: GRADE_TOLERANCE_MAP["Grade A"] || 12.5,
             costPriceFc: 0,
             cutoffPriceFc: 0,
             quotedPriceFc: 0,
@@ -399,6 +689,7 @@ export default class SteelPipeExportConfig extends LightningElement {
             incentivePercent: this.globalIncentivePercent,
             incentiveAddon: 0,
             rodtepAddon: 0,
+            rodtep: 0,
             netFobInrCalc: 0,
             netFobFcCalc: 0,
             freightCost: 0,
@@ -424,8 +715,8 @@ export default class SteelPipeExportConfig extends LightningElement {
         else if (primary.includes('AS1074') || primary === 'AS 1074') return 'AS 1074';
         else if (primary.includes('BS 1387') || primary.includes('BS1387')) return 'BS 1387';
         else if (primary.includes('ASTM A53') || primary.includes('ASTM A 53') || 
-                 primary.includes('ASTM A 135') || primary.includes('ASTM A 500') || primary.includes('ASTM A 795')) return 'ASTM A53';
-        else if (primary.includes('ISO 65') || primary.includes('ISO65')) return 'EN 10255';
+                 primary.includes('ASTM A 135') || primary.includes('ASTM A 252') || primary.includes('ASTM A 500') || primary.includes('ASTM A 795')) return 'ASTM A53';
+        else if (primary.includes('ISO 65') || primary.includes('ISO65')) return 'ISO 65';
         else if (primary.includes('AS 1163')) return 'AS 1163';
         else if (primary.includes('EN 10219')) return 'EN 10219';
         return primary;
@@ -443,7 +734,7 @@ export default class SteelPipeExportConfig extends LightningElement {
             return (keyStd) => keyStd.toLowerCase().replace(/\s/g, '').includes('bs1387') ||
                                keyStd.toLowerCase().replace(/\s/g, '').includes('en10255');
         } else if (lower.includes('astma53') || lower.includes('astm a53') || 
-                   lower.includes('astma135') || lower.includes('astma500') || lower.includes('astma795')) {
+                   lower.includes('astma135') || lower.includes('astma252') || lower.includes('astma500') || lower.includes('astma795')) {
             return (keyStd) => keyStd.toLowerCase().replace(/\s/g, '').includes('astma53');
         } else if (lower.includes('iso65') || lower.includes('iso 65')) {
             return (keyStd) => {
@@ -498,11 +789,20 @@ export default class SteelPipeExportConfig extends LightningElement {
                 { label: 'Manual', value: 'Manual' }
             ];
         }
+        const lowerStd = (standard || '').toLowerCase().replace(/\s/g, '');
+        if (lowerStd.includes('iso65')) {
+            return [
+                { label: 'Light Series 1', value: 'Light Series 1' },
+                { label: 'Light Series 2', value: 'Light Series 2' },
+                { label: 'Medium', value: 'Medium' },
+                { label: 'Heavy', value: 'Heavy' },
+                { label: 'Manual', value: 'Manual' }
+            ];
+        }
         const matcher = this.normalizeWeightMapStandard(standard);
         if (!matcher) return SERIES_OPTIONS;
 
         const seriesSet = new Set();
-        const lowerStd = standard.toLowerCase().replace(/\s/g, '');
         
         Object.keys(this.WEIGHT_MAP).forEach(k => {
             const parts = k.split('|');
@@ -524,7 +824,7 @@ export default class SteelPipeExportConfig extends LightningElement {
             }
         });
 
-        if (lowerStd.includes('bs1387') || lowerStd.includes('en10255') || lowerStd.includes('iso65')) {
+        if (lowerStd.includes('bs1387') || lowerStd.includes('en10255')) {
             seriesSet.delete('L1');
             seriesSet.delete('L2');
             seriesSet.delete('Light 1');
@@ -534,15 +834,18 @@ export default class SteelPipeExportConfig extends LightningElement {
             seriesSet.delete('L2');
             seriesSet.delete('Light 1');
             seriesSet.delete('Light 2');
+            seriesSet.add('Extra Light');
         }
 
         if (seriesSet.size === 0) return SERIES_OPTIONS;
 
-        const order = ['Light', 'Light 1', 'Light 2', 'L1', 'L2', 'Medium', 'Heavy', 'Default'];
+        const order = ['Extra Light', 'Light', 'Light 1', 'Light 2', 'Light Series 1', 'Light Series 2', 'L1', 'L2', 'Medium', 'Heavy', 'Default'];
         const sorted = [];
         order.forEach(s => { if (seriesSet.has(s)) sorted.push(s); });
         seriesSet.forEach(s => { if (!sorted.includes(s)) sorted.push(s); });
-        sorted.push('Manual');
+        if (!lowerStd.includes('as1074')) {
+            sorted.push('Manual');
+        }
 
         return sorted.map(s => ({ label: s, value: s }));
     }
@@ -562,10 +865,24 @@ export default class SteelPipeExportConfig extends LightningElement {
         if (!matcher) return [];
 
         const sizes = new Set();
-        const lower = standard.toLowerCase().replace(/\s/g, '');
+        const lower = (standard || '').toLowerCase().replace(/\s/g, '');
         
         let isAstm = lower.includes('astm');
         let targetFilter = isAstm ? schedule : series;
+        let effectiveFilter = (lower.includes('as1074') && targetFilter === 'Extra Light') ? 'Light' : targetFilter;
+
+        const matchesFilter = (itemSeries, filter) => {
+            if (!filter || filter === 'Manual' || filter === 'NA') return true;
+            if (itemSeries === filter) return true;
+            const s1 = (itemSeries || '').toLowerCase().replace(/\s*series\s*/g, ' ').replace(/\s+/g, ' ').trim();
+            const s2 = (filter || '').toLowerCase().replace(/\s*series\s*/g, ' ').replace(/\s+/g, ' ').trim();
+            if (s1 === s2) return true;
+            if ((s2 === 'light 1' && (s1 === 'l1' || s1 === 'light 1')) ||
+                (s2 === 'light 2' && (s1 === 'l2' || s1 === 'light 2'))) {
+                return true;
+            }
+            return false;
+        };
 
         Object.keys(this.WEIGHT_MAP).forEach(k => {
             const parts = k.split('|');
@@ -574,9 +891,9 @@ export default class SteelPipeExportConfig extends LightningElement {
             
             if (targetFilter && targetFilter !== 'Manual' && targetFilter !== 'NA') {
                 if (lower.includes('as1163') || lower.includes('en10219')) {
-                    if (parts[2] !== targetFilter) return;
+                    if (parts[2] !== effectiveFilter) return;
                 } else {
-                    if (parts[1] !== targetFilter) return;
+                    if (!matchesFilter(parts[1], effectiveFilter)) return;
                 }
             }
             
@@ -591,7 +908,7 @@ export default class SteelPipeExportConfig extends LightningElement {
             if (!matcher(parts[0])) return;
             
             if (targetFilter && targetFilter !== 'Manual' && targetFilter !== 'NA') {
-                if (parts[1] !== targetFilter) {
+                if (!matchesFilter(parts[1], targetFilter) && !matchesFilter(parts[1], effectiveFilter)) {
                     return; 
                 }
             }
@@ -621,12 +938,18 @@ export default class SteelPipeExportConfig extends LightningElement {
                 return { label: labelStr, value: v + '' };
             });
         }
-        arr.push({ label: 'Manual', value: 'Manual' });
+        if (!lower.includes('as1074')) {
+            arr.push({ label: 'Manual', value: 'Manual' });
+        }
         return arr;
     }
 
     handleGlobalCurrencyChange(event) {
         this.globalCurrencyCode = event.target.value;
+        this.pipes = this.pipes.map(pipe => {
+            this.calculatePipe(pipe);
+            return pipe;
+        });
     }
 
     handleGlobalExchangeRateChange(event) {
@@ -639,13 +962,15 @@ export default class SteelPipeExportConfig extends LightningElement {
 
     handleApply() {
         const configuredPipes = this.pipes.map(pipe => {
-            let unitRate = 0;
-            if (pipe.uom === 'MT') {
-                unitRate = pipe.pricePerMt;
-            } else if (pipe.uom === 'Meters') {
-                unitRate = pipe.pricePerMeter;
-            } else if (pipe.uom === 'Pieces') {
-                unitRate = pipe.pricePerPiece;
+            let unitRate = pipe.quotedPriceFc;
+            if (unitRate === undefined || unitRate === null || unitRate === '') {
+                if (pipe.uom === 'MT') {
+                    unitRate = pipe.pricePerMt;
+                } else if (pipe.uom === 'Meters') {
+                    unitRate = pipe.pricePerMeter;
+                } else if (pipe.uom === 'Pieces') {
+                    unitRate = pipe.pricePerPiece;
+                }
             }
 
             return {
@@ -656,11 +981,17 @@ export default class SteelPipeExportConfig extends LightningElement {
                 grade: pipe.grade,
                 sizeNb: pipe.sizeNb,
                 od: pipe.od,
+                customOD: pipe.customOD || 0,
+                custom_od: pipe.customOD || 0,
+                customWallThickness: pipe.customWallThickness || 0,
+                custom_wall_thickness: pipe.customWallThickness || 0,
                 seriesShape: pipe.seriesShape,
                 wallThickness: pipe.wallThickness,
                 schedule: pipe.schedule,
                 isManualSize: pipe.isManualSize,
                 endFinish: pipe.endFinish,
+                end_finish: pipe.endFinish,
+                end_finish_rate: pipe.endFinishRate || 0,
                 pipeLength: pipe.pipeLength,
                 totalPieces: pipe.totalPieces,
                 kgPerMeter: pipe.kgPerMeter,
@@ -674,13 +1005,26 @@ export default class SteelPipeExportConfig extends LightningElement {
                 exchangeRate: this.globalExchangeRate,
                 
                 ratePerKgInr: pipe.ratePerKgInr,
+                ratePerMtInr: pipe.ratePerMtInr,
+                rawMaterialCost: pipe.rawMaterialCost,
                 priceFc: unitRate, 
                 
                 tolerance: pipe.tolerance,
+                toleranceAmount: pipe.toleranceAmount,
+                nonTolerancePricePerMt: pipe.nonTolerancePricePerMt,
+                exWorks: pipe.exWorks,
+                netFobInr: pipe.netFobInr,
+                netFobFc: pipe.netFobFc,
+                incentive: pipe.incentive,
+                rodtepAddon: pipe.rodtepAddon,
+                rodtep: pipe.rodtep,
                 costPriceFc: pipe.costPriceFc, 
                 cutoffPriceFc: pipe.cutoffPriceFc, 
                 quotedPriceFc: pipe.quotedPriceFc, 
+                hasCustomQuotedPrice: pipe.hasCustomQuotedPrice === true,
                 discountPercent: pipe.discountPercent,
+                discount: pipe.discountPercent,
+                discount_percent: pipe.discountPercent,
                 
                 pricePerPiece: pipe.pricePerPiece,
                 pricePerMt: pipe.pricePerMt,
@@ -704,7 +1048,8 @@ export default class SteelPipeExportConfig extends LightningElement {
                 netFobFcCalc: pipe.netFobFcCalc,
                 freightCost: pipe.freightCost,
                 commissionValue: pipe.commissionValue,
-                cfr: pipe.cfr
+                cfr: pipe.cfr,
+                deltaFc: pipe.deltaFc || 0
             };
         });
 
@@ -720,6 +1065,7 @@ export default class SteelPipeExportConfig extends LightningElement {
     }
 
     handlePipeCountChange(event) {
+        if (this.isReadOnly) { return; }
         let val = parseInt(event.target.value, 10);
         if (isNaN(val) || val < 1) val = 1;
         this.pipeCount = val;
@@ -730,6 +1076,7 @@ export default class SteelPipeExportConfig extends LightningElement {
                 this.calculatePipe(p);
                 this.pipes.push(p);
             }
+            this.pipes = [...this.pipes];
         } else if (this.pipes.length > this.pipeCount) {
             this.pipes = this.pipes.slice(0, this.pipeCount);
         }
@@ -840,8 +1187,8 @@ export default class SteelPipeExportConfig extends LightningElement {
             } else {
                 const fallbackMap = {
                     specs: 0,
-                    charges: 1900,
-                    pricing: this.showCalculations ? 3400 : 2700,
+                    charges: 2505,
+                    pricing: this.showCalculations ? 4430 : 3715,
                     cfr: table.scrollWidth
                 };
                 targetPos = fallbackMap[section] || 0;
@@ -904,21 +1251,36 @@ export default class SteelPipeExportConfig extends LightningElement {
         let pipe = this.pipes[index];
         pipe[fieldName] = value;
 
-        if (['ratePerKgInr', 'tolerance', 'grade', 'pipeLength', 'totalPieces', 'wallThickness', 'od', 'customOD', 'uom'].includes(fieldName)) {
+        if (['ratePerKgInr', 'tolerance', 'grade', 'pipeLength', 'totalPieces', 'wallThickness', 'od', 'customOD', 'customWallThickness', 'uom', 'standardSpecGrade', 'seriesShape', 'schedule', 'sizeNb', 'endFinish', 'ihc', 'freightFc', 'containerTonnage', 'commissionPercent', 'inspectionCharges', 'otherCharges'].includes(fieldName)) {
             pipe.hasCustomQuotedPrice = false;
         }
 
         if (fieldName === 'steelType') {
+            pipe.isBlackSteel = (value === 'Black Steel');
+            pipe.isGalvanized = (value === 'Galvanized Iron (GI)');
+            pipe.isStainlessSteel = (value === 'Stainless Steel');
             pipe.designationOptions = this.getDesignationOptions(value);
             if (!pipe.designationOptions.find(opt => opt.value === pipe.designation)) {
                 pipe.designation = pipe.designationOptions.length > 0 ? pipe.designationOptions[0].value : '';
             }
-            pipe.ratePerKgInr = this.dynamicBaseRates[value] || 0;
+            pipe.ratePerKgInr = this.getBaseRateForSteelType(value);
+            pipe.ratePerMtInr = Number((pipe.ratePerKgInr * 1000).toFixed(2));
+            pipe.rawMaterialCost = Number((this.getBlackSteelRate() * 1000).toFixed(2));
             pipe.hasCustomQuotedPrice = false;
         } 
         else if (fieldName === 'standardSpecGrade') {
             pipe.showGrade = (value && value.startsWith('ASTM'));
-            pipe.showManualStandard = ['AS 1074', 'EN 10255', 'BS 1387', 'AS 1163', 'EN 10219', 'ASTM A 135', 'ASTM A 500', 'ASTM A 795', 'EN 39'].includes(value);
+            pipe.showManualStandard = ['AS 1074', 'EN 10255', 'BS 1387', 'AS 1163', 'EN 10219', 'ASTM A 135', 'ASTM A 252', 'ASTM A 500', 'ASTM A 795', 'EN 39'].includes(value);
+            
+            let isManualGrade = (value === 'ASTM A 252');
+            pipe.isManualGrade = isManualGrade;
+            if (isManualGrade) {
+                pipe.grade = '';
+            } else if (value && value.startsWith('ASTM')) {
+                if (!pipe.grade || !pipe.gradeOptions.find(opt => opt.value === pipe.grade)) {
+                    pipe.grade = 'Grade A';
+                }
+            }
             
             let isAstm = value && value.startsWith('ASTM');
             pipe.isAstm = isAstm;
@@ -993,10 +1355,13 @@ export default class SteelPipeExportConfig extends LightningElement {
                 pipe.wallThickness = 0;
             }
         } else if (fieldName === 'grade') {
-            pipe.maxTolerance = GRADE_TOLERANCE_MAP[value] || 10.0;
+            pipe.maxTolerance = GRADE_TOLERANCE_MAP[value] || 12.5;
             if (pipe.tolerance > pipe.maxTolerance) {
                 pipe.tolerance = pipe.maxTolerance;
             }
+        } else if (fieldName === 'endFinish') {
+            pipe.endFinish = value;
+            pipe.endFinishRate = END_FINISH_RATE_MAP[value] !== undefined ? END_FINISH_RATE_MAP[value] : 0;
         }
         
         if (['standardSpecGrade', 'seriesShape', 'schedule', 'sizeNb'].includes(fieldName)) {
@@ -1037,17 +1402,35 @@ export default class SteelPipeExportConfig extends LightningElement {
                     }
                 } else {
                     let key = s + '|' + series + '|' + size;
+                    let altSeries = series;
+                    if (series === 'Light Series 1') altSeries = 'Light 1';
+                    else if (series === 'Light 1') altSeries = 'Light Series 1';
+                    else if (series === 'Light Series 2') altSeries = 'Light 2';
+                    else if (series === 'Light 2') altSeries = 'Light Series 2';
+                    let altKey = s + '|' + altSeries + '|' + size;
+
                     if (CATALOG_MAP[key]) {
                         pipe.od = CATALOG_MAP[key].od;
                         if (series !== 'Manual') {
                             pipe.wallThickness = CATALOG_MAP[key].wt;
                         }
+                    } else if (CATALOG_MAP[altKey]) {
+                        pipe.od = CATALOG_MAP[altKey].od;
+                        if (series !== 'Manual') {
+                            pipe.wallThickness = CATALOG_MAP[altKey].wt;
+                        }
                     } else {
-                        let fallbackKey = s + '||' + size;
-                        if (CATALOG_MAP[fallbackKey]) {
-                            pipe.od = CATALOG_MAP[fallbackKey].od;
-                            if (series !== 'Manual') {
-                                pipe.wallThickness = CATALOG_MAP[fallbackKey].wt;
+                        let lightKey = s + '|Light|' + size;
+                        if (series === 'Extra Light' && CATALOG_MAP[lightKey]) {
+                            pipe.od = CATALOG_MAP[lightKey].od;
+                            pipe.wallThickness = CATALOG_MAP[lightKey].wt;
+                        } else {
+                            let fallbackKey = s + '||' + size;
+                            if (CATALOG_MAP[fallbackKey]) {
+                                pipe.od = CATALOG_MAP[fallbackKey].od;
+                                if (series !== 'Manual') {
+                                    pipe.wallThickness = CATALOG_MAP[fallbackKey].wt;
+                                }
                             }
                         }
                     }
@@ -1056,16 +1439,17 @@ export default class SteelPipeExportConfig extends LightningElement {
         }
 
         if (fieldName === 'tolerance') {
-            let val = parseFloat(value) || 0;
+            let val = parseFloat(value);
+            if (isNaN(val) || val < 0) {
+                val = 0;
+            }
             let inputField = event.target;
 
-            // 👉 NEW: Show an error if the value exceeds the maximum allowed
             if (val > pipe.maxTolerance) {
                 inputField.setCustomValidity(`Tolerance cannot exceed ${pipe.maxTolerance}%`);
                 inputField.reportValidity();
-                val = pipe.maxTolerance; // Forces the calculation back down so it won't take the higher value
             } else {
-                inputField.setCustomValidity(''); // Clears the error if the value is fixed
+                inputField.setCustomValidity('');
                 inputField.reportValidity();
             }
             
@@ -1082,7 +1466,7 @@ export default class SteelPipeExportConfig extends LightningElement {
             }
         }
 
-        if (['pipeLength', 'totalPieces', 'wallThickness', 'od', 'customOD', 'ratePerKgInr', 'ihc', 'freightFc', 'containerTonnage', 'commissionPercent', 'inspectionCharges', 'otherCharges'].includes(fieldName)) {
+        if (['pipeLength', 'totalPieces', 'wallThickness', 'od', 'customOD', 'customWallThickness', 'ratePerKgInr', 'ihc', 'freightFc', 'containerTonnage', 'commissionPercent', 'inspectionCharges', 'otherCharges'].includes(fieldName)) {
             pipe[fieldName] = parseFloat(value) || 0;
         }
 
@@ -1098,7 +1482,7 @@ export default class SteelPipeExportConfig extends LightningElement {
         const pipe = this.pipes[index];
         if (!pipe) { return; }
 
-        if (pipe.quotedPriceFc === null || pipe.quotedPriceFc === undefined || pipe.quotedPriceFc === '') {
+        if (pipe.quotedPriceFc === null || pipe.quotedPriceFc === undefined || pipe.quotedPriceFc === '' || pipe.quotedPriceFc === pipe.cutoffPriceFc) {
             pipe.hasCustomQuotedPrice = false;
         }
         this.calculatePipe(pipe);
@@ -1107,16 +1491,29 @@ export default class SteelPipeExportConfig extends LightningElement {
 
     calculatePipe(pipe) {
         let activeOd = pipe.customOD > 0 ? pipe.customOD : pipe.od;
-        let rawKg = (activeOd - pipe.wallThickness) * pipe.wallThickness * 0.0246615;
-        if (isNaN(rawKg)) rawKg = 0;
-        pipe.kgPerMeter = Number(Math.max(0, rawKg).toFixed(3));
+        let od = parseFloat(activeOd) || 0;
+        let activeWt = pipe.customWallThickness > 0 ? pipe.customWallThickness : pipe.wallThickness;
+        let wt = parseFloat(activeWt) || 0;
+        let len = parseFloat(pipe.pipeLength) || 0;
+        let pieces = parseFloat(pipe.totalPieces) || 0;
+
+        let rawKg = (od - wt) * wt * 0.0246615;
+        if (isNaN(rawKg) || rawKg < 0) rawKg = 0;
+        pipe.kgPerMeter = Number(rawKg.toFixed(2));
         
-        pipe.totalMeters = pipe.pipeLength * pipe.totalPieces;
-        pipe.totalWeight = (pipe.totalMeters * pipe.kgPerMeter) / 1000;
+        pipe.totalMeters = len * pieces;
+        // Total Weight (MT) = Total Pieces * (([OD (mm) or custom OD (mm) ] - WT (mm)) * WT (mm) * 0.0246615) * Length (M) / 1000
+        let rawTotalWeight = (pieces * ((od - wt) * wt * 0.0246615) * len) / 1000;
+        pipe.totalWeight = isNaN(rawTotalWeight) || rawTotalWeight < 0 
+            ? 0 
+            : (rawTotalWeight > 0 && rawTotalWeight < 0.0005 ? Number(rawTotalWeight.toFixed(4)) : Number(rawTotalWeight.toFixed(3)));
         
         // 1. Exchange Rate and Base Rates
         let exRate = this.globalExchangeRate > 0 ? this.globalExchangeRate : 1.0;
-        let baseRateKgInr = parseFloat(pipe.ratePerKgInr) || 0;
+        let endFinishExtra = parseFloat(pipe.endFinishRate) || (END_FINISH_RATE_MAP[pipe.endFinish] || 0);
+        let baseRateKgInr = (parseFloat(pipe.ratePerKgInr) || 0) + endFinishExtra;
+        pipe.ratePerMtInr = Number((baseRateKgInr * 1000).toFixed(2));
+        pipe.rawMaterialCost = Number((this.getBlackSteelRate() * 1000).toFixed(2));
         let ratePerKgFc = baseRateKgInr / exRate;
 
         // 2. Freight Distribution
@@ -1125,12 +1522,8 @@ export default class SteelPipeExportConfig extends LightningElement {
             : 0;
             
         pipe.freightCost = Number(freightPerMtFc.toFixed(2));
-        let freightPerKgFc = freightPerMtFc / 1000;
 
-        // 3. Combined True Cost per KG
-        let totalCostPerKgFc = ratePerKgFc + freightPerKgFc;
-
-        // 4. Dynamic UOM Multiplier
+        // 3. Dynamic UOM Multiplier
         let uomMultiplier = 1000; 
         if (pipe.uom === 'Meters') {
             uomMultiplier = pipe.kgPerMeter;
@@ -1138,52 +1531,110 @@ export default class SteelPipeExportConfig extends LightningElement {
             uomMultiplier = pipe.kgPerMeter * pipe.pipeLength;
         }
 
-        // 5. Cost Price (FC) - Dynamically scales to UOM
-        pipe.costPriceFc = Number((totalCostPerKgFc * uomMultiplier).toFixed(2));
-
-        // 6. Apply Tolerance directly to the UOM Cost Price 
+        // 4. Calculate Ex. Works in INR using base cutoff (Rate minus Raw Material tolerance):
+        // Ex. Works (INR/MT) = NET REALIZATION EX-WORKS - TOLERANCE
         let tol = parseFloat(pipe.tolerance) || 0;
-        pipe.cutoffPriceFc = Number((pipe.costPriceFc * (1 - (tol / 100))).toFixed(2));
+        let effectiveTol = pipe.maxTolerance > 0 ? Math.min(tol, pipe.maxTolerance) : tol;
+        let rawMaterialCostMtInr = parseFloat(pipe.rawMaterialCost) || 0;
+        let ratePerMtInr = parseFloat(pipe.ratePerMtInr) || 0;
+        pipe.toleranceAmount = Number(((effectiveTol / 100) * rawMaterialCostMtInr).toFixed(2));
+        let targetPriceInr = ratePerMtInr - pipe.toleranceAmount;
+        pipe.exWorks = Number(targetPriceInr.toFixed(2));
 
-        // 7. Quoted Price defaults to Cutoff
+        // 5. Calculate NET FOB (INR) (x):
+        // x + (RODTEP% of x) + (INCENTIVE% of x) - IHC (INR) = EX. WORKS
+        // => x * (1 + RODTEP% + INCENTIVE%) = EX. WORKS + IHC (INR)
+        // => x = (EX. WORKS + IHC (INR)) / (1 + RODTEP% + INCENTIVE%)
+        let ihcInr = parseFloat(pipe.ihc) || 0;
+        let rodtepRate = (parseFloat(pipe.rodtepPercent) || 0) / 100.0;
+        let incentiveRate = (parseFloat(pipe.incentivePercent) || 0) / 100.0;
+        let incentiveMultiplier = 1 + rodtepRate + incentiveRate;
+
+        let netFobInr = incentiveMultiplier > 0 
+            ? (pipe.exWorks + ihcInr) / incentiveMultiplier 
+            : pipe.exWorks;
+        pipe.netFobInr = Number(netFobInr.toFixed(2));
+
+        // 6. Calculate NET FOB (FC):
+        // NET FOB (FC) = NET FOB (INR) / Exchange Rate
+        pipe.netFobFc = Number((exRate > 0 ? pipe.netFobInr / exRate : pipe.netFobInr).toFixed(2));
+
+        // 7. Calculate INCENTIVE & RODTEP ADD-ON (as % of NET FOB (INR) x):
+        pipe.incentive = Number((pipe.netFobInr * incentiveRate).toFixed(2));
+        pipe.rodtepAddon = Number((pipe.netFobInr * rodtepRate).toFixed(2));
+        pipe.rodtep = pipe.rodtepAddon;
+
+        // 8. Calculate PRICE / MT (x) in FC (independent of QUOTED PRICE):
+        // PRICE / MT (FC) = NET FOB (FC) + Freight per MT (FC) + Delta FC (rounded so it doesn't have decimal)
+        let deltaFc = this.getCurrencyDelta(this.globalCurrencyCode, pipe.seriesShape);
+        pipe.deltaFc = deltaFc;
+        pipe.pricePerMt = Math.round(pipe.netFobFc + freightPerMtFc + deltaFc);
+        pipe.pricePerMtTitle = deltaFc > 0 ? `${pipe.pricePerMt} (includes ${deltaFc} ${this.globalCurrencyCode} Delta for ${pipe.seriesShape})` : String(pipe.pricePerMt);
+
+        // Non-tolerance price per MT (without subtracting tolerance):
+        // x_inr + (RoDTEP% * x_inr) + (Incentive% * x_inr) - IHC_inr = RATE (PER MT INR)
+        // x_inr = (RATE (PER MT INR) + IHC_inr) / (1 + RoDTEP% + Incentive%)
+        // nonTolerancePricePerMt = (x_inr / Exchange Rate) + Freight per MT (FC) + Delta FC
+        let nonTolXInr = incentiveMultiplier > 0 
+            ? (ratePerMtInr + ihcInr) / incentiveMultiplier 
+            : ratePerMtInr;
+        let nonTolPricePerMtFc = exRate > 0 ? nonTolXInr / exRate : nonTolXInr;
+        pipe.nonTolerancePricePerMt = Math.round(nonTolPricePerMtFc + freightPerMtFc + deltaFc);
+        
+        let activePricePerKgFc = pipe.pricePerMt / 1000;
+        pipe.pricePerMeter = Number((activePricePerKgFc * pipe.kgPerMeter).toFixed(2));
+        pipe.pricePerPiece = (pipe.totalPieces && pipe.totalPieces > 0)
+            ? Number(((pipe.pricePerMt * pipe.totalWeight) / pipe.totalPieces).toFixed(2))
+            : 0;
+
+        // 6. Cutoff Price & Cost Price (FC) = Unit Price for the selected UOM
+        let unitPriceForUom = pipe.pricePerMt;
+        if (pipe.uom === 'Meters') {
+            unitPriceForUom = pipe.pricePerMeter;
+        } else if (pipe.uom === 'Pieces') {
+            unitPriceForUom = pipe.pricePerPiece;
+        }
+
+        pipe.cutoffPriceFc = unitPriceForUom;
+        // cost price * ((100 - tolerance)/100) = selling price (unitPriceForUom / cutoffPriceFc)
+        // => cost price = selling price / ((100 - tolerance)/100)
+        let tolFactor = (100 - tol) / 100.0;
+        pipe.costPriceFc = tolFactor > 0 
+            ? Number((pipe.cutoffPriceFc / tolFactor).toFixed(2)) 
+            : pipe.cutoffPriceFc;
+
+        // 7. Quoted Price (FC) = Cutoff Price (FC) by default (unless manually entered)
         if (!pipe.hasCustomQuotedPrice) {
             pipe.quotedPriceFc = pipe.cutoffPriceFc;
         }
 
-        // 👉 NEW: Auto-calculate Discount % based on the active Quoted Price vs Cost Price
+        // 8. Auto-calculate Discount % based on the active Quoted Price vs Cost Price
         if (pipe.costPriceFc > 0 && pipe.quotedPriceFc > 0) {
             pipe.discountPercent = Number((((pipe.costPriceFc - pipe.quotedPriceFc) / pipe.costPriceFc) * 100).toFixed(2));
         } else {
             pipe.discountPercent = 0;
         }
-
-        let activePriceFc = pipe.quotedPriceFc || 0; 
         
-        // 8. Reverse map active price to other UOM metrics for display
-        let activePricePerKgFc = uomMultiplier > 0 ? activePriceFc / uomMultiplier : 0;
-
-        pipe.pricePerMt = Number((activePricePerKgFc * 1000).toFixed(2));
-        pipe.pricePerMeter = Number((activePricePerKgFc * pipe.kgPerMeter).toFixed(2));
-        pipe.pricePerPiece = (pipe.totalPieces && pipe.totalPieces > 0)
-            ? Number(((pipe.pricePerMt * pipe.totalWeight) / pipe.totalPieces).toFixed(2))
-            : 0;
-        
-        // 9. Total Value Calculations
-        let totalFobFc = activePricePerKgFc * (pipe.totalWeight * 1000);
+        // 9. Total Value Calculations (QUOTED PRICE determines actual invoice/quoted total FOB and CFR)
+        let totalFobFc = 0;
+        let quotedPrice = parseFloat(pipe.quotedPriceFc) || 0;
+        if (pipe.uom === 'Pieces') {
+            totalFobFc = (parseFloat(pipe.totalPieces) || 0) * quotedPrice;
+        } else if (pipe.uom === 'Meters') {
+            totalFobFc = (parseFloat(pipe.totalMeters) || 0) * quotedPrice;
+        } else { // MT
+            totalFobFc = (parseFloat(pipe.totalWeight) || 0) * quotedPrice;
+        }
         pipe.totalFobFc = Number(totalFobFc.toFixed(2));
         
-        pipe.totalFobInr = Number((totalFobFc * exRate).toFixed(2));
+        pipe.totalFobInr = Number((pipe.totalFobFc * exRate).toFixed(2));
         
-        pipe.rodtepAddon = Number((pipe.totalFobInr * ((pipe.rodtepPercent || 0) / 100.0)).toFixed(2));
-        pipe.incentiveAddon = Number((pipe.totalFobInr * ((pipe.incentivePercent || 0) / 100.0)).toFixed(2));
+        pipe.netFobInrCalc = pipe.totalFobInr;
+        pipe.netFobFcCalc = pipe.totalFobFc;
 
-        pipe.netFobInrCalc = Number((pipe.totalFobInr + pipe.incentiveAddon + pipe.rodtepAddon).toFixed(2));
-        pipe.netFobFcCalc = exRate > 0 ? Number((pipe.netFobInrCalc / exRate).toFixed(2)) : 0;
+        pipe.commissionValue = Number((pipe.totalFobFc * ((pipe.commissionPercent || 0) / 100.0)).toFixed(2));
 
-        pipe.commissionValue = Number((pipe.netFobFcCalc * ((pipe.commissionPercent || 0) / 100.0)).toFixed(2));
-
-        let totalFreightFc = freightPerMtFc * pipe.totalWeight;
-        let calculatedCfr = pipe.netFobFcCalc + totalFreightFc + pipe.commissionValue + (parseFloat(pipe.inspectionCharges) || 0) + (parseFloat(pipe.otherCharges) || 0);
+        let calculatedCfr = pipe.totalFobFc + pipe.commissionValue + (parseFloat(pipe.inspectionCharges) || 0) + (parseFloat(pipe.otherCharges) || 0);
         
         pipe.cfr = Number(calculatedCfr.toFixed(2));
     }

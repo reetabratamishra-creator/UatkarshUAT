@@ -16,6 +16,22 @@
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
+                            <value>Opportunity.Send_Details_Not_Received</value>
+                            <visibilityRule>
+                                <booleanFilter>1 AND 2</booleanFilter>
+                                <criteria>
+                                    <leftValue>{!Record.StageName}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Nurture</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!Record.Department_Name__c}</leftValue>
+                                    <operator>NE</operator>
+                                    <rightValue>Enquiry</rightValue>
+                                </criteria>
+                            </visibilityRule>
+                        </valueListItems>
+                        <valueListItems>
                             <value>Opportunity.Select_Customer_Journey</value>
                             <visibilityRule>
                                 <booleanFilter>(1 OR 2) AND 3 AND 4</booleanFilter>
@@ -254,16 +270,6 @@
                                     <leftValue>{!$User.Profile.Name}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>Utkarsh Admin</rightValue>
-                                </criteria>
-                            </visibilityRule>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Share</value>
-                            <visibilityRule>
-                                <criteria>
-                                    <leftValue>{!$User.Profile.Name}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>System Administrator</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>

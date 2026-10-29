@@ -13,7 +13,7 @@ Utkarsh India</value>
     </values>
     <values>
         <field>Brochure_Attachment_Mode__c</field>
-        <value xsi:type="xsd:string">Corporate</value>
+        <value xsi:type="xsd:string">None</value>
     </values>
     <values>
         <field>Delay_Hours__c</field>

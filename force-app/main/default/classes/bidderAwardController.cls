@@ -141,7 +141,10 @@ public without sharing class bidderAwardController {
 
         } catch (Exception ex) {
             Database.rollback(sp);
-            throw new AuraHandledException(ex.getMessage());
+            System.debug(LoggingLevel.ERROR, 'saveAndAwardOpportunity failed: ' + ex.getTypeName() + ': ' + ex.getMessage() + '\n' + ex.getStackTraceString());
+            AuraHandledException ahe = new AuraHandledException(ex.getMessage());
+            ahe.setMessage(ex.getMessage());
+            throw ahe;
         }
     }
 
@@ -294,11 +297,12 @@ public without sharing class bidderAwardController {
         }
 
         if (String.isNotBlank(awardedOpp.Department_NameFormula__c)) {
+            String deptPattern = '%' + String.escapeSingleQuotes(awardedOpp.Department_NameFormula__c) + '%';
             List<User> matchingUsers = [
-                SELECT Id 
-                FROM User 
-                WHERE Profile.Name IN ('CRM Head', 'Utkarsh HOD') 
-                  AND Department = :awardedOpp.Department_NameFormula__c
+                SELECT Id
+                FROM User
+                WHERE Profile.Name IN ('CRM Head', 'Utkarsh HOD')
+                  AND Department LIKE :deptPattern
                   AND IsActive = true
                 WITH SYSTEM_MODE
             ];

@@ -1,7 +1,27 @@
+/**
+ * @description   Sends Bluewave Journey (WhatsApp+RCS+SMS) campaigns to Lead,
+ *                Opportunity, Account, Contact, and Offline Campaign records.
+ * @author        Anshita Chanda
+ * @date          2026-08-06
+ */
 public with sharing class BWM_CampaignJourneyService {
+  /**
+   * @description Sends a Bluewave journey campaign to the selected Leads and aggregates send results.
+   * @param leadIds Lead Ids to message.
+   * @param journeyName Journey definition name to send.
+   * @return SendJourneyResult with sent/skipped counts and messages.
+   */
   public static BWM_JourneyDefinitionService.SendJourneyResult sendToLeads(
     List<Id> leadIds,
     String journeyName
+  ) {
+    return sendToLeads(leadIds, journeyName, null);
+  }
+
+  public static BWM_JourneyDefinitionService.SendJourneyResult sendToLeads(
+    List<Id> leadIds,
+    String journeyName,
+    String scheduledDateTime
   ) {
     BWM_JourneyDefinitionService.SendJourneyResult result =
       new BWM_JourneyDefinitionService.SendJourneyResult();
@@ -63,14 +83,29 @@ public with sharing class BWM_CampaignJourneyService {
       settings,
       templateNameForLog,
       BWM_MessagingConstants.TRIGGER_LEAD_CAMPAIGN,
-      result
+      result,
+      scheduledDateTime
     );
     return result;
   }
 
+  /**
+   * @description Sends a Bluewave journey campaign to the selected Accounts and aggregates send results.
+   * @param accountIds Account Ids to message.
+   * @param journeyName Journey definition name to send.
+   * @return SendJourneyResult with sent/skipped counts and messages.
+   */
   public static BWM_JourneyDefinitionService.SendJourneyResult sendToAccounts(
     List<Id> accountIds,
     String journeyName
+  ) {
+    return sendToAccounts(accountIds, journeyName, null);
+  }
+
+  public static BWM_JourneyDefinitionService.SendJourneyResult sendToAccounts(
+    List<Id> accountIds,
+    String journeyName,
+    String scheduledDateTime
   ) {
     BWM_JourneyDefinitionService.SendJourneyResult result =
       new BWM_JourneyDefinitionService.SendJourneyResult();
@@ -96,14 +131,29 @@ public with sharing class BWM_CampaignJourneyService {
       settings,
       templateNameForLog,
       BWM_MessagingConstants.TRIGGER_ACCOUNT_CAMPAIGN,
-      result
+      result,
+      scheduledDateTime
     );
     return result;
   }
 
+  /**
+   * @description Sends a Bluewave journey campaign to the selected Contacts and aggregates send results.
+   * @param contactIds Contact Ids to message.
+   * @param journeyName Journey definition name to send.
+   * @return SendJourneyResult with sent/skipped counts and messages.
+   */
   public static BWM_JourneyDefinitionService.SendJourneyResult sendToContacts(
     List<Id> contactIds,
     String journeyName
+  ) {
+    return sendToContacts(contactIds, journeyName, null);
+  }
+
+  public static BWM_JourneyDefinitionService.SendJourneyResult sendToContacts(
+    List<Id> contactIds,
+    String journeyName,
+    String scheduledDateTime
   ) {
     BWM_JourneyDefinitionService.SendJourneyResult result =
       new BWM_JourneyDefinitionService.SendJourneyResult();
@@ -129,14 +179,29 @@ public with sharing class BWM_CampaignJourneyService {
       settings,
       templateNameForLog,
       BWM_MessagingConstants.TRIGGER_CONTACT_CAMPAIGN,
-      result
+      result,
+      scheduledDateTime
     );
     return result;
   }
 
+  /**
+   * @description Sends a Bluewave journey campaign to Offline_Campaign__c records and aggregates send results.
+   * @param offlineCampaignIds Offline_Campaign__c Ids to message.
+   * @param journeyName Journey definition name to send.
+   * @return SendJourneyResult with sent/skipped counts and messages.
+   */
   public static BWM_JourneyDefinitionService.SendJourneyResult sendToOfflineCampaigns(
     List<Id> offlineCampaignIds,
     String journeyName
+  ) {
+    return sendToOfflineCampaigns(offlineCampaignIds, journeyName, null);
+  }
+
+  public static BWM_JourneyDefinitionService.SendJourneyResult sendToOfflineCampaigns(
+    List<Id> offlineCampaignIds,
+    String journeyName,
+    String scheduledDateTime
   ) {
     BWM_JourneyDefinitionService.SendJourneyResult result =
       new BWM_JourneyDefinitionService.SendJourneyResult();
@@ -162,11 +227,17 @@ public with sharing class BWM_CampaignJourneyService {
       settings,
       templateNameForLog,
       BWM_MessagingConstants.TRIGGER_OFFLINE_CAMPAIGN,
-      result
+      result,
+      scheduledDateTime
     );
     return result;
   }
 
+  /**
+   * @description Validates that at least one record Id and a journey name were provided.
+   * @param recordIds Target record Ids for the campaign send.
+   * @param journeyName Journey definition name selected in the UI.
+   */
   private static void validateJourneyRequest(List<Id> recordIds, String journeyName) {
     if (recordIds == null || recordIds.isEmpty()) {
       throw new AuraHandledException('Select at least one record.');
@@ -176,9 +247,23 @@ public with sharing class BWM_CampaignJourneyService {
     }
   }
 
+  /**
+   * @description Sends a Bluewave journey campaign to Opportunities using primary-contact phones when available.
+   * @param opportunityIds Opportunity Ids to message.
+   * @param journeyName Journey definition name to send.
+   * @return SendJourneyResult with sent/skipped counts and messages.
+   */
   public static BWM_JourneyDefinitionService.SendJourneyResult sendToOpportunities(
     List<Id> opportunityIds,
     String journeyName
+  ) {
+    return sendToOpportunities(opportunityIds, journeyName, null);
+  }
+
+  public static BWM_JourneyDefinitionService.SendJourneyResult sendToOpportunities(
+    List<Id> opportunityIds,
+    String journeyName,
+    String scheduledDateTime
   ) {
     BWM_JourneyDefinitionService.SendJourneyResult result =
       new BWM_JourneyDefinitionService.SendJourneyResult();
@@ -248,18 +333,29 @@ public with sharing class BWM_CampaignJourneyService {
       settings,
       templateNameForLog,
       BWM_MessagingConstants.TRIGGER_OPPORTUNITY_CAMPAIGN,
-      result
+      result,
+      scheduledDateTime
     );
     return result;
   }
 
+  /**
+   * @description Sends journey payloads for generic campaign records, updates the result, and inserts Message_Log__c rows.
+   * @param records Lead/Account/Contact/Offline_Campaign__c records to message.
+   * @param journeyName Journey definition name used in the payload.
+   * @param settings Active messaging settings metadata.
+   * @param templateNameForLog Template/journey name written to Message_Log__c.
+   * @param triggerPoint Campaign trigger key for logging.
+   * @param result Mutable SendJourneyResult accumulating counts and messages.
+   */
   private static void sendToRecords(
     List<SObject> records,
     String journeyName,
     BWM_Messaging_Settings__mdt settings,
     String templateNameForLog,
     String triggerPoint,
-    BWM_JourneyDefinitionService.SendJourneyResult result
+    BWM_JourneyDefinitionService.SendJourneyResult result,
+    String scheduledDateTime
   ) {
     String successCode = String.isBlank(settings.Journey_Success_Code__c)
       ? '200'
@@ -275,13 +371,22 @@ public with sharing class BWM_CampaignJourneyService {
         continue;
       }
 
+      if (Limits.getCallouts() >= Limits.getLimitCallouts()) {
+        result.skippedCount++;
+        result.messages.add(
+          recordName + ': Callout limit reached. Send fewer records or try again.'
+        );
+        continue;
+      }
+
       try {
         String payload = BWM_JourneyDefinitionService.buildPayloadForRecord(
           settings,
           record,
           journeyName,
           phoneNumber,
-          true
+          true,
+          scheduledDateTime
         );
         String requestCurl = BWM_MessagingCallout.buildRequestCurl(payload);
         BWM_ApiResponse apiResponse = BWM_ApiResponse.parse(
@@ -320,6 +425,12 @@ public with sharing class BWM_CampaignJourneyService {
     }
   }
 
+  /**
+   * @description Resolves a formatted phone for Lead, Account, Contact, or Offline_Campaign__c campaign sends.
+   * @param record SObject being messaged.
+   * @param settings Messaging settings used for formatting.
+   * @return Formatted phone number, or null when unsupported/blank.
+   */
   private static String resolveRecordPhone(
     SObject record,
     BWM_Messaging_Settings__mdt settings
@@ -342,6 +453,16 @@ public with sharing class BWM_CampaignJourneyService {
     return null;
   }
 
+  /**
+   * @description Sends journey payloads for Opportunities, updates the result, and inserts Message_Log__c rows.
+   * @param opportunities Opportunity records to message.
+   * @param primaryContactPhoneByOpportunityId Map of Opportunity Id to primary contact phone.
+   * @param journeyName Journey definition name used in the payload.
+   * @param settings Active messaging settings metadata.
+   * @param templateNameForLog Template/journey name written to Message_Log__c.
+   * @param triggerPoint Campaign trigger key for logging.
+   * @param result Mutable SendJourneyResult accumulating counts and messages.
+   */
   private static void sendToOpportunityRecords(
     List<Opportunity> opportunities,
     Map<Id, String> primaryContactPhoneByOpportunityId,
@@ -349,7 +470,8 @@ public with sharing class BWM_CampaignJourneyService {
     BWM_Messaging_Settings__mdt settings,
     String templateNameForLog,
     String triggerPoint,
-    BWM_JourneyDefinitionService.SendJourneyResult result
+    BWM_JourneyDefinitionService.SendJourneyResult result,
+    String scheduledDateTime
   ) {
     String successCode = String.isBlank(settings.Journey_Success_Code__c)
       ? '200'
@@ -371,13 +493,23 @@ public with sharing class BWM_CampaignJourneyService {
         continue;
       }
 
+      if (Limits.getCallouts() >= Limits.getLimitCallouts()) {
+        result.skippedCount++;
+        result.messages.add(
+          opportunityRecord.Name +
+            ': Callout limit reached. Send fewer records or try again.'
+        );
+        continue;
+      }
+
       try {
         String payload = BWM_JourneyDefinitionService.buildPayloadForRecord(
           settings,
           opportunityRecord,
           journeyName,
           phoneNumber,
-          true
+          true,
+          scheduledDateTime
         );
         String requestCurl = BWM_MessagingCallout.buildRequestCurl(payload);
         BWM_ApiResponse apiResponse = BWM_ApiResponse.parse(
@@ -418,6 +550,11 @@ public with sharing class BWM_CampaignJourneyService {
     }
   }
 
+  /**
+   * @description Queries primary OpportunityContactRole phones keyed by Opportunity Id.
+   * @param opportunityIds Opportunity Ids to load primary contact phones for.
+   * @return Map of Opportunity Id to raw phone string.
+   */
   private static Map<Id, String> queryPrimaryContactPhonesByOpportunityId(
     List<Id> opportunityIds
   ) {
@@ -444,6 +581,12 @@ public with sharing class BWM_CampaignJourneyService {
     return phoneByOpportunityId;
   }
 
+  /**
+   * @description Formats Lead.Phone for messaging and suppresses numbers matching WhatsApp_From__c.
+   * @param leadRecord Lead whose phone is resolved.
+   * @param settings Messaging settings for country code and from-number checks.
+   * @return Formatted phone, or null when blank/matching from number.
+   */
   private static String resolveLeadPhone(
     Lead leadRecord,
     BWM_Messaging_Settings__mdt settings
@@ -461,6 +604,13 @@ public with sharing class BWM_CampaignJourneyService {
     return formattedPhone;
   }
 
+  /**
+   * @description Resolves Opportunity phone from primary contact, Phone__c, or related Lead phone.
+   * @param opportunityRecord Opportunity being messaged.
+   * @param primaryContactPhoneByOpportunityId Map of Opportunity Id to primary contact phone.
+   * @param settings Messaging settings for country code and from-number checks.
+   * @return Formatted phone, or null when blank/matching from number.
+   */
   private static String resolveOpportunityPhone(
     Opportunity opportunityRecord,
     Map<Id, String> primaryContactPhoneByOpportunityId,
@@ -490,6 +640,12 @@ public with sharing class BWM_CampaignJourneyService {
     return formattedPhone;
   }
 
+  /**
+   * @description Compares two phone values by digits only to detect identical numbers.
+   * @param phoneA First phone string.
+   * @param phoneB Second phone string.
+   * @return True when both are non-blank and digit-normalized values match.
+   */
   private static Boolean isSamePhoneNumber(String phoneA, String phoneB) {
     if (String.isBlank(phoneA) || String.isBlank(phoneB)) {
       return false;
@@ -497,6 +653,10 @@ public with sharing class BWM_CampaignJourneyService {
     return phoneA.replaceAll('[^0-9]', '') == phoneB.replaceAll('[^0-9]', '');
   }
 
+  /**
+   * @description Loads messaging settings and requires a configured API bearer token.
+   * @return Active BWM_Messaging_Settings__mdt row.
+   */
   private static BWM_Messaging_Settings__mdt getSettings() {
     BWM_Messaging_Settings__mdt settings = BWM_SettingsService.getSettings();
     if (settings == null || String.isBlank(settings.API_Bearer_Token__c)) {

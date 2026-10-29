@@ -63,6 +63,13 @@ public without sharing class FieldForceDashboardController {
         @AuraEnabled public String approverName;
         @AuraEnabled public String remarks;
         @AuraEnabled public String requestNote;
+        // Day Activity Log captured when the approved WFH/WFO session was ended
+        @AuraEnabled public Boolean isCompleted = false;
+        @AuraEnabled public Decimal noOfEmails;
+        @AuraEnabled public Decimal noOfMeetings;
+        @AuraEnabled public Decimal noOfOffersSent;
+        @AuraEnabled public Decimal noOfPhoneCalls;
+        @AuraEnabled public String openNotes;
     }
 
     public class AttendanceSummary {
@@ -192,53 +199,60 @@ public without sharing class FieldForceDashboardController {
 
         // 2. Fetch subordinates if Manager or HOD
         Set<Id> subordinateUserIds = new Set<Id>();
-        
-        // standard Manager check
-        for (User u : [SELECT Id FROM User WHERE ManagerId = :currentUserId AND IsActive = true]) {
-            subordinateUserIds.add(u.Id);
-        }
-        
-        // HOD / CRM Head role prefix check
-        try {
-            User currentUser = [SELECT Id, UserRole.Name FROM User WHERE Id = :currentUserId LIMIT 1];
-            String currentRoleName = currentUser.UserRole != null ? currentUser.UserRole.Name : '';
-            String deptPrefix = '';
-            if (String.isNotBlank(currentRoleName)) {
-                if (currentRoleName.endsWith(' HOD')) {
-                    deptPrefix = currentRoleName.substringBefore(' HOD').trim();
-                } else if (currentRoleName.endsWith(' CRM Head')) {
-                    deptPrefix = currentRoleName.substringBefore(' CRM Head').trim();
-                }
+
+        // Utkarsh HOD / CRM Head: department based visibility (self + users of their department(s))
+        String currentProfileName = currentUserProfileName();
+        if (currentProfileName == HOD_PROFILE_NAME || currentProfileName == CRM_HEAD_PROFILE_NAME) {
+            subordinateUserIds.addAll(getDepartmentUserIds(currentUserId, currentProfileName == CRM_HEAD_PROFILE_NAME));
+        } else {
+            // standard Manager check
+            for (User u : [SELECT Id FROM User WHERE ManagerId = :currentUserId AND IsActive = true]) {
+                subordinateUserIds.add(u.Id);
             }
-            
-            if (String.isNotBlank(deptPrefix)) {
-                String likePattern = deptPrefix + '%';
-                for (User u : [
-                    SELECT Id FROM User 
-                    WHERE IsActive = true 
-                    AND UserRole.Name LIKE :likePattern
-                ]) {
-                    subordinateUserIds.add(u.Id);
-                }
-            }
-        } catch (Exception e) {
-            System.debug('Failed to query current user role or role-aligned subordinates: ' + e.getMessage());
         }
-        
-        // Custom Manager Assignment metadata check
-        try {
-            for (Manager_Assignment__mdt ma : [
-                SELECT Target_User_Id__c 
-                FROM Manager_Assignment__mdt 
-                WHERE Manager_User_Id__c = :String.valueOf(currentUserId)
-            ]) {
-                if (String.isNotBlank(ma.Target_User_Id__c)) {
-                    subordinateUserIds.add((Id)ma.Target_User_Id__c);
-                }
-            }
-        } catch (Exception e) {
-            System.debug('Manager_Assignment__mdt query failed: ' + e.getMessage());
-        }
+
+        // Role based matching replaced by department based matching for Utkarsh HOD / CRM Head profiles
+        // // HOD / CRM Head role prefix check
+        // try {
+        //     User currentUser = [SELECT Id, UserRole.Name FROM User WHERE Id = :currentUserId LIMIT 1];
+        //     String currentRoleName = currentUser.UserRole != null ? currentUser.UserRole.Name : '';
+        //     String deptPrefix = '';
+        //     if (String.isNotBlank(currentRoleName)) {
+        //         if (currentRoleName.endsWith(' HOD')) {
+        //             deptPrefix = currentRoleName.substringBefore(' HOD').trim();
+        //         } else if (currentRoleName.endsWith(' CRM Head')) {
+        //             deptPrefix = currentRoleName.substringBefore(' CRM Head').trim();
+        //         }
+        //     }
+        //
+        //     if (String.isNotBlank(deptPrefix)) {
+        //         String likePattern = deptPrefix + '%';
+        //         for (User u : [
+        //             SELECT Id FROM User
+        //             WHERE IsActive = true
+        //             AND UserRole.Name LIKE :likePattern
+        //         ]) {
+        //             subordinateUserIds.add(u.Id);
+        //         }
+        //     }
+        // } catch (Exception e) {
+        //     System.debug('Failed to query current user role or role-aligned subordinates: ' + e.getMessage());
+        // }
+
+        // // Custom Manager Assignment metadata check
+        // try {
+        //     for (Manager_Assignment__mdt ma : [
+        //         SELECT Target_User_Id__c
+        //         FROM Manager_Assignment__mdt
+        //         WHERE Manager_User_Id__c = :String.valueOf(currentUserId)
+        //     ]) {
+        //         if (String.isNotBlank(ma.Target_User_Id__c)) {
+        //             subordinateUserIds.add((Id)ma.Target_User_Id__c);
+        //         }
+        //     }
+        // } catch (Exception e) {
+        //     System.debug('Manager_Assignment__mdt query failed: ' + e.getMessage());
+        // }
 
         Boolean isManager = !subordinateUserIds.isEmpty();
 
@@ -278,6 +292,82 @@ public without sharing class FieldForceDashboardController {
         }
 
         return options;
+    }
+
+    public static final String HOD_PROFILE_NAME = 'Utkarsh HOD';
+    public static final String CRM_HEAD_PROFILE_NAME = 'CRM Head';
+
+    // Department name (User.Department, uppercased) -> User.Departments__c picklist value
+    private static final Map<String, String> DEPARTMENT_NORMALIZATION_MAP = new Map<String, String>{
+        'HIGH MAST & POLYGONAL'             => 'High_Mast_Department',
+        'CRASH BARRIER'                     => 'Crash_Barrier_Department',
+        'HDPE'                              => 'HDPE_Pipe_Department',
+        'STEEL TUBULAR POLES'               => 'Steel_Tubular_Pole_Department',
+        'POLYMER'                           => 'PVC',
+        'TRANSMISSION & TELECOM TOWER'      => 'Transmission_Tower_Department',
+        'PRE ENGINEERING BUILDING'          => 'PEB',
+        'SOLAR STRUCTURE'                   => 'Solar_Structure_Department',
+        'RAILWAY ELECTRIFICATION STRUCTURE' => 'Core_Department',
+        'STEEL PIPES'                       => 'Steel_Pipes_Department'
+    };
+
+    /**
+     * Users visible to an Utkarsh HOD / CRM Head (current user is added by the caller).
+     * - Utkarsh HOD: active users whose Department equals the HOD's Department.
+     * - CRM Head: active users whose Department is one of the CRM Head's Departments__c values
+     *   or that department's name (e.g. 'Crash Barrier' for 'Crash_Barrier_Department').
+     */
+    public static Set<Id> getDepartmentUserIds(Id currentUserId, Boolean isCrmHead) {
+        Set<Id> userIds = new Set<Id>();
+        try {
+            User currentUser = [SELECT Id, Department, Departments__c FROM User WHERE Id = :currentUserId LIMIT 1];
+
+            if (!isCrmHead) {
+                if (String.isBlank(currentUser.Department)) {
+                    return userIds;
+                }
+                for (User u : [
+                    SELECT Id FROM User
+                    WHERE IsActive = true
+                    AND Department = :currentUser.Department
+                ]) {
+                    userIds.add(u.Id);
+                }
+                return userIds;
+            }
+
+            if (String.isBlank(currentUser.Departments__c)) {
+                return userIds;
+            }
+            Set<String> crmHeadDepts = new Set<String>();
+            for (String rawDept : currentUser.Departments__c.split(';')) {
+                if (String.isNotBlank(rawDept)) {
+                    crmHeadDepts.add(rawDept.trim());
+                }
+            }
+            if (crmHeadDepts.isEmpty()) {
+                return userIds;
+            }
+
+            // Department names that map to the CRM Head's Departments__c values
+            Set<String> deptNames = new Set<String>(crmHeadDepts);
+            for (String deptName : DEPARTMENT_NORMALIZATION_MAP.keySet()) {
+                if (crmHeadDepts.contains(DEPARTMENT_NORMALIZATION_MAP.get(deptName))) {
+                    deptNames.add(deptName);
+                }
+            }
+
+            for (User u : [
+                SELECT Id FROM User
+                WHERE IsActive = true
+                AND Department IN :deptNames
+            ]) {
+                userIds.add(u.Id);
+            }
+        } catch (Exception e) {
+            System.debug('Failed to query department aligned users: ' + e.getMessage());
+        }
+        return userIds;
     }
 
     @AuraEnabled(cacheable=true)
@@ -385,7 +475,83 @@ public without sharing class FieldForceDashboardController {
             dto.requestNote = pr.WFH_Activity__c;
             results.add(dto);
         }
+
+        attachCompletedSessionActivity(results);
         return results;
+    }
+
+    /**
+     * For approved WFH/WFO requests, finds the matching session OUT punch(es) (same user, same type,
+     * on the request date) and attaches the Day Activity Log captured when the session was ended.
+     */
+    private static void attachCompletedSessionActivity(List<DepartmentWFHRequestDTO> requests) {
+        Set<Id> userIds = new Set<Id>();
+        Date minDate;
+        Date maxDate;
+        for (DepartmentWFHRequestDTO dto : requests) {
+            if (dto.status != 'Approved' || dto.requestDate == null) {
+                continue;
+            }
+            userIds.add(dto.userId);
+            if (minDate == null || dto.requestDate < minDate) minDate = dto.requestDate;
+            if (maxDate == null || dto.requestDate > maxDate) maxDate = dto.requestDate;
+        }
+        if (userIds.isEmpty()) {
+            return;
+        }
+
+        Datetime rangeStart = Datetime.newInstance(minDate, Time.newInstance(0, 0, 0, 0));
+        Datetime rangeEnd = Datetime.newInstance(maxDate.addDays(1), Time.newInstance(0, 0, 0, 0));
+
+        // Key: userId|type|date -> OUT punches for that session day
+        Map<String, List<Punch_Record__c>> outsByKey = new Map<String, List<Punch_Record__c>>();
+        for (Punch_Record__c outRec : [
+            SELECT Id, User__c, Punch_Type__c, Punch_Time__c,
+                   No_of_Emails__c, No_of_Meetings__c, No_of_Offers_Sent__c, No_of_Phone_Calls__c, Open_Notes__c
+            FROM Punch_Record__c
+            WHERE User__c IN :userIds
+              AND Action__c = 'OUT'
+              AND Punch_Type__c IN ('WFH', 'WFO')
+              AND Is_WFH_Request__c = false
+              AND Is_WFO_Request__c = false
+              AND Punch_Time__c >= :rangeStart
+              AND Punch_Time__c < :rangeEnd
+            ORDER BY Punch_Time__c ASC
+        ]) {
+            String key = outRec.User__c + '|' + outRec.Punch_Type__c + '|' + String.valueOf(outRec.Punch_Time__c.date());
+            if (!outsByKey.containsKey(key)) {
+                outsByKey.put(key, new List<Punch_Record__c>());
+            }
+            outsByKey.get(key).add(outRec);
+        }
+
+        for (DepartmentWFHRequestDTO dto : requests) {
+            if (dto.status != 'Approved' || dto.requestDate == null) {
+                continue;
+            }
+            List<Punch_Record__c> outs = outsByKey.get(dto.userId + '|' + dto.type + '|' + String.valueOf(dto.requestDate));
+            if (outs == null || outs.isEmpty()) {
+                continue;
+            }
+            dto.isCompleted = true;
+            // If the user ran more than one session that day, roll the counts up and join the notes
+            List<String> notes = new List<String>();
+            for (Punch_Record__c outRec : outs) {
+                dto.noOfEmails = addNullable(dto.noOfEmails, outRec.No_of_Emails__c);
+                dto.noOfMeetings = addNullable(dto.noOfMeetings, outRec.No_of_Meetings__c);
+                dto.noOfOffersSent = addNullable(dto.noOfOffersSent, outRec.No_of_Offers_Sent__c);
+                dto.noOfPhoneCalls = addNullable(dto.noOfPhoneCalls, outRec.No_of_Phone_Calls__c);
+                if (String.isNotBlank(outRec.Open_Notes__c)) {
+                    notes.add(outRec.Open_Notes__c.trim());
+                }
+            }
+            dto.openNotes = notes.isEmpty() ? null : String.join(notes, '\n\n');
+        }
+    }
+
+    private static Decimal addNullable(Decimal total, Decimal value) {
+        if (value == null) return total;
+        return total == null ? value : total + value;
     }
 
     /**

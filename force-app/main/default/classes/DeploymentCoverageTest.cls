@@ -9,25 +9,25 @@ private class DeploymentCoverageTest {
 
   @IsTest
   static void coversSchedulersBatchesQueueablesAndControllers() {
-    Account dealer = new Account(Name = 'Coverage Dealer', Phone = '9876500001');
-    insert dealer;
+    Account dealer = new Account(Name = 'Coverage Dealer ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10));
+    insert as system dealer;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Coverage Opp',
+      Name = 'Coverage Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = 'Negotiation',
       CloseDate = Date.today().addDays(10),
       AccountId = dealer.Id,
-      Phone__c = '9876500099',
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'cov.opp@example.com',
       Amount = 1000
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
     Lead leadRecord = new Lead(
-      LastName = 'Coverage Lead',
-      Company = 'Coverage Co',
+      LastName = 'Coverage Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Coverage Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
-      Phone = '9876500002'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert leadRecord;
+    insert as system leadRecord;
 
     Test.startTest();
     new BWM_EmailMonthlyScheduler().execute(null);
@@ -100,39 +100,39 @@ private class DeploymentCoverageTest {
 
   @IsTest
   static void coversChannelSendServices() {
-    Account accountRecord = new Account(Name = 'RCS Account', Phone = '9000012101');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'RCS Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10));
+    insert as system accountRecord;
     Contact contactRecord = new Contact(
-      LastName = 'RCS Contact',
+      LastName = 'RCS Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
-      Phone = '9000012102',
-      MobilePhone = '9000012102'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert contactRecord;
+    insert as system contactRecord;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'RCS Opp',
+      Name = 'RCS Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = 'Nurture',
       CloseDate = Date.today().addDays(20),
       AccountId = accountRecord.Id,
-      Phone__c = '9000012103'
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
     Lead leadRecord = new Lead(
-      LastName = 'WA Lead',
-      Company = 'WA Co',
+      LastName = 'WA Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'WA Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
-      Phone = '9000012104',
-      MobilePhone = '9000012104'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert leadRecord;
+    insert as system leadRecord;
     Offline_Campaign__c offlineRecord = new Offline_Campaign__c(
-      Name = 'RCS Offline',
-      Phone__c = '9000012105',
+      Name = 'RCS Offline ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'offline.cov@example.com',
       Department__c = 'Crash Barrier',
       Active__c = true
     );
-    insert offlineRecord;
+    insert as system offlineRecord;
 
     seedWhatsAppCache('coverage_wa');
     BWM_SmsDirectPayloadBuilder.cacheTemplates(
@@ -226,18 +226,18 @@ private class DeploymentCoverageTest {
   @IsTest
   static void coversHelpersInvocableAndEmailRender() {
     Lead leadRecord = new Lead(
-      LastName = 'Helper Lead',
-      Company = 'Helper Co',
+      LastName = 'Helper Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Helper Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
       Department_Name__c = BWM_EmailConstants.DEPT_ENQUIRY
     );
-    insert leadRecord;
+    insert as system leadRecord;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Helper Opp',
+      Name = 'Helper Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = 'Nurture',
       CloseDate = Date.today().addDays(5)
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
 
     System.assertEquals(
       'Corporate',
@@ -316,8 +316,8 @@ private class DeploymentCoverageTest {
 
   @IsTest
   static void coversPayloadBuilders() {
-    Account accountRecord = new Account(Name = 'Payload Acc', Phone = '9876500999');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'Payload Acc ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10));
+    insert as system accountRecord;
     BWM_Messaging_Settings__mdt settings = BWM_CampaignRecordSupport.getMessagingSettings();
 
     BWM_SmsDirectPayloadBuilder.cacheTemplates(null);
@@ -383,23 +383,23 @@ private class DeploymentCoverageTest {
   @IsTest
   static void coversRemainingCoverageGaps() {
     Account dealer = new Account(
-      Name = 'Gap Dealer',
-      Phone = '9876500201',
+      Name = 'Gap Dealer ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'gap.dealer@example.com'
     );
-    insert dealer;
+    insert as system dealer;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Gap Opp',
+      Name = 'Gap Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = BWM_EmailConstants.STAGE_NEGOTIATION,
       CloseDate = Date.today().addDays(12),
       AccountId = dealer.Id,
-      Phone__c = '9876500202',
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'gap.opp@example.com',
       Amount = 2500
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
     Test.setCreatedDate(opportunityRecord.Id, DateTime.now().addDays(-40));
-    insert new OpportunityContactRole(
+    insert as system new OpportunityContactRole(
       OpportunityId = opportunityRecord.Id,
       ContactId = insertContact(dealer.Id).Id,
       IsPrimary = true,
@@ -407,30 +407,30 @@ private class DeploymentCoverageTest {
     );
 
     Lead prospectLead = new Lead(
-      LastName = 'Gap Prospect',
-      Company = 'Gap Co',
+      LastName = 'Gap Prospect ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Gap Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = BWM_EmailConstants.STAGE_PROSPECT,
-      Phone = '9876500203',
-      Email = 'gap.lead@example.com',
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'gap.lead+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com',
       Department_Name__c = BWM_EmailConstants.DEPT_ENQUIRY
     );
-    insert prospectLead;
+    insert as system prospectLead;
     Lead prospectingLead = new Lead(
-      LastName = 'Gap Prospecting',
-      Company = 'Gap Co 2',
+      LastName = 'Gap Prospecting ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Gap Co 2 ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = BWM_EmailConstants.STAGE_PROSPECTING,
-      Phone = '9876500204'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert prospectingLead;
+    insert as system prospectingLead;
 
     Offline_Campaign__c offlineRecord = new Offline_Campaign__c(
-      Name = 'Gap Offline',
-      Phone__c = '9876500205',
+      Name = 'Gap Offline ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'gap.offline@example.com',
       Department__c = 'Crash Barrier',
       Active__c = true
     );
-    insert offlineRecord;
+    insert as system offlineRecord;
 
     ContentVersion pdfVersion = new ContentVersion(
       Title = 'Coverage Brochure',
@@ -438,7 +438,7 @@ private class DeploymentCoverageTest {
       VersionData = Blob.valueOf('%PDF-1.4 coverage'),
       IsMajorVersion = true
     );
-    insert pdfVersion;
+    insert as system pdfVersion;
     pdfVersion = [
       SELECT Id, Title, ContentSize, FileExtension, ContentDocumentId, VersionData
       FROM ContentVersion
@@ -633,8 +633,8 @@ private class DeploymentCoverageTest {
       );
     }
 
-    Account noPhone = new Account(Name = 'No Phone Coverage');
-    insert noPhone;
+    Account noPhone = new Account(Name = 'No Phone Coverage ' + String.valueOf(Math.abs(Crypto.getRandomInteger())));
+    insert as system noPhone;
     Test.setMock(
       HttpCalloutMock.class,
       new BWM_MessagingCalloutMock(SUCCESS_BODY, SUCCESS_BODY, SUCCESS_BODY)
@@ -690,13 +690,13 @@ private class DeploymentCoverageTest {
 
   private static Contact insertContact(Id accountId) {
     Contact contactRecord = new Contact(
-      LastName = 'Gap Contact',
+      LastName = 'Gap Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountId,
-      Phone = '9876500299',
-      MobilePhone = '9876500299',
-      Email = 'gap.contact@example.com'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'gap.contact+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
     );
-    insert contactRecord;
+    insert as system contactRecord;
     return contactRecord;
   }
 
@@ -718,49 +718,49 @@ private class DeploymentCoverageTest {
   static void coversSendSuccessDealerPdfCategoriesAndBrochure() {
     Account dealerAccount = insertDealerAccount('Coverage Dealer Acc');
     Contact contactRecord = new Contact(
-      LastName = 'Coverage Send Contact',
+      LastName = 'Coverage Send Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = dealerAccount.Id,
-      Phone = '9000013101',
-      MobilePhone = '9000013101',
-      Email = 'coverage.send@example.com'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'coverage.send+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
     );
-    insert contactRecord;
+    insert as system contactRecord;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Coverage Send Opp',
+      Name = 'Coverage Send Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = BWM_EmailConstants.STAGE_NEGOTIATION,
       CloseDate = Date.today().addDays(14),
       AccountId = dealerAccount.Id,
-      Phone__c = '9000013102',
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'coverage.opp@example.com',
       Amount = 1500,
       Sub_Stage__c = BWM_EmailConstants.SUB_STAGE_ACTIVE
     );
     try {
       opportunityRecord.DealerAccount__c = dealerAccount.Id;
-      insert opportunityRecord;
+      insert as system opportunityRecord;
     } catch (DmlException ex) {
       opportunityRecord.DealerAccount__c = null;
-      insert opportunityRecord;
+      insert as system opportunityRecord;
     }
     Test.setCreatedDate(opportunityRecord.Id, DateTime.now().addDays(-40));
     insertProductCategories(opportunityRecord.Id);
 
     Lead leadRecord = new Lead(
-      LastName = 'Coverage Send Lead',
-      Company = 'Coverage Send Co',
+      LastName = 'Coverage Send Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Coverage Send Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
-      Phone = '9000013103',
-      MobilePhone = '9000013103'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert leadRecord;
+    insert as system leadRecord;
     Offline_Campaign__c offlineRecord = new Offline_Campaign__c(
-      Name = 'Coverage Send Offline',
-      Phone__c = '9000013104',
+      Name = 'Coverage Send Offline ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'coverage.offline@example.com',
       Department__c = 'Crash Barrier',
       Active__c = true
     );
-    insert offlineRecord;
+    insert as system offlineRecord;
 
     ContentVersion pdfVersion = new ContentVersion(
       Title = 'Coverage Send Brochure',
@@ -768,7 +768,7 @@ private class DeploymentCoverageTest {
       VersionData = Blob.valueOf('%PDF-1.4 send-coverage'),
       IsMajorVersion = true
     );
-    insert pdfVersion;
+    insert as system pdfVersion;
     pdfVersion = [
       SELECT Id, Title, ContentSize, FileExtension, ContentDocumentId, VersionData
       FROM ContentVersion
@@ -998,33 +998,33 @@ private class DeploymentCoverageTest {
 
   @IsTest
   static void coversChannelSendSkipAndFailureBranches() {
-    Account accountRecord = new Account(Name = 'Skip Fail Account');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'Skip Fail Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())));
+    insert as system accountRecord;
     Contact phoneContact = new Contact(
-      LastName = 'Skip Fail Phone',
+      LastName = 'Skip Fail Phone ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
-      Phone = '9000016101',
-      MobilePhone = '9000016101'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
     Contact noPhoneContact = new Contact(
-      LastName = 'Skip Fail NoPhone',
+      LastName = 'Skip Fail NoPhone ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id
     );
-    insert new List<Contact>{ phoneContact, noPhoneContact };
+    insert as system new List<Contact>{ phoneContact, noPhoneContact };
     Offline_Campaign__c phoneOffline = new Offline_Campaign__c(
-      Name = 'Skip Fail Phone Offline',
-      Phone__c = '9000016102',
+      Name = 'Skip Fail Phone Offline ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'skip.fail.phone@example.com',
       Department__c = 'Crash Barrier',
       Active__c = true
     );
     Offline_Campaign__c noPhoneOffline = new Offline_Campaign__c(
-      Name = 'Skip Fail NoPhone Offline',
+      Name = 'Skip Fail NoPhone Offline ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Email__c = 'skip.fail.nophone@example.com',
       Department__c = 'Crash Barrier',
       Active__c = true
     );
-    insert new List<Offline_Campaign__c>{ phoneOffline, noPhoneOffline };
+    insert as system new List<Offline_Campaign__c>{ phoneOffline, noPhoneOffline };
     seedChannelCaches('skip_fail_rcs', 'skip_fail_sms');
     Test.setMock(
       HttpCalloutMock.class,
@@ -1057,23 +1057,23 @@ private class DeploymentCoverageTest {
 
   @IsTest
   static void coversIsolatedContactAndOfflineSends() {
-    Account accountRecord = new Account(Name = 'Isolated Send Account', Phone = '9000014101');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'Isolated Send Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10));
+    insert as system accountRecord;
     Contact contactRecord = new Contact(
-      LastName = 'Isolated Send Contact',
+      LastName = 'Isolated Send Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
-      Phone = '9000014102',
-      MobilePhone = '9000014102'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert contactRecord;
+    insert as system contactRecord;
     Offline_Campaign__c offlineRecord = new Offline_Campaign__c(
-      Name = 'Isolated Send Offline',
-      Phone__c = '9000014103',
+      Name = 'Isolated Send Offline ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'isolated.offline@example.com',
       Department__c = 'Crash Barrier',
       Active__c = true
     );
-    insert offlineRecord;
+    insert as system offlineRecord;
     seedChannelCaches('isolated_rcs', 'isolated_sms');
     Test.setMock(HttpCalloutMock.class, new CoverageCalloutMock());
 
@@ -1125,12 +1125,12 @@ private class DeploymentCoverageTest {
   @IsTest
   static void coversProductCategoryChildRows() {
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Category Child Opp',
+      Name = 'Category Child Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = 'Nurture',
       CloseDate = Date.today().addDays(8)
     );
-    insert opportunityRecord;
-    insert new List<Product_Category__c>{
+    insert as system opportunityRecord;
+    insert as system new List<Product_Category__c>{
       new Product_Category__c(
         Opportunity__c = opportunityRecord.Id,
         Department_Name__c = 'High Mast & Polygonal',
@@ -1161,7 +1161,7 @@ private class DeploymentCoverageTest {
       VersionData = Blob.valueOf('%PDF-1.4 soql-brochure'),
       IsMajorVersion = true
     );
-    insert pdfVersion;
+    insert as system pdfVersion;
     pdfVersion = [
       SELECT Id, Title, ContentSize, FileExtension, ContentDocumentId, VersionData
       FROM ContentVersion
@@ -1196,24 +1196,24 @@ private class DeploymentCoverageTest {
 
   @IsTest
   static void coversWhatsAppFetchPagesAndDocumentHeader() {
-    Account accountRecord = new Account(Name = 'WA Fetch Account', Phone = '9000014201');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'WA Fetch Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10));
+    insert as system accountRecord;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'WA Fetch Opp',
+      Name = 'WA Fetch Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = 'Nurture',
       CloseDate = Date.today().addDays(12),
       AccountId = accountRecord.Id,
-      Phone__c = '9000014202'
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
     Lead leadRecord = new Lead(
-      LastName = 'WA Fetch Lead',
-      Company = 'WA Fetch Co',
+      LastName = 'WA Fetch Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'WA Fetch Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
-      Phone = '9000014203',
-      MobilePhone = '9000014203'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert leadRecord;
+    insert as system leadRecord;
 
     Map<String, Object> documentMeta = new Map<String, Object>{
       'language' => 'en',
@@ -1327,7 +1327,7 @@ private class DeploymentCoverageTest {
   private static Account insertDealerAccount(String name) {
     Account accountRecord = new Account(
       Name = name,
-      Phone = '9000013999',
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'coverage.dealer@example.com'
     );
     Map<String, Schema.RecordTypeInfo> recordTypes = Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName();
@@ -1340,7 +1340,7 @@ private class DeploymentCoverageTest {
         break;
       }
     }
-    insert accountRecord;
+    insert as system accountRecord;
     return accountRecord;
   }
 
@@ -1354,7 +1354,7 @@ private class DeploymentCoverageTest {
         continue;
       }
       try {
-        insert new Product_Category__c(
+        insert as system new Product_Category__c(
           Opportunity__c = opportunityId,
           Department_Name__c = 'High Mast & Polygonal',
           Product_Category__c = entry.getValue()

@@ -10,5 +10,5 @@
     <openType>sidebar</openType>
     <protected>false</protected>
     <requireRowSelection>false</requireRowSelection>
-    <url>/flow/Custom_Account_Creation?retURL=%2Flightning%2Fo%2FAccount%2Flist</url>
+    <url>/flow/Custom_Account_Creation?retURL=/001/o</url>
 </WebLink>

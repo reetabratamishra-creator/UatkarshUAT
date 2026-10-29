@@ -152,7 +152,7 @@ public class bidderAwardControllerTest {
 
         Product_Category__c pc = new Product_Category__c(
             Department_Name__c = 'Steel Pipes',
-            Product_Category__c = 'ERW Pipes',
+            Product_Category__c = 'ERW Hollow Section Pipes',
             UOM__c = 'MT',
             Quantity__c = 10
         );

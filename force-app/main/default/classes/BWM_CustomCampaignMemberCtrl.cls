@@ -25,4 +25,31 @@ public with sharing class BWM_CustomCampaignMemberCtrl {
             throw new AuraHandledException(ex.getMessage());
         }
     }
+
+    /**
+     * @description Creates a Campaign with the chosen schedule and Custom Campaign Member rows.
+     * @param campaignName User-entered campaign name.
+     * @param memberType LEAD, OPPORTUNITY, CONTACT, ACCOUNT, or OFFLINE_CAMPAIGN.
+     * @param recordIds Selected recipient record ids.
+     * @param scheduledDateTime UTC timestamp from the schedule screen (yyyy-MM-ddTHH:mm:ssZ).
+     * @return CreateCampaignResult with campaign id and member count.
+     */
+    @AuraEnabled
+    public static BWM_CustomCampaignMemberService.CreateCampaignResult createScheduledCampaignWithMembers(
+        String campaignName,
+        String memberType,
+        List<Id> recordIds,
+        String scheduledDateTime
+    ) {
+        try {
+            return BWM_CustomCampaignMemberService.createCampaignWithMembers(
+                campaignName,
+                memberType,
+                recordIds,
+                scheduledDateTime
+            );
+        } catch (Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
 }

@@ -73,52 +73,64 @@ public class EmployeeTracker {
     private static Set<Id> getSubordinateUserIds(Id currentUserId) {
         Set<Id> subordinateUserIds = new Set<Id>();
 
-        // 1. Standard Manager check
-        for (User u : [SELECT Id FROM User WHERE ManagerId = :currentUserId AND IsActive = true]) {
-            subordinateUserIds.add(u.Id);
+        // Utkarsh HOD / CRM Head: department based visibility (same rules as FieldForceDashboardController)
+        List<Profile> currentProfiles = [SELECT Name FROM Profile WHERE Id = :UserInfo.getProfileId() LIMIT 1];
+        String currentProfileName = currentProfiles.isEmpty() ? '' : currentProfiles[0].Name;
+        if (currentProfileName == FieldForceDashboardController.HOD_PROFILE_NAME
+                || currentProfileName == FieldForceDashboardController.CRM_HEAD_PROFILE_NAME) {
+            subordinateUserIds.addAll(FieldForceDashboardController.getDepartmentUserIds(
+                currentUserId,
+                currentProfileName == FieldForceDashboardController.CRM_HEAD_PROFILE_NAME
+            ));
+        } else {
+            // 1. Standard Manager check
+            for (User u : [SELECT Id FROM User WHERE ManagerId = :currentUserId AND IsActive = true]) {
+                subordinateUserIds.add(u.Id);
+            }
         }
 
-        // 2. HOD / CRM Head role prefix check
-        try {
-            User currentUser = [SELECT Id, UserRole.Name FROM User WHERE Id = :currentUserId LIMIT 1];
-            String currentRoleName = currentUser.UserRole != null ? currentUser.UserRole.Name : '';
-            String deptPrefix = '';
-            if (String.isNotBlank(currentRoleName)) {
-                if (currentRoleName.endsWith(' HOD')) {
-                    deptPrefix = currentRoleName.substringBefore(' HOD').trim();
-                } else if (currentRoleName.endsWith(' CRM Head')) {
-                    deptPrefix = currentRoleName.substringBefore(' CRM Head').trim();
-                }
-            }
-            
-            if (String.isNotBlank(deptPrefix)) {
-                String likePattern = deptPrefix + '%';
-                for (User u : [
-                    SELECT Id FROM User 
-                    WHERE IsActive = true 
-                    AND UserRole.Name LIKE :likePattern
-                ]) {
-                    subordinateUserIds.add(u.Id);
-                }
-            }
-        } catch (Exception e) {
-            System.debug('Failed to query current user role or role-aligned subordinates: ' + e.getMessage());
-        }
+        // Role based matching replaced by department based matching for Utkarsh HOD / CRM Head profiles
+        // // 2. HOD / CRM Head role prefix check
+        // try {
+        //     User currentUser = [SELECT Id, UserRole.Name FROM User WHERE Id = :currentUserId LIMIT 1];
+        //     String currentRoleName = currentUser.UserRole != null ? currentUser.UserRole.Name : '';
+        //     String deptPrefix = '';
+        //     if (String.isNotBlank(currentRoleName)) {
+        //         if (currentRoleName.endsWith(' HOD')) {
+        //             deptPrefix = currentRoleName.substringBefore(' HOD').trim();
+        //         } else if (currentRoleName.endsWith(' CRM Head')) {
+        //             deptPrefix = currentRoleName.substringBefore(' CRM Head').trim();
+        //         }
+        //     }
+        //
+        //     if (String.isNotBlank(deptPrefix)) {
+        //         String likePattern = deptPrefix + '%';
+        //         for (User u : [
+        //             SELECT Id FROM User
+        //             WHERE IsActive = true
+        //             AND UserRole.Name LIKE :likePattern
+        //         ]) {
+        //             subordinateUserIds.add(u.Id);
+        //         }
+        //     }
+        // } catch (Exception e) {
+        //     System.debug('Failed to query current user role or role-aligned subordinates: ' + e.getMessage());
+        // }
 
-        // 3. Custom Manager Assignment metadata check
-        try {
-            for (Manager_Assignment__mdt ma : [
-                SELECT Target_User_Id__c 
-                FROM Manager_Assignment__mdt 
-                WHERE Manager_User_Id__c = :String.valueOf(currentUserId)
-            ]) {
-                if (String.isNotBlank(ma.Target_User_Id__c)) {
-                    subordinateUserIds.add((Id)ma.Target_User_Id__c);
-                }
-            }
-        } catch (Exception e) {
-            System.debug('Manager_Assignment__mdt query failed: ' + e.getMessage());
-        }
+        // // 3. Custom Manager Assignment metadata check
+        // try {
+        //     for (Manager_Assignment__mdt ma : [
+        //         SELECT Target_User_Id__c
+        //         FROM Manager_Assignment__mdt
+        //         WHERE Manager_User_Id__c = :String.valueOf(currentUserId)
+        //     ]) {
+        //         if (String.isNotBlank(ma.Target_User_Id__c)) {
+        //             subordinateUserIds.add((Id)ma.Target_User_Id__c);
+        //         }
+        //     }
+        // } catch (Exception e) {
+        //     System.debug('Manager_Assignment__mdt query failed: ' + e.getMessage());
+        // }
 
         return subordinateUserIds;
     }
@@ -155,30 +167,38 @@ public class EmployeeTracker {
             allowedUserIds.add(currentUserId);
         }
 
-        List<User_Punch_State__c> punchStates;
+        // Employee list comes from User (same list as FieldForceDashboardController.getAvailableSalespeople);
+        // live punch data is taken from the user's User_Punch_State__c record when one exists
+        List<User> users;
         if (canViewAll) {
-            punchStates = [
-                SELECT User__r.Id, User__r.Name, User__r.Phone,
-                       Battery_Percentage__c, Current_Status__c,
-                       Last_Punch_Time__c, Latitude__c, Longitude__c
-                FROM User_Punch_State__c
-                WHERE User__c != null
+            users = [
+                SELECT Id, Name, Phone,
+                       (SELECT Battery_Percentage__c, Current_Status__c,
+                               Last_Punch_Time__c, Latitude__c, Longitude__c
+                        FROM Punch_State__r
+                        LIMIT 1)
+                FROM User
+                WHERE IsActive = true
+                ORDER BY Name ASC
+                LIMIT 2000
             ];
         } else {
-            punchStates = [
-                SELECT User__r.Id, User__r.Name, User__r.Phone,
-                       Battery_Percentage__c, Current_Status__c,
-                       Last_Punch_Time__c, Latitude__c, Longitude__c
-                FROM User_Punch_State__c
-                WHERE User__c IN :allowedUserIds
+            users = [
+                SELECT Id, Name, Phone,
+                       (SELECT Battery_Percentage__c, Current_Status__c,
+                               Last_Punch_Time__c, Latitude__c, Longitude__c
+                        FROM Punch_State__r
+                        LIMIT 1)
+                FROM User
+                WHERE Id IN :allowedUserIds
+                AND IsActive = true
+                ORDER BY Name ASC
             ];
         }
 
         Set<Id> punchUserIds = new Set<Id>();
-        for (User_Punch_State__c ups : punchStates) {
-            if (ups.User__r != null) {
-                punchUserIds.add(ups.User__r.Id);
-            }
+        for (User u : users) {
+            punchUserIds.add(u.Id);
         }
 
         Map<Id, List<WFHRequestDTO>> pendingByUser = new Map<Id, List<WFHRequestDTO>>();
@@ -206,31 +226,38 @@ public class EmployeeTracker {
             }
         }
 
-        for(User_Punch_State__c ups : punchStates) {
+        for(User u : users) {
+            // Users who have never punched have no User_Punch_State__c record
+            User_Punch_State__c ups = u.Punch_State__r.isEmpty() ? null : u.Punch_State__r[0];
+
             EmployeeDTO dto = new EmployeeDTO();
-            dto.Id = ups.User__r.Id;
-            dto.employeeName = ups.User__r.Name;
-            dto.phone = ups.User__r.Phone != null ? ups.User__r.Phone : 'N/A';
-            dto.batteryPercentage = ups.Battery_Percentage__c;
-            dto.currentStatus = ups.Current_Status__c;
-            dto.lastPunchTime = ups.Last_Punch_Time__c;
-            dto.latitude = ups.Latitude__c;
-            dto.longitude = ups.Longitude__c;
-            dto.gpsStatus = (ups.Latitude__c != null && ups.Longitude__c != null);
-            dto.lastKnownAddress = 'Location Captured'; 
-            
+            dto.Id = u.Id;
+            dto.employeeName = u.Name;
+            dto.phone = u.Phone != null ? u.Phone : 'N/A';
+            if (ups != null) {
+                dto.batteryPercentage = ups.Battery_Percentage__c;
+                dto.currentStatus = ups.Current_Status__c;
+                dto.lastPunchTime = ups.Last_Punch_Time__c;
+                dto.latitude = ups.Latitude__c;
+                dto.longitude = ups.Longitude__c;
+                dto.gpsStatus = (ups.Latitude__c != null && ups.Longitude__c != null);
+            } else {
+                dto.gpsStatus = false;
+            }
+            dto.lastKnownAddress = 'Location Captured';
+
             // Build Initials
             String init = 'U';
-            if (String.isNotBlank(ups.User__r.Name)) {
-                List<String> parts = ups.User__r.Name.split(' ');
+            if (String.isNotBlank(u.Name)) {
+                List<String> parts = u.Name.split(' ');
                 init = parts[0].substring(0, 1);
                 if (parts.size() > 1) {
                     init += parts[parts.size() - 1].substring(0, 1);
                 }
             }
             dto.initials = init.toUpperCase();
-            dto.pendingRequests = pendingByUser.containsKey(ups.User__r.Id)
-                ? pendingByUser.get(ups.User__r.Id)
+            dto.pendingRequests = pendingByUser.containsKey(u.Id)
+                ? pendingByUser.get(u.Id)
                 : new List<WFHRequestDTO>();
 
             results.add(dto);

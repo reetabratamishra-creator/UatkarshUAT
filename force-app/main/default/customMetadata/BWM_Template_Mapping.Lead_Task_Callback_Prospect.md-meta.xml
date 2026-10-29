@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>Brochure_Attachment_Mode__c</field>
-        <value xsi:type="xsd:string">Department</value>
+        <value xsi:type="xsd:string">None</value>
     </values>
     <values>
         <field>Department_Mode__c</field>
@@ -20,7 +20,7 @@
     </values>
     <values>
         <field>Include_Brochure_Header__c</field>
-        <value xsi:type="xsd:boolean">true</value>
+        <value xsi:type="xsd:boolean">false</value>
     </values>
     <values>
         <field>Is_Active__c</field>
@@ -88,7 +88,7 @@
     </values>
     <values>
         <field>RCS_Template_Name__c</field>
-        <value xsi:type="xsd:string">Prosp_nt_resp_dept</value>
+        <value xsi:type="xsd:string">Pros_nt_resp_dept</value>
     </values>
     <values>
         <field>Recipient_Type__c</field>

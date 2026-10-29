@@ -2,6 +2,7 @@ import { LightningElement, api, track, wire } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { NavigationMixin } from 'lightning/navigation';
+import { registerRefreshHandler, unregisterRefreshHandler } from 'lightning/refresh';
 import getEmployeeTimeline from '@salesforce/apex/EmployeeTimelineController.getEmployeeTimeline';
 import addEmployeeTimelineItemWithCategory from '@salesforce/apex/EmployeeTimelineController.addEmployeeTimelineItemWithCategory';
 import getReasonForVisitOptions from '@salesforce/apex/EmployeeTimelineController.getReasonForVisitOptions';
@@ -818,9 +819,53 @@ export default class PunchTimeline extends NavigationMixin(LightningElement) {
     // ── Wire & data loading ──────────────────────────────────────────────────
     wiredScheduledResult;
 
+    // Cacheable Apex results are persisted on the mobile device, so a
+    // reschedule/cancel done on web is invisible there until the cache expires.
+    // Re-fetch from the server on load, on returning to the app, and on
+    // pull-to-refresh.
+    _scheduledFreshLoaded = false;
+    _timelineFreshLoaded = false;
+    _refreshHandlerId;
+    _onVisibilityChange;
+
+    connectedCallback() {
+        this._onVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                this.refreshAll();
+            }
+        };
+        document.addEventListener('visibilitychange', this._onVisibilityChange);
+        this._refreshHandlerId = registerRefreshHandler(this, () => this.refreshAll().then(() => true));
+    }
+
+    disconnectedCallback() {
+        document.removeEventListener('visibilitychange', this._onVisibilityChange);
+        if (this._refreshHandlerId) {
+            unregisterRefreshHandler(this._refreshHandlerId);
+        }
+    }
+
+    refreshAll() {
+        const refreshes = [];
+        if (this.wiredScheduledResult) {
+            refreshes.push(refreshApex(this.wiredScheduledResult));
+        }
+        if (this.wiredResult) {
+            refreshes.push(refreshApex(this.wiredResult));
+        }
+        return Promise.all(refreshes).catch(error => {
+            console.error('Error refreshing punch timeline', error);
+        });
+    }
+
     @wire(getScheduledVisits, { employeeId: '$recordId' })
     wiredScheduledVisits(result) {
         this.wiredScheduledResult = result;
+        if (!this._scheduledFreshLoaded && (result.data || result.error)) {
+            // First emission may be a stale device-cached copy
+            this._scheduledFreshLoaded = true;
+            refreshApex(result);
+        }
         const { data, error } = result;
         if (data) {
             this.scheduledVisits = data.map(visit => {
@@ -1215,6 +1260,11 @@ export default class PunchTimeline extends NavigationMixin(LightningElement) {
     @wire(getEmployeeTimeline, { employeeId: '$recordId', limitSize: '$limitSize' })
     wiredTimeline(result) {
         this.wiredResult = result;
+        if (!this._timelineFreshLoaded && (result.data || result.error)) {
+            // First emission may be a stale device-cached copy
+            this._timelineFreshLoaded = true;
+            refreshApex(result);
+        }
         const { data, error } = result;
         this.isLoading = false;
 

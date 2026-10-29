@@ -45,7 +45,7 @@
                   &quot;label&quot;: &quot;Configurations to Compare:&quot;,
                   &quot;type&quot;: &quot;number&quot;,
                   &quot;colSpan&quot;: 12,
-                  &quot;defaultValue&quot;: 1,
+                  &quot;DefaultValue&quot;: 1,
                   &quot;min&quot;: 1,
                   &quot;max&quot;: 5
                 }
@@ -75,7 +75,7 @@
                         &quot;Galvanized Iron (GI)&quot;,
                         &quot;Stainless Steel&quot;
                       ],
-                      &quot;defaultValue&quot;: &quot;Black Steel&quot;
+                      &quot;DefaultValue&quot;: &quot;Black Steel&quot;
                     },
                     {
                       &quot;apiName&quot;: &quot;designation&quot;,
@@ -129,7 +129,7 @@
                       &quot;controllingFields&quot;: [
                         &quot;standard_spec_grade&quot;
                       ],
-                      &quot;defaultValue&quot;: &quot;Default&quot;,
+                      &quot;DefaultValue&quot;: &quot;Default&quot;,
                       &quot;disableControllingField&quot;: &quot;standard_spec_grade&quot;,
                       &quot;disableControllingValues&quot;: [
                         &quot;EN 10255~BS1387&quot;,
@@ -176,7 +176,7 @@
                       &quot;apiName&quot;: &quot;pipe_class&quot;,
                       &quot;label&quot;: &quot;WALL THICKNESS (MM) / CLASS&quot;,
                       &quot;type&quot;: &quot;picklist&quot;,
-                      &quot;defaultValue&quot;: &quot;Default&quot;,
+                      &quot;DefaultValue&quot;: &quot;Default&quot;,
                       &quot;controllingField&quot;: [
                         &quot;standard_spec_grade&quot;,
                         &quot;shape_type&quot;
@@ -686,7 +686,9 @@
                         &quot;Plain End&quot;,
                         &quot;Beveled End&quot;,
                         &quot;Screwed &amp; Socket (SWS)&quot;,
-                        &quot;Screwed (SS)&quot;
+                        &quot;Screwed (SS)&quot;,
+                        &quot;Grooved End&quot;,
+                        &quot;Threaded&quot;
                       ]
                     },
                     {

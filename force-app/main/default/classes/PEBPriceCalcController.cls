@@ -387,13 +387,20 @@ public with sharing class PEBPriceCalcController {
         totals.put('G', valueForSection(text, new List<String>{ 'Galvalume Sheet - Wall', 'Galvalume Sheet -Wall' }));
         totals.put('H', valueForSection(text, new List<String>{ 'Packing Material', 'Packing' }));
 
-        // --- Section C (hardware) - unchanged logic -------------------------
-        // C1  = the value on the first "Anchor bolts" line.
-        // CRest = hardware TOTAL - C1 (the remaining bolt lines).
+        // --- Section C (hardware) ------------------------------------------
+        // C1    = the value on the first "Anchor bolts" line.
+        // CRest = remaining bolt lines (hardware TOTAL - C1 when TOTAL includes C1,
+        //         or hardware TOTAL directly when TOTAL <= C1 represents connection bolts).
         totals.put('C1', firstNumberAfter(text, new List<String>{ 'Anchor bolts', 'Anchor Bolt' }));
         Decimal hardwareTotal = firstTotalAfter(text, new List<String>{ 'HARD WARE', 'HARDWARE', 'A307' });
-        if (hardwareTotal != null && hardwareTotal > 0 && totals.get('C1') != null) {
-            Decimal rest = hardwareTotal - totals.get('C1');
+        if (hardwareTotal != null && hardwareTotal > 0) {
+            Decimal c1 = totals.get('C1');
+            Decimal rest;
+            if (c1 != null && c1 > 0 && hardwareTotal > c1) {
+                rest = hardwareTotal - c1;
+            } else {
+                rest = hardwareTotal;
+            }
             totals.put('CRest', rest > 0 ? rest : 0);
         }
 

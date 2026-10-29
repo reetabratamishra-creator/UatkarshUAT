@@ -78,9 +78,14 @@ public class QuoteExportController {
     public Map<String, Object> buildingRoof          { get; set; }
     public Map<String, Object> buildingWall          { get; set; }
     public List<String>        buildingTechNotes     { get; set; }
-    public List<String>        buildingMaterialSpecs { get; set; }
-    public String              buildingClientName    { get; set; }
-    public String              buildingProjectLocation { get; set; }
+    public List<String>        buildingMaterialSpecs    { get; set; }
+    public String              buildingClientName       { get; set; }
+    public String              buildingProjectLocation  { get; set; }
+    public String              buildingName             { get; set; }
+    public String              effectiveBuyerName       { get; set; }
+    public String              effectiveProjectLocation { get; set; }
+    public String              effectiveBuildingName    { get; set; }
+    public String              pebSubjectLine           { get; set; }
 
     // Direct typed properties for reliable Visualforce EL rendering
     public String buildingFrameType        { get; set; }
@@ -131,6 +136,7 @@ public class QuoteExportController {
     public String buildingRoofMonitorDesc  { get; set; }
     public Boolean showRoofMonitorSection  { get; set; }
     public List<ParamTableRow> paramTableRows { get; set; }
+    public List<DocSection>    docSections    { get; set; }
 
 
 
@@ -155,7 +161,8 @@ public class QuoteExportController {
         // ── Single merged query with ALL fields needed by every PDF page ──
         quoteRecord = [
             SELECT Id, Name, QuoteNumber, Quote_Value__c, CreatedDate,
-                   Account.Name,
+                   OpportunityId, AccountId,
+                   Account.Name, Account.BillingStreet, Account.BillingCity, Account.BillingState, Account.BillingPostalCode, Account.BillingCountry,
                    Contact.Name, Contact.Phone, Contact.Email,
                    BillingStreet, BillingCity, BillingState, BillingPostalCode,
                    Opportunity.Name, Opportunity.Price_Calculation_JSON__c
@@ -1132,8 +1139,13 @@ public class QuoteExportController {
         buildingWall            = new Map<String, Object>();
         buildingTechNotes       = new List<String>();
         buildingMaterialSpecs   = new List<String>();
-        buildingClientName      = '';
-        buildingProjectLocation = '';
+        buildingClientName       = '';
+        buildingProjectLocation  = '';
+        buildingName             = '';
+        effectiveBuyerName       = '';
+        effectiveProjectLocation = '';
+        effectiveBuildingName    = '';
+        pebSubjectLine           = '';
 
         // Default specifications (used if no Building Description uploaded)
         buildingFrameType       = 'Utkarsh Multi Span – 1';
@@ -1186,6 +1198,7 @@ public class QuoteExportController {
         buildingRoofMonitorDesc    = '1.2 m Throat Width x 1.0 m Height x 105.0 m Length';
         showRoofMonitorSection     = true;
         paramTableRows             = new List<ParamTableRow>();
+        docSections                = new List<DocSection>();
 
         try {
     Map<String, Object> bd = null;
@@ -1295,8 +1308,48 @@ public class QuoteExportController {
         }
         if (bd.get('clientInfo') instanceof Map<String, Object>) {
             Map<String, Object> ci = (Map<String, Object>) bd.get('clientInfo');
-            buildingClientName = pebStr(ci.get('clientName'));
-            buildingProjectLocation = pebStr(ci.get('projectLocation'));
+            if (String.isNotBlank(pebStr(ci.get('clientName')))) {
+                buildingClientName = pebStr(ci.get('clientName'));
+            } else if (String.isNotBlank(pebStr(ci.get('Client')))) {
+                buildingClientName = pebStr(ci.get('Client'));
+            }
+            if (String.isNotBlank(pebStr(ci.get('projectLocation')))) {
+                buildingProjectLocation = pebStr(ci.get('projectLocation'));
+            } else if (String.isNotBlank(pebStr(ci.get('projectSite')))) {
+                buildingProjectLocation = pebStr(ci.get('projectSite'));
+            } else if (String.isNotBlank(pebStr(ci.get('Project Site')))) {
+                buildingProjectLocation = pebStr(ci.get('Project Site'));
+            } else if (String.isNotBlank(pebStr(ci.get('location')))) {
+                buildingProjectLocation = pebStr(ci.get('location'));
+            } else if (String.isNotBlank(pebStr(ci.get('site')))) {
+                buildingProjectLocation = pebStr(ci.get('site'));
+            }
+            if (String.isNotBlank(pebStr(ci.get('buildingName')))) {
+                buildingName = pebStr(ci.get('buildingName'));
+            } else if (String.isNotBlank(pebStr(ci.get('Building Name')))) {
+                buildingName = pebStr(ci.get('Building Name'));
+            } else if (String.isNotBlank(pebStr(ci.get('buildingType')))) {
+                buildingName = pebStr(ci.get('buildingType'));
+            }
+        }
+        if (String.isBlank(buildingClientName) && bd.containsKey('Client')) {
+            buildingClientName = pebStr(bd.get('Client'));
+        }
+        if (String.isBlank(buildingProjectLocation)) {
+            if (bd.containsKey('Project Site')) {
+                buildingProjectLocation = pebStr(bd.get('Project Site'));
+            } else if (bd.containsKey('projectSite')) {
+                buildingProjectLocation = pebStr(bd.get('projectSite'));
+            } else if (bd.containsKey('projectLocation')) {
+                buildingProjectLocation = pebStr(bd.get('projectLocation'));
+            }
+        }
+        if (String.isBlank(buildingName)) {
+            if (bd.containsKey('Building Name')) {
+                buildingName = pebStr(bd.get('Building Name'));
+            } else if (bd.containsKey('buildingName')) {
+                buildingName = pebStr(bd.get('buildingName'));
+            }
         }
         if (bd.get('technicalNotes') instanceof List<Object>) {
             for (Object no : (List<Object>) bd.get('technicalNotes')) {
@@ -1368,20 +1421,338 @@ public class QuoteExportController {
             }
             if (!rows.isEmpty()) paramTableRows = rows;
         }
+
+        // ── docSections: Dynamic Building Description sections from (A) DESIGN CRITERIA to end ──
+        if (bd.get('docSections') instanceof List<Object>) {
+            List<DocSection> secs = buildDocSectionsFromParsed(bd.get('docSections'));
+            if (!secs.isEmpty()) docSections = secs;
+        } else if (bd.get('docSections') instanceof Map<String, Object>) {
+            Map<String, Object> innerMap = (Map<String, Object>) bd.get('docSections');
+            if (innerMap.get('docSections') instanceof List<Object>) {
+                List<DocSection> secs = buildDocSectionsFromParsed(innerMap.get('docSections'));
+                if (!secs.isEmpty()) docSections = secs;
+            }
+        }
         
-        showRoofMonitorSection = String.isNotBlank(buildingRoofMonitorDesc);
-        if (pebAccessories != null) {
-            for (PebRow r : pebAccessories) {
-                if (r.description != null && r.description.containsIgnoreCase('Roof Monitor')) {
-                    showRoofMonitorSection = false;
-                    break;
+            showRoofMonitorSection = String.isNotBlank(buildingRoofMonitorDesc);
+            if (pebAccessories != null) {
+                for (PebRow r : pebAccessories) {
+                    if (r.description != null && r.description.containsIgnoreCase('Roof Monitor')) {
+                        showRoofMonitorSection = false;
+                        break;
+                    }
                 }
             }
         }
+
+        // Secondary fallback to paramTableRows if any field is still blank
+        if (paramTableRows != null && (String.isBlank(buildingClientName) || String.isBlank(buildingProjectLocation) || String.isBlank(buildingName))) {
+            for (ParamTableRow ptr : paramTableRows) {
+                if (ptr.parameter != null && String.isNotBlank(ptr.value)) {
+                    String pLower = ptr.parameter.trim().toLowerCase();
+                    String vLower = ptr.value.trim().toLowerCase();
+                    if (String.isBlank(buildingClientName) && pLower == 'client' && !vLower.startsWith('project') && !vLower.startsWith('building')) {
+                        buildingClientName = ptr.value.trim();
+                    } else if (String.isBlank(buildingProjectLocation) && (pLower == 'project site' || pLower == 'project location') && !vLower.startsWith('building') && !vLower.startsWith('client')) {
+                        buildingProjectLocation = ptr.value.trim();
+                    } else if (String.isBlank(buildingName) && (pLower == 'building name' || pLower == 'building type') && !vLower.startsWith('client') && !vLower.startsWith('project')) {
+                        buildingName = ptr.value.trim();
+                    }
+                }
+            }
+        }
+
+        // ── RESOLVE CLIENT, LOCATION & BUILDING NAME DYNAMICS ──
+        // 1. Client / Buyer: Primary is buildingClientName; fallback is quoteRecord.Account.Name
+        if (String.isNotBlank(buildingClientName)) {
+            String cLower = buildingClientName.trim().toLowerCase();
+            if (cLower.startsWith('project') || cLower.startsWith('building') || cLower == 'client') {
+                buildingClientName = '';
+            }
+        }
+        String rawBuyer = '';
+        if (String.isNotBlank(buildingClientName)) {
+            rawBuyer = buildingClientName.trim();
+        } else if (quoteRecord != null && quoteRecord.Account != null && String.isNotBlank(quoteRecord.Account.Name)) {
+            rawBuyer = quoteRecord.Account.Name.trim();
+        }
+
+        if (String.isNotBlank(rawBuyer)) {
+            if (rawBuyer.toLowerCase().startsWith('m/s.') || rawBuyer.toLowerCase().startsWith('m/s ') || rawBuyer.toLowerCase().startsWith('m/s')) {
+                effectiveBuyerName = rawBuyer;
+            } else {
+                effectiveBuyerName = 'M/s. ' + rawBuyer;
+            }
+        } else {
+            effectiveBuyerName = '';
+        }
+
+        // 2. Project Site / Location: Primary is buildingProjectLocation; fallback 1: Opp Address Book; fallback 2: Account Address Book; fallback 3: empty
+        if (String.isNotBlank(buildingProjectLocation)) {
+            String locLower = buildingProjectLocation.trim().toLowerCase();
+            if (locLower.startsWith('building') || locLower.startsWith('client') || locLower.startsWith('project') 
+                || locLower == 'site' || locLower == 'location' 
+                || locLower.startsWith('opening') || locLower.startsWith('description') 
+                || locLower.startsWith('dimension') || locLower == 'details' 
+                || locLower == 'remarks' || locLower == 'soffit' || locLower == 'deck') {
+                buildingProjectLocation = '';
+            }
+        }
+
+        if (String.isNotBlank(buildingProjectLocation)) {
+            effectiveProjectLocation = buildingProjectLocation.trim();
+        } else {
+            effectiveProjectLocation = resolveAddressBookLocation();
+        }
+
+        // 3. Building Name: Primary is buildingName; fallback is empty
+        if (String.isNotBlank(buildingName)) {
+            String bLower = buildingName.trim().toLowerCase();
+            if (bLower.startsWith('client') || bLower.startsWith('project') || bLower == 'building name') {
+                buildingName = '';
+            }
+        }
+        effectiveBuildingName = String.isNotBlank(buildingName) ? buildingName.trim() : '';
+
+        // 4. Clean Subject Line (taking zero space/gaps if empty)
+        String subj = 'Sub: Offer for design, manufacture and supply';
+        if (String.isNotBlank(effectiveBuildingName)) {
+            subj += ' of ' + effectiveBuildingName;
+        }
+        if (String.isNotBlank(effectiveProjectLocation)) {
+            subj += ' at ' + effectiveProjectLocation;
+        }
+        subj += '.';
+        pebSubjectLine = subj;
+    } catch (Exception e) {
+        System.debug('PEB bank-doc building description parse error: ' + e.getMessage());
     }
-} catch (Exception e) {
-    System.debug('PEB bank-doc building description parse error: ' + e.getMessage());
-}
+    }
+
+    private String resolveAddressBookLocation() {
+        if (quoteRecord != null && quoteRecord.OpportunityId != null) {
+            List<Address_Book__c> oppBooks = [
+                SELECT Id, Street__c, City__c, State__c, PIN__c, Country__c, Primary_Address__c
+                FROM Address_Book__c
+                WHERE Opportunity__c = :quoteRecord.OpportunityId
+                ORDER BY CreatedDate ASC
+            ];
+            if (!oppBooks.isEmpty()) {
+                Address_Book__c bestOpp = pickBestAddressBook(oppBooks);
+                String formatted = formatAddressBookRecord(bestOpp);
+                if (String.isNotBlank(formatted)) {
+                    return formatted;
+                }
+            }
+        }
+        if (quoteRecord != null && quoteRecord.AccountId != null) {
+            List<Address_Book__c> accBooks = [
+                SELECT Id, Street__c, City__c, State__c, PIN__c, Country__c, Primary_Address__c
+                FROM Address_Book__c
+                WHERE Account__c = :quoteRecord.AccountId
+                ORDER BY CreatedDate ASC
+            ];
+            if (!accBooks.isEmpty()) {
+                Address_Book__c bestAcc = pickBestAddressBook(accBooks);
+                String formatted = formatAddressBookRecord(bestAcc);
+                if (String.isNotBlank(formatted)) {
+                    return formatted;
+                }
+            }
+        }
+        if (quoteRecord != null) {
+            List<String> bParts = new List<String>();
+            if (String.isNotBlank(quoteRecord.BillingStreet)) bParts.add(quoteRecord.BillingStreet.replaceAll('\\r\\n|\\r|\\n', ', ').trim());
+            if (String.isNotBlank(quoteRecord.BillingCity)) bParts.add(quoteRecord.BillingCity.trim());
+            if (String.isNotBlank(quoteRecord.BillingState)) bParts.add(quoteRecord.BillingState.trim());
+            if (String.isNotBlank(quoteRecord.BillingPostalCode)) bParts.add(quoteRecord.BillingPostalCode.trim());
+            if (bParts.isEmpty() && quoteRecord.Account != null) {
+                if (String.isNotBlank(quoteRecord.Account.BillingStreet)) bParts.add(quoteRecord.Account.BillingStreet.replaceAll('\\r\\n|\\r|\\n', ', ').trim());
+                if (String.isNotBlank(quoteRecord.Account.BillingCity)) bParts.add(quoteRecord.Account.BillingCity.trim());
+                if (String.isNotBlank(quoteRecord.Account.BillingState)) bParts.add(quoteRecord.Account.BillingState.trim());
+                if (String.isNotBlank(quoteRecord.Account.BillingPostalCode)) bParts.add(quoteRecord.Account.BillingPostalCode.trim());
+            }
+            if (!bParts.isEmpty()) {
+                return String.join(bParts, ', ');
+            }
+        }
+        return '';
+    }
+
+    private static String formatAddressBookRecord(Address_Book__c ab) {
+        if (ab == null) return '';
+        List<String> parts = new List<String>();
+        if (String.isNotBlank(ab.Street__c)) {
+            parts.add(ab.Street__c.replaceAll('\\r\\n|\\r|\\n', ', ').trim());
+        }
+        if (String.isNotBlank(ab.City__c)) {
+            parts.add(ab.City__c.trim());
+        }
+        if (String.isNotBlank(ab.State__c)) {
+            parts.add(ab.State__c.trim());
+        }
+        if (String.isNotBlank(ab.PIN__c)) {
+            parts.add(ab.PIN__c.trim());
+        }
+        String res = String.join(parts, ', ');
+        res = res.replaceAll('(, ){2,}', ', ').trim();
+        if (res.endsWith(',')) res = res.removeEnd(',');
+        return res;
+    }
+
+    private static Address_Book__c pickBestAddressBook(List<Address_Book__c> books) {
+        if (books == null || books.isEmpty()) return null;
+        Address_Book__c best = null;
+        Integer bestFilled   = -1;
+        Boolean bestPrimary  = false;
+        
+        for (Address_Book__c b : books) {
+            Boolean isPrimary = (b.Primary_Address__c == true);
+            Integer filled    = 0;
+            if (String.isNotBlank(b.Street__c))  filled++;
+            if (String.isNotBlank(b.City__c))    filled++;
+            if (String.isNotBlank(b.State__c))   filled++;
+            if (String.isNotBlank(b.PIN__c))     filled++;
+            if (String.isNotBlank(b.Country__c)) filled++;
+            
+            Boolean wins = (best == null)
+                || (isPrimary && !bestPrimary)
+                || (isPrimary == bestPrimary && filled > bestFilled);
+            
+            if (wins) {
+                best        = b;
+                bestFilled  = filled;
+                bestPrimary = isPrimary;
+            }
+        }
+        return best;
+    }
+
+    private List<DocSection> buildDocSectionsFromParsed(Object raw) {
+        List<DocSection> out = new List<DocSection>();
+        if (!(raw instanceof List<Object>)) return out;
+        for (Object secObj : (List<Object>) raw) {
+            if (!(secObj instanceof Map<String, Object>)) continue;
+            Map<String, Object> sm = (Map<String, Object>) secObj;
+            DocSection s   = new DocSection();
+            s.title        = pebStr(sm.get('title'));
+            s.subtitle     = pebStr(sm.get('subtitle'));
+            s.sectionType  = pebStr(sm.get('sectionType'));
+            if (sm.get('colCount') != null) {
+                try {
+                    s.colCount = Integer.valueOf(String.valueOf(sm.get('colCount')));
+                } catch (Exception e) {
+                    s.colCount = 2;
+                }
+            } else {
+                s.colCount = 2;
+            }
+
+            s.tableHeaders = new List<String>();
+            if (sm.get('tableHeaders') instanceof List<Object>) {
+                for (Object th : (List<Object>) sm.get('tableHeaders')) {
+                    s.tableHeaders.add(pebStr(th));
+                }
+            }
+
+            s.colWidths = new List<String>();
+            if (sm.get('colWidths') instanceof List<Object>) {
+                for (Object cw : (List<Object>) sm.get('colWidths')) {
+                    s.colWidths.add(pebStr(cw));
+                }
+            }
+
+            s.tableRows = new List<DocRow>();
+            if (sm.get('tableRows') instanceof List<Object>) {
+                for (Object ro : (List<Object>) sm.get('tableRows')) {
+                    if (!(ro instanceof Map<String, Object>)) continue;
+                    Map<String, Object> rm = (Map<String, Object>) ro;
+                    DocRow r      = new DocRow();
+                    r.c1          = pebStr(rm.get('c1'));
+                    r.c2          = pebStr(rm.get('c2'));
+                    r.c3          = pebStr(rm.get('c3'));
+                    r.c4          = pebStr(rm.get('c4'));
+                    r.c5          = pebStr(rm.get('c5'));
+                    r.c6          = pebStr(rm.get('c6'));
+                    r.c7          = pebStr(rm.get('c7'));
+                    r.c8          = pebStr(rm.get('c8'));
+                    r.c9          = pebStr(rm.get('c9'));
+                    r.c10         = pebStr(rm.get('c10'));
+                    r.isSubHeader = (rm.get('isSubHeader') == true);
+
+                    // Rowspans
+                    r.r1Span      = pebInt(rm.get('r1Span'));
+                    r.r2Span      = pebInt(rm.get('r2Span'));
+                    r.r3Span      = pebInt(rm.get('r3Span'));
+                    r.r4Span      = pebInt(rm.get('r4Span'));
+                    r.r5Span      = pebInt(rm.get('r5Span'));
+                    r.r6Span      = pebInt(rm.get('r6Span'));
+
+                    // Colspans
+                    r.c1Span      = pebInt(rm.get('c1Span'));
+                    r.c2Span      = pebInt(rm.get('c2Span'));
+                    r.c3Span      = pebInt(rm.get('c3Span'));
+                    r.c4Span      = pebInt(rm.get('c4Span'));
+                    r.c5Span      = pebInt(rm.get('c5Span'));
+                    r.c6Span      = pebInt(rm.get('c6Span'));
+
+                    // Skips
+                    r.skipC1      = (rm.get('skipC1') == true);
+                    r.skipC2      = (rm.get('skipC2') == true);
+                    r.skipC3      = (rm.get('skipC3') == true);
+                    r.skipC4      = (rm.get('skipC4') == true);
+                    r.skipC5      = (rm.get('skipC5') == true);
+                    r.skipC6      = (rm.get('skipC6') == true);
+                    r.skipC7      = (rm.get('skipC7') == true);
+                    r.skipC8      = (rm.get('skipC8') == true);
+                    r.skipC9      = (rm.get('skipC9') == true);
+                    r.skipC10     = (rm.get('skipC10') == true);
+
+                    // Bold
+                    r.isC1Bold    = (rm.get('isC1Bold') == true);
+                    r.isC2Bold    = (rm.get('isC2Bold') == true);
+                    r.isC3Bold    = (rm.get('isC3Bold') == true);
+                    r.isC4Bold    = (rm.get('isC4Bold') == true);
+                    r.isC5Bold    = (rm.get('isC5Bold') == true);
+                    r.isC6Bold    = (rm.get('isC6Bold') == true);
+                    r.isC7Bold    = (rm.get('isC7Bold') == true);
+                    r.isC8Bold    = (rm.get('isC8Bold') == true);
+                    r.isC9Bold    = (rm.get('isC9Bold') == true);
+                    r.isC10Bold   = (rm.get('isC10Bold') == true);
+
+                    // Align overrides
+                    r.alignC1     = pebStr(rm.get('alignC1'));
+                    r.alignC2     = pebStr(rm.get('alignC2'));
+                    r.alignC3     = pebStr(rm.get('alignC3'));
+                    r.alignC4     = pebStr(rm.get('alignC4'));
+                    r.alignC5     = pebStr(rm.get('alignC5'));
+                    r.alignC6     = pebStr(rm.get('alignC6'));
+                    r.alignC7     = pebStr(rm.get('alignC7'));
+                    r.alignC8     = pebStr(rm.get('alignC8'));
+                    r.alignC9     = pebStr(rm.get('alignC9'));
+                    r.alignC10    = pebStr(rm.get('alignC10'));
+
+                    s.tableRows.add(r);
+                }
+            }
+
+            s.listItems = new List<String>();
+            if (sm.get('listItems') instanceof List<Object>) {
+                for (Object li : (List<Object>) sm.get('listItems')) {
+                    s.listItems.add(pebStr(li));
+                }
+            }
+
+            s.notes = new List<String>();
+            if (sm.get('notes') instanceof List<Object>) {
+                for (Object n : (List<Object>) sm.get('notes')) {
+                    s.notes.add(pebStr(n));
+                }
+            }
+
+            out.add(s);
+        }
+        return out;
     }
 
     private List<PebRow> buildPebRowsFromParsed(Object raw) {
@@ -1451,14 +1822,43 @@ public class QuoteExportController {
         ptDeliveryNo = (showErectionTerms == true) ? 'E.7' : 'E.6';
     }
 
+    private String cleanPebText(String s) {
+        if (String.isBlank(s)) return '';
+        s = s.replaceAll('\\bS\\s+teel\\b', 'Steel');
+        s = s.replaceAll('\\bs\\s+teel\\b', 'steel');
+        s = s.replaceAll('\\bSTEEL\\b', 'STEEL');
+        s = s.replaceAll('\\bo\\s+f\\b', 'of');
+        s = s.replaceAll('\\bO\\s+f\\b', 'Of');
+        s = s.replaceAll('\\bC\\s*/\\s*C\\b', 'C/C');
+        s = s.replaceAll('(?i)\\bGalvalum\\s+e\\b', 'Galvalume');
+        s = s.replaceAll('(?i)\\bGal\\s+valume\\b', 'Galvalume');
+        s = s.replaceAll('(?i)\\bdown\\s+co\\s*mer\\b', 'down comer');
+        s = s.replaceAll('(?i)\\bco\\s+mer\\b', 'comer');
+        s = s.replaceAll('\\bO\\s+ne\\b', 'One');
+        s = s.replaceAll('\\bP\\s+aint\\b', 'Paint');
+        s = s.replaceAll('(?i)\\bcoat\\s+s\\b', 'coats');
+        s = s.replaceAll('\\b0\\.\\s+(\\d+)\\b', '0.$1');
+        s = s.replaceAll('\\b1\\s*:\\s*10\\b', '1:10');
+        s = s.replaceAll('(?i)\\bAZ\\s*-\\s*150\\b', 'AZ-150');
+        s = s.replaceAll('( ){2,}', ' ');
+        return s.trim();
+    }
+
     private String pebStr(Object v) {
-        return v == null ? '' : String.valueOf(v).trim();
+        if (v == null) return '';
+        return cleanPebText(String.valueOf(v));
     }
 
     private Decimal pebDec(Object v) {
         if (v == null) return 0;
         try   { return Decimal.valueOf(String.valueOf(v)); }
         catch (Exception e) { return 0; }
+    }
+
+    private Integer pebInt(Object v) {
+        if (v == null) return null;
+        try   { return Integer.valueOf(String.valueOf(v).trim()); }
+        catch (Exception e) { return null; }
     }
 
     // whole rupees, Indian grouping: 16303965 -> 1,63,03,965
@@ -1493,5 +1893,388 @@ public class QuoteExportController {
         public String  dataFrom  { get; set; }
         public String  remark    { get; set; }
         public Boolean isHeader  { get; set; }
+    }
+
+    public class DocSection {
+        public String title        { get; set; }
+        public String subtitle     { get; set; }
+        public String sectionType  { get; set; }
+        public Integer colCount    { get; set; }
+        public List<String> tableHeaders { get; set; }
+        public List<String> colWidths    { get; set; }
+        public List<DocRow> tableRows    { get; set; }
+        public List<String> listItems    { get; set; }
+        public List<String> notes        { get; set; }
+
+        public Boolean isChapter   { get { return sectionType == 'chapter'; } }
+        public Boolean isTable     { get { return sectionType == 'table'; } }
+        public Boolean isList      { get { return sectionType == 'list'; } }
+        public Boolean hasHeaders  { get { return tableHeaders != null && !tableHeaders.isEmpty(); } }
+        public Boolean hasSubtitle { get { return String.isNotBlank(subtitle); } }
+        public Boolean hasNotes    { get { return notes != null && !notes.isEmpty(); } }
+        public Boolean isSmallTable { get { return tableRows != null && tableRows.size() <= 6; } }
+
+        public Boolean hasCol2     { get { return colCount != null && colCount >= 2; } }
+        public Boolean hasCol3     { get { return colCount != null && colCount >= 3; } }
+        public Boolean hasCol4     { get { return colCount != null && colCount >= 4; } }
+        public Boolean hasCol5     { get { return colCount != null && colCount >= 5; } }
+        public Boolean hasCol6     { get { return colCount != null && colCount >= 6; } }
+        public String  colSpanStr  { get { return String.valueOf(colCount != null && colCount > 0 ? colCount : 1); } }
+
+        public String h1 { get { return tableHeaders != null && tableHeaders.size() > 0 ? tableHeaders[0] : ''; } }
+        public String h2 { get { return tableHeaders != null && tableHeaders.size() > 1 ? tableHeaders[1] : ''; } }
+        public String h3 { get { return tableHeaders != null && tableHeaders.size() > 2 ? tableHeaders[2] : ''; } }
+        public String h4 { get { return tableHeaders != null && tableHeaders.size() > 3 ? tableHeaders[3] : ''; } }
+        public String h5 { get { return tableHeaders != null && tableHeaders.size() > 4 ? tableHeaders[4] : ''; } }
+        public String h6 { get { return tableHeaders != null && tableHeaders.size() > 5 ? tableHeaders[5] : ''; } }
+
+        public Boolean isFirstColSrNo {
+            get {
+                if (String.isNotBlank(h1) && (h1.containsIgnoreCase('Sr') || h1.containsIgnoreCase('Sl') || h1.containsIgnoreCase('No.'))) {
+                    return true;
+                }
+                if (String.isBlank(h1) && colCount != null && colCount >= 3 && tableRows != null && !tableRows.isEmpty()) {
+                    String firstVal = tableRows[0].c1;
+                    if (String.isNotBlank(firstVal) && Pattern.matches('^\\d+$', firstVal.trim())) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public Boolean isProjectSummaryTable {
+            get {
+                return (String.isNotBlank(h1) && h1.containsIgnoreCase('UTILITY')) ||
+                       (tableRows != null && !tableRows.isEmpty() && tableRows[0].c2 == 'Total area');
+            }
+        }
+
+        public Boolean isProjectSummaryBox {
+            get {
+                return tableRows != null && !tableRows.isEmpty() && tableRows[0].c1 == 'Total no. of Buildings';
+            }
+        }
+
+        public String w1 {
+            get {
+                if (colCount == 2) {
+                    if (isProjectSummaryBox) return '45%';
+                    return '40%';
+                }
+                if (colCount == 3) {
+                    if (isProjectSummaryTable) return '35%';
+                    if (isFirstColSrNo) return '6%';
+                    return '33%';
+                }
+                if (colCount == 4) {
+                    if (isFirstColSrNo) return '5%';
+                    return '25%';
+                }
+                if (colCount == 5) {
+                    if (isFirstColSrNo) return '5%';
+                    return '20%';
+                }
+                if (colCount == 6) {
+                    if (isFirstColSrNo) return '5%';
+                    return '16%';
+                }
+                return 'auto';
+            }
+        }
+
+        public String w2 {
+            get {
+                if (colCount == 2) {
+                    if (isProjectSummaryBox) return '55%';
+                    return '60%';
+                }
+                if (colCount == 3) {
+                    if (isProjectSummaryTable) return '30%';
+                    if (isFirstColSrNo) return '35%';
+                    return '33%';
+                }
+                if (colCount == 4) {
+                    if (isFirstColSrNo) return '25%';
+                    return '25%';
+                }
+                if (colCount == 5) {
+                    if (isFirstColSrNo) return '25%';
+                    return '20%';
+                }
+                if (colCount == 6) {
+                    if (isFirstColSrNo) return '25%';
+                    return '16%';
+                }
+                return 'auto';
+            }
+        }
+
+        public String w3 {
+            get {
+                if (colCount == 3) {
+                    if (isProjectSummaryTable) return '35%';
+                    if (isFirstColSrNo) return '59%';
+                    return '34%';
+                }
+                if (colCount == 4) {
+                    if (isFirstColSrNo) return '35%';
+                    return '25%';
+                }
+                if (colCount == 5) {
+                    if (isFirstColSrNo) return '25%';
+                    return '20%';
+                }
+                if (colCount == 6) {
+                    if (isFirstColSrNo) return '20%';
+                    return '16%';
+                }
+                return 'auto';
+            }
+        }
+
+        public String w4 {
+            get {
+                if (colCount == 4) {
+                    if (isFirstColSrNo) return '35%';
+                    return '25%';
+                }
+                if (colCount == 5) {
+                    if (isFirstColSrNo) return '25%';
+                    return '20%';
+                }
+                if (colCount == 6) {
+                    if (isFirstColSrNo) return '25%';
+                    return '16%';
+                }
+                return 'auto';
+            }
+        }
+
+        public String w5 {
+            get {
+                if (colCount == 5) return '20%';
+                if (colCount == 6) {
+                    if (isFirstColSrNo) return '12%';
+                    return '16%';
+                }
+                return 'auto';
+            }
+        }
+
+        public String w6 {
+            get {
+                if (colCount == 6) {
+                    if (isFirstColSrNo) return '13%';
+                    return '20%';
+                }
+                return 'auto';
+            }
+        }
+
+        public String tableHtml {
+            get {
+                if (!isTable || tableRows == null || tableRows.isEmpty()) {
+                    return '';
+                }
+                Integer cols = colCount != null && colCount > 0 ? colCount : 2;
+                String spanStr = String.valueOf(cols);
+                List<String> widths = new List<String>();
+                if (colWidths != null && colWidths.size() >= cols) {
+                    widths = colWidths;
+                } else {
+                    widths.add(w1);
+                    if (cols >= 2) widths.add(w2);
+                    if (cols >= 3) widths.add(w3);
+                    if (cols >= 4) widths.add(w4);
+                    if (cols >= 5) widths.add(w5);
+                    if (cols >= 6) widths.add(w6);
+                    for (Integer i = 7; i <= cols; i++) {
+                        widths.add('auto');
+                    }
+                }
+
+                String extraTableStyle = (cols >= 8) ? ' font-size: 8px;' : '';
+                String h = '<table class="peb-spec-table"' + (String.isNotBlank(extraTableStyle) ? ' style="' + extraTableStyle + '"' : '') + '>';
+                if (hasHeaders) {
+                    h += '<thead><tr>';
+                    for (Integer c = 0; c < cols; c++) {
+                        String hdr = (tableHeaders != null && c < tableHeaders.size()) ? tableHeaders[c] : '';
+                        String w = (c < widths.size()) ? widths[c] : 'auto';
+                        String align = (cols >= 8) ? 'center' : ((c == 0 && (isProjectSummaryTable || isFirstColSrNo)) ? 'center' : (isProjectSummaryTable ? 'center' : 'left'));
+                        String hdrEsc = String.isNotBlank(hdr) ? hdr.escapeHtml4() : '&nbsp;';
+                        String thPad = (cols >= 8) ? 'padding: 3px 2px; font-size: 8px;' : '';
+                        h += '<th style="width: ' + w + '; text-align: ' + align + ';' + thPad + ' background-color: #f0f0f0; color: #000000; font-weight: bold;">' + hdrEsc + '</th>';
+                    }
+                    h += '</tr></thead>';
+                }
+                h += '<tbody>';
+                for (DocRow r : tableRows) {
+                    if (r.isSubHeader != null && r.isSubHeader) {
+                        String subText = String.isNotBlank(r.c1) ? r.c1.escapeHtml4() : '&nbsp;';
+                        h += '<tr class="subhead-row"><td colspan="' + spanStr + '" style="background-color: #f5f5f5; font-weight: bold; color: #000000;"><b>' + subText + '</b></td></tr>';
+                    } else {
+                        h += '<tr>';
+                        for (Integer c = 0; c < cols; c++) {
+                            Boolean skip = false;
+                            if (c == 0 && r.skipC1 == true) skip = true;
+                            else if (c == 1 && r.skipC2 == true) skip = true;
+                            else if (c == 2 && r.skipC3 == true) skip = true;
+                            else if (c == 3 && r.skipC4 == true) skip = true;
+                            else if (c == 4 && r.skipC5 == true) skip = true;
+                            else if (c == 5 && r.skipC6 == true) skip = true;
+                            else if (c == 6 && r.skipC7 == true) skip = true;
+                            else if (c == 7 && r.skipC8 == true) skip = true;
+                            else if (c == 8 && r.skipC9 == true) skip = true;
+                            else if (c == 9 && r.skipC10 == true) skip = true;
+                            if (skip) continue;
+
+                            String val = '';
+                            Integer rSpan = 1;
+                            Integer cSpan = 1;
+                            Boolean isBold = false;
+                            String alignOvr = '';
+
+                            if (c == 0) {
+                                val = r.c1;
+                                if (r.r1Span != null && r.r1Span > 1) rSpan = r.r1Span;
+                                if (r.c1Span != null && r.c1Span > 1) cSpan = r.c1Span;
+                                isBold = (r.isC1Bold == true);
+                                alignOvr = r.alignC1;
+                            } else if (c == 1) {
+                                val = r.c2;
+                                if (r.r2Span != null && r.r2Span > 1) rSpan = r.r2Span;
+                                if (r.c2Span != null && r.c2Span > 1) cSpan = r.c2Span;
+                                isBold = (r.isC2Bold == true);
+                                alignOvr = r.alignC2;
+                            } else if (c == 2) {
+                                val = r.c3;
+                                if (r.r3Span != null && r.r3Span > 1) rSpan = r.r3Span;
+                                if (r.c3Span != null && r.c3Span > 1) cSpan = r.c3Span;
+                                isBold = (r.isC3Bold == true);
+                                alignOvr = r.alignC3;
+                            } else if (c == 3) {
+                                val = r.c4;
+                                if (r.r4Span != null && r.r4Span > 1) rSpan = r.r4Span;
+                                if (r.c4Span != null && r.c4Span > 1) cSpan = r.c4Span;
+                                isBold = (r.isC4Bold == true);
+                                alignOvr = r.alignC4;
+                            } else if (c == 4) {
+                                val = r.c5;
+                                if (r.r5Span != null && r.r5Span > 1) rSpan = r.r5Span;
+                                if (r.c5Span != null && r.c5Span > 1) cSpan = r.c5Span;
+                                isBold = (r.isC5Bold == true);
+                                alignOvr = r.alignC5;
+                            } else if (c == 5) {
+                                val = r.c6;
+                                if (r.r6Span != null && r.r6Span > 1) rSpan = r.r6Span;
+                                if (r.c6Span != null && r.c6Span > 1) cSpan = r.c6Span;
+                                isBold = (r.isC6Bold == true);
+                                alignOvr = r.alignC6;
+                            } else if (c == 6) {
+                                val = r.c7;
+                                isBold = (r.isC7Bold == true);
+                                alignOvr = r.alignC7;
+                            } else if (c == 7) {
+                                val = r.c8;
+                                isBold = (r.isC8Bold == true);
+                                alignOvr = r.alignC8;
+                            } else if (c == 8) {
+                                val = r.c9;
+                                isBold = (r.isC9Bold == true);
+                                alignOvr = r.alignC9;
+                            } else if (c == 9) {
+                                val = r.c10;
+                                isBold = (r.isC10Bold == true);
+                                alignOvr = r.alignC10;
+                            }
+
+                            String w = (cSpan == 1 && c < widths.size()) ? 'width: ' + widths[c] + '; ' : '';
+                            String vAlign = (rSpan > 1) ? 'vertical-align: middle; ' : '';
+                            String align = (cols >= 8) ? 'center' : 'left';
+                            if (c == 0 && (isProjectSummaryTable || isFirstColSrNo)) align = 'center';
+                            else if (c == 1 && (isProjectSummaryTable || isProjectSummaryBox)) align = 'center';
+                            else if (c == 2 && isProjectSummaryTable) align = 'center';
+                            if (String.isNotBlank(alignOvr)) align = alignOvr;
+
+                            String tdAttrs = '';
+                            if (rSpan > 1) tdAttrs += ' rowspan="' + String.valueOf(rSpan) + '"';
+                            if (cSpan > 1) tdAttrs += ' colspan="' + String.valueOf(cSpan) + '"';
+
+                            String cellEsc = String.isNotBlank(val) ? val.escapeHtml4() : '&nbsp;';
+                            if (isBold && String.isNotBlank(val)) {
+                                cellEsc = '<b>' + cellEsc + '</b>';
+                            }
+                            String tdPad = (cols >= 8) ? 'padding: 3px 2px; font-size: 8.5px;' : '';
+                            h += '<td' + tdAttrs + ' style="' + w + vAlign + 'text-align: ' + align + ';' + tdPad + '">' + cellEsc + '</td>';
+                        }
+                        h += '</tr>';
+                    }
+                }
+                h += '</tbody></table>';
+                return h;
+            }
+        }
+    }
+
+    public class DocRow {
+        public String c1 { get; set; }
+        public String c2 { get; set; }
+        public String c3 { get; set; }
+        public String c4 { get; set; }
+        public String c5 { get; set; }
+        public String c6 { get; set; }
+        public String c7 { get; set; }
+        public String c8 { get; set; }
+        public String c9 { get; set; }
+        public String c10 { get; set; }
+        public Boolean isSubHeader { get; set; }
+
+        public Integer r1Span { get; set; }
+        public Integer r2Span { get; set; }
+        public Integer r3Span { get; set; }
+        public Integer r4Span { get; set; }
+        public Integer r5Span { get; set; }
+        public Integer r6Span { get; set; }
+
+        public Integer c1Span { get; set; }
+        public Integer c2Span { get; set; }
+        public Integer c3Span { get; set; }
+        public Integer c4Span { get; set; }
+        public Integer c5Span { get; set; }
+        public Integer c6Span { get; set; }
+
+        public Boolean skipC1 { get; set; }
+        public Boolean skipC2 { get; set; }
+        public Boolean skipC3 { get; set; }
+        public Boolean skipC4 { get; set; }
+        public Boolean skipC5 { get; set; }
+        public Boolean skipC6 { get; set; }
+        public Boolean skipC7 { get; set; }
+        public Boolean skipC8 { get; set; }
+        public Boolean skipC9 { get; set; }
+        public Boolean skipC10 { get; set; }
+
+        public Boolean isC1Bold { get; set; }
+        public Boolean isC2Bold { get; set; }
+        public Boolean isC3Bold { get; set; }
+        public Boolean isC4Bold { get; set; }
+        public Boolean isC5Bold { get; set; }
+        public Boolean isC6Bold { get; set; }
+        public Boolean isC7Bold { get; set; }
+        public Boolean isC8Bold { get; set; }
+        public Boolean isC9Bold { get; set; }
+        public Boolean isC10Bold { get; set; }
+
+        public String alignC1 { get; set; }
+        public String alignC2 { get; set; }
+        public String alignC3 { get; set; }
+        public String alignC4 { get; set; }
+        public String alignC5 { get; set; }
+        public String alignC6 { get; set; }
+        public String alignC7 { get; set; }
+        public String alignC8 { get; set; }
+        public String alignC9 { get; set; }
+        public String alignC10 { get; set; }
     }
 }

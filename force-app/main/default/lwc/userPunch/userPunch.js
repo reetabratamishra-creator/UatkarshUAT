@@ -1472,6 +1472,8 @@ export default class UserPunch extends LightningElement {
             this.dayActivityMeetings = '';
             this.dayActivityOpenNotes = '';
             this.showDayActivityModal = true;
+            // Same as the Check-In modal: keeps the form in view on mobile
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
 

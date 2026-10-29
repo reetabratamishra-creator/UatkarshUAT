@@ -228,11 +228,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Tender_Docoment_Details__c.Tender__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Tender_Docoment_Details__c.Type__c</field>
         <readable>true</readable>
     </fieldPermissions>

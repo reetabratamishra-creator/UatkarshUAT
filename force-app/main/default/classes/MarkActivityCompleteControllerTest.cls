@@ -11,8 +11,11 @@ private class MarkActivityCompleteControllerTest {
     static void setup() {
         insert as system new Lead(LastName = 'ActTest', Company = 'Acme',
                                   Status = 'Open - Not Contacted');
-        insert as system new Opportunity(Name = 'Act Opp', StageName = 'Prospecting',
-                                         CloseDate = Date.today().addDays(30));
+        Opportunity opp = new Opportunity(Name = 'Act Opp', StageName = 'Prospecting',
+                                          CloseDate = Date.today().addDays(30));
+        insert as system opp;
+        // The Create_Task_on_Opportunity_Creation flow adds an open Call; start each test without it.
+        delete as system [SELECT Id FROM Task WHERE WhatId = :opp.Id WITH SYSTEM_MODE];
     }
 
     private static Id leadId() { return [SELECT Id FROM Lead WITH SYSTEM_MODE LIMIT 1].Id; }

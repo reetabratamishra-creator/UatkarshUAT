@@ -256,46 +256,46 @@ private class BWM_WaCampPayloadATest {
     );
 
     Lead withPhone = new Lead(
-      LastName = 'Payload WA Lead',
-      Company = 'WA Test Co',
+      LastName = 'Payload WA Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'WA Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
       Department_Name__c = 'Enquiry',
-      Phone = '9876543233'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert withPhone;
+    insert as system withPhone;
     Lead noPhone = new Lead(
-      LastName = 'No Phone Lead',
-      Company = 'WA Test Co',
+      LastName = 'No Phone Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'WA Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
       Department_Name__c = 'Enquiry'
     );
-    insert noPhone;
-    Account accountRecord = new Account(Name = 'WA Acc', Phone = '9876543222');
-    insert accountRecord;
+    insert as system noPhone;
+    Account accountRecord = new Account(Name = 'WA Acc ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10));
+    insert as system accountRecord;
     Contact contactRecord = new Contact(
-      LastName = 'WA Contact',
+      LastName = 'WA Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
-      Phone = '9876543244'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert contactRecord;
+    insert as system contactRecord;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'WA Opp',
+      Name = 'WA Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
       StageName = 'Prospect',
       CloseDate = Date.today().addDays(30),
-      Phone__c = '9876543211',
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Department_Name__c = 'Enquiry'
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
     Offline_Campaign__c offlineRecord = new Offline_Campaign__c(
-      Name = 'WA Offline',
-      Phone__c = '9876543255',
+      Name = 'WA Offline ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'offline.wa@example.com',
       Department__c = 'Crash Barrier',
       Group_List__c = 'North Region List',
       Active__c = true
     );
-    insert offlineRecord;
+    insert as system offlineRecord;
 
     Test.startTest();
     LeadManagementWhatsAppService.SendWhatsAppResult leadResult =
@@ -338,11 +338,11 @@ private class BWM_WaCampPayloadATest {
       emptyThrew = true;
     }
     Lead leadRecord = new Lead(
-      LastName = 'Validation Lead',
-      Company = 'WA Test Co',
+      LastName = 'Validation Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'WA Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect'
     );
-    insert leadRecord;
+    insert as system leadRecord;
     Boolean blankThrew = false;
     try {
       BWM_WaCampSendA.sendToLeads(new List<Id>{ leadRecord.Id }, '');

@@ -3,10 +3,9 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>CREATED_DATE</columns>
-    <columns>Action__c</columns>
-    <columns>User__c</columns>
-    <columns>Status__c</columns>
     <columns>Punch_Type__c</columns>
+    <columns>Action__c</columns>
+    <columns>Punch_Out_Of__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

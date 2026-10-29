@@ -416,7 +416,11 @@ export default class QuoteRateCard extends LightningElement {
         "Galvanized Iron (GI)": 0.75,
         "Stainless Steel": 2.00,
         "RODTEP (%)": 0.45,
-        "Incentive (%)": 1.5
+        "Incentive (%)": 1.5,
+        "Light Series Delta (USD)": 0,
+        "Light Series Delta (EUR)": 0,
+        "Light Series Delta (GBP)": 0,
+        "Light Series Delta (AED)": 0
     };
 
     domesticWeightMap = {

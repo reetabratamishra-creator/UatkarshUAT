@@ -21,5 +21,5 @@ OwnerId &lt;&gt; $User.Id,
 ISPICKVAL(Status, &quot;Resolved&quot;)
 )
 )</errorConditionFormula>
-    <errorMessage>You do not have authority to update any field value after case is resolved</errorMessage>
+    <errorMessage>You do not have authority to update any field value.</errorMessage>
 </ValidationRule>

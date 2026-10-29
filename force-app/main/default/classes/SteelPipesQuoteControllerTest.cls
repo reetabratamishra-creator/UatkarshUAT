@@ -560,6 +560,9 @@ private class SteelPipesQuoteControllerTest {
         System.assertEquals(false, ctrl.hasStandardPipes, 'Standard pipes should be false for Core Only');
         System.assertEquals(0, ctrl.standardLineItems.size(), 'Standard line items should be cleared for Core Only');
         System.assertEquals(1, ctrl.coreLineItems.size(), 'Core line items should have 1 item');
+        System.assertEquals('360 GSM', ctrl.coreLineItems[0].get('zincCoating'), 'Zinc coating should default to 360 GSM');
+        System.assertEquals(1.9, ctrl.coreLineItems[0].get('kgPerMeter'), 'Kg per meter should default to 1.9 for small tube');
+        System.assertEquals('-', ctrl.coreLineItems[0].get('pipeLengthDisplay'), 'Pipe length display should be - when not set');
         System.assert(ctrl.coreTotalAmount > 0, 'Core total amount should be positive');
         System.assertEquals(ctrl.coreTotalAmount, ctrl.totalAmount, 'Total amount should equal core total amount');
         System.assert(ctrl.coreTotalFinal > 0, 'Core total final should be positive');

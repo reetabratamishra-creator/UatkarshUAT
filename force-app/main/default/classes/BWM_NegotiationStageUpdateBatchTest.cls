@@ -20,19 +20,19 @@ private class BWM_NegotiationStageUpdateBatchTest {
     );
 
     Account accountRecord = new Account(
-      Name = 'Negotiation Batch Account',
-      Phone = '6290459120'
+      Name = 'Negotiation Batch Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert accountRecord;
+    insert as system accountRecord;
 
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Negotiation Batch Opp',
+      Name = 'Negotiation Batch Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
       StageName = BWM_MessagingConstants.STAGE_NEGOTIATION,
       Sub_Stage__c = BWM_MessagingConstants.SUB_STAGE_ACTIVE,
       CloseDate = Date.today().addDays(30)
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
 
     Test.startTest();
     new BWM_NegotiationStageUpdateBatch()
@@ -54,12 +54,12 @@ private class BWM_NegotiationStageUpdateBatchTest {
   @IsTest
   static void testExecute_NonActiveSubStage_Skipped() {
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Negotiation Inactive Sub',
+      Name = 'Negotiation Inactive Sub ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       StageName = BWM_MessagingConstants.STAGE_NEGOTIATION,
       Sub_Stage__c = null,
       CloseDate = Date.today().addDays(30)
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
 
     Test.startTest();
     new BWM_NegotiationStageUpdateBatch()

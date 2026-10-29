@@ -935,14 +935,16 @@
 
     <!-- Day Activity Log (End WFH / WFO) -->
     <template if:true={showDayActivityModal}>
-        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-modal="true">
-            <div class="slds-modal__container up-day-activity-container">
-                <header class="slds-modal__header up-day-activity-header">
-                    <h2 class="slds-text-heading_medium">{dayActivityTitle}</h2>
-                    <p class="up-day-activity-subtitle">Day Activity Log</p>
-                </header>
-                <div class="slds-modal__content slds-p-around_medium up-day-activity-body">
-                    <div class="up-day-activity-field">
+        <section class="up-dal-backdrop" role="dialog" aria-modal="true">
+            <div class="up-dal-modal up-dal-pop-in">
+                <div class="up-dal-header">
+                    <h2>{dayActivityTitle}</h2>
+                    <button class="up-dal-close-btn" onclick={closeDayActivityModal} disabled={isSubmittingDayActivity} title="Close">
+                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    </button>
+                </div>
+                <div class="up-dal-body">
+                    <div class="up-dal-field">
                         <lightning-input
                             type="number"
                             min="0"
@@ -953,7 +955,7 @@
                             required>
                         </lightning-input>
                     </div>
-                    <div class="up-day-activity-field">
+                    <div class="up-dal-field">
                         <lightning-input
                             type="number"
                             min="0"
@@ -964,7 +966,7 @@
                             required>
                         </lightning-input>
                     </div>
-                    <div class="up-day-activity-field">
+                    <div class="up-dal-field">
                         <lightning-input
                             type="number"
                             min="0"
@@ -975,7 +977,7 @@
                             required>
                         </lightning-input>
                     </div>
-                    <div class="up-day-activity-field">
+                    <div class="up-dal-field">
                         <lightning-input
                             type="number"
                             min="0"
@@ -986,7 +988,7 @@
                             required>
                         </lightning-input>
                     </div>
-                    <div class="up-day-activity-field">
+                    <div class="up-dal-field">
                         <lightning-textarea
                             label="Open Notes"
                             value={dayActivityOpenNotes}
@@ -995,19 +997,14 @@
                         </lightning-textarea>
                     </div>
                 </div>
-                <footer class="slds-modal__footer up-day-activity-footer">
-                    <button class="up-btn-day-back" onclick={closeDayActivityModal} disabled={isSubmittingDayActivity}>
-                        BACK
+                <div class="up-dal-footer">
+                    <button class="up-dal-btn up-dal-btn-cancel" onclick={closeDayActivityModal} disabled={isSubmittingDayActivity}>Cancel</button>
+                    <button class="up-dal-btn up-dal-btn-save" onclick={submitDayActivityLog} disabled={isSubmittingDayActivity}>
+                        <template if:true={isSubmittingDayActivity}>Submitting...</template>
+                        <template if:false={isSubmittingDayActivity}>Submit</template>
                     </button>
-                    <button class="up-btn-day-submit" onclick={submitDayActivityLog} disabled={isSubmittingDayActivity}>
-                        <template if:true={isSubmittingDayActivity}>
-                            <lightning-spinner size="small" alternative-text="Submitting..."></lightning-spinner>
-                        </template>
-                        <span>SUBMIT</span>
-                    </button>
-                </footer>
+                </div>
             </div>
         </section>
-        <div class="slds-backdrop slds-backdrop_open" style="background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(8px);"></div>
     </template>
 </template>

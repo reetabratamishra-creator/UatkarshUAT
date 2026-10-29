@@ -89,6 +89,20 @@ public with sharing class ContactManagementController {
         }
     }
 
+    @AuraEnabled
+    public static BWM_CampaignEmailService.SendCampaignEmailResult sendContactCampaignEmailScheduled(
+        List<Id> contactIds,
+        String infobipTemplateId,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendContactCampaignEmail(contactIds, infobipTemplateId);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
+    }
+
     /**
      * @description Loads Bluewave/Infobip email template options for the Contact campaign UI.
      * @return List of TemplateOption values from BWM_InfobipEmailTemplateService.
@@ -123,6 +137,26 @@ public with sharing class ContactManagementController {
         String journeyName
     ) {
         return BWM_CampaignJourneyService.sendToContacts(contactIds, journeyName);
+    }
+
+    /**
+     * @description Starts the selected campaign journey at the given UTC schedule time.
+     * @param contactIds Contact Ids to enroll in the journey.
+     * @param journeyName Name of the journey definition to send.
+     * @param scheduledDateTime UTC timestamp yyyy-MM-ddTHH:mm:ssZ written to scheduledatetime.
+     * @return SendJourneyResult from BWM_CampaignJourneyService.
+     */
+    @AuraEnabled
+    public static BWM_JourneyDefinitionService.SendJourneyResult sendContactJourneyScheduled(
+        List<Id> contactIds,
+        String journeyName,
+        String scheduledDateTime
+    ) {
+        return BWM_CampaignJourneyService.sendToContacts(
+            contactIds,
+            journeyName,
+            scheduledDateTime
+        );
     }
 
     /**
@@ -171,6 +205,20 @@ public with sharing class ContactManagementController {
         return ContactManagementRcsService.sendToContacts(contactIds, templateName);
     }
 
+    @AuraEnabled
+    public static ContactManagementRcsService.SendRcsResult sendContactRcsScheduled(
+        List<Id> contactIds,
+        String templateName,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendContactRcs(contactIds, templateName);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
+    }
+
     /**
      * @description Loads approved SMS template options for Contact campaign sends.
      * @return List of SmsTemplateOption values.
@@ -192,6 +240,20 @@ public with sharing class ContactManagementController {
         String templateName
     ) {
         return ContactManagementSmsService.sendToContacts(contactIds, templateName);
+    }
+
+    @AuraEnabled
+    public static ContactManagementSmsService.SendSmsResult sendContactSmsScheduled(
+        List<Id> contactIds,
+        String templateName,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendContactSms(contactIds, templateName);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
     }
 
     private static List<PicklistOption> getPicklistOptions(Schema.SObjectField fieldToken) {

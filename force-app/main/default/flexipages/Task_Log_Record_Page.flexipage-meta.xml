@@ -408,6 +408,36 @@
                 <identifier>RecordIs_schedule_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.isRescheduled__c</fieldItem>
+                <identifier>RecordisRescheduled_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.isCancelled__c</fieldItem>
+                <identifier>RecordisCancelled_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>readonly</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.IsCheckout__c</fieldItem>
+                <identifier>RecordIsCheckout_cField2</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-3ee86577-af14-489e-97ce-b44835e953ac</name>
         <type>Facet</type>
     </flexiPageRegions>

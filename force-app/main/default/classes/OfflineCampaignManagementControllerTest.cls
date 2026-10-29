@@ -11,23 +11,23 @@ private class OfflineCampaignManagementControllerTest {
    */
   @TestSetup
   static void setupCommonData() {
-    insert new List<Offline_Campaign__c>{
+    insert as system new List<Offline_Campaign__c>{
       new Offline_Campaign__c(
-        Name = 'Offline Test',
-        Phone__c = '9876543210',
+        Name = 'Offline Test ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
         Email__c = 'offline.test@example.com',
         Department__c = 'Crash Barrier',
         Active__c = true
       ),
       new Offline_Campaign__c(
-        Name = 'Offline Inactive',
-        Phone__c = '9876543210',
+        Name = 'Offline Inactive ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
         Email__c = 'inactive@example.com',
         Department__c = 'Crash Barrier',
         Active__c = false
       ),
       new Offline_Campaign__c(
-        Name = 'Offline No Phone',
+        Name = 'Offline No Phone ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
         Email__c = 'offline.nophone@example.com',
         Department__c = 'Enquiry',
         Active__c = true
@@ -43,14 +43,14 @@ private class OfflineCampaignManagementControllerTest {
     Test.startTest();
     List<Offline_Campaign__c> results = OfflineCampaignManagementController.searchOfflineCampaigns(
       'Offline Test',
-      '9876',
+      '9123',
       'offline.test',
       'Crash'
     );
     Test.stopTest();
 
     System.assertEquals(1, results.size());
-    System.assertEquals('Offline Test', results[0].Name);
+    System.assert(results[0].Name.startsWith('Offline Test'));
   }
 
   /**
@@ -69,7 +69,7 @@ private class OfflineCampaignManagementControllerTest {
     Offline_Campaign__c offlineRecord = [
       SELECT Id
       FROM Offline_Campaign__c
-      WHERE Name = 'Offline Test'
+      WHERE Name LIKE 'Offline Test%'
       LIMIT 1
     ];
 
@@ -92,13 +92,13 @@ private class OfflineCampaignManagementControllerTest {
     Offline_Campaign__c withPhone = [
       SELECT Id
       FROM Offline_Campaign__c
-      WHERE Name = 'Offline Test'
+      WHERE Name LIKE 'Offline Test%'
       LIMIT 1
     ];
     Offline_Campaign__c noPhone = [
       SELECT Id
       FROM Offline_Campaign__c
-      WHERE Name = 'Offline No Phone'
+      WHERE Name LIKE 'Offline No Phone%'
       LIMIT 1
     ];
     BWM_DirectWaCampaignSend.clearCache();
@@ -153,7 +153,7 @@ private class OfflineCampaignManagementControllerTest {
     Offline_Campaign__c offlineRecord = [
       SELECT Id
       FROM Offline_Campaign__c
-      WHERE Name = 'Offline Test'
+      WHERE Name LIKE 'Offline Test%'
       LIMIT 1
     ];
 
@@ -218,11 +218,11 @@ private class OfflineCampaignManagementControllerTest {
     Offline_Campaign__c offlineRecord = [
       SELECT Id
       FROM Offline_Campaign__c
-      WHERE Name = 'Offline Test'
+      WHERE Name LIKE 'Offline Test%'
       LIMIT 1
     ];
-    offlineRecord.Phone__c = '9000011112';
-    update offlineRecord;
+    offlineRecord.Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10);
+    update as system offlineRecord;
     Test.setMock(
       HttpCalloutMock.class,
       new BWM_MessagingCalloutMock(
@@ -287,5 +287,96 @@ private class OfflineCampaignManagementControllerTest {
 
     System.assert(unfiltered.size() >= 1);
     System.assertEquals(true, emailThrew);
+  }
+
+  @IsTest
+  static void testSendOfflineCampaignRcsAndSms() {
+    BWM_RcsDirectPayloadBuilder.cacheTemplates(
+      new List<Object>{
+        new Map<String, Object>{ 'TemplateName' => 'cov_tmpl', 'templateText' => 'Hello' }
+      }
+    );
+    BWM_SmsDirectPayloadBuilder.cacheTemplates(
+      new List<Object>{
+        new Map<String, Object>{
+          'templateName' => 'cov_tmpl',
+          'dltTemplateId' => 'DLT1',
+          'templateText' => 'Hi {#var#}'
+        }
+      }
+    );
+    Test.setMock(
+      HttpCalloutMock.class,
+      new BWM_MessagingCalloutMock(
+        '{"code":"200","message":"ok"}',
+        '{"code":"200","message":"ok"}',
+        '{"code":"200","message":"ok"}'
+      )
+    );
+    Offline_Campaign__c withPhone = [
+      SELECT Id FROM Offline_Campaign__c WHERE Name LIKE 'Offline Test%' LIMIT 1
+    ];
+    Offline_Campaign__c noPhone = [
+      SELECT Id FROM Offline_Campaign__c WHERE Name LIKE 'Offline No Phone%' LIMIT 1
+    ];
+
+    Test.startTest();
+    OfflineCampaignManagementRcsService.SendRcsResult rcsOk =
+      OfflineCampaignManagementController.sendOfflineCampaignRcs(
+        new List<Id>{ withPhone.Id },
+        'cov_tmpl'
+      );
+    OfflineCampaignManagementSmsService.SendSmsResult smsOk =
+      OfflineCampaignManagementController.sendOfflineCampaignSms(
+        new List<Id>{ withPhone.Id },
+        'cov_tmpl'
+      );
+    OfflineCampaignManagementRcsService.SendRcsResult rcsSkip =
+      OfflineCampaignManagementController.sendOfflineCampaignRcs(
+        new List<Id>{ noPhone.Id },
+        'cov_tmpl'
+      );
+    Boolean emptyThrew = false;
+    try {
+      OfflineCampaignManagementController.sendOfflineCampaignSms(new List<Id>(), 'cov_tmpl');
+    } catch (Exception ex) {
+      emptyThrew = true;
+    }
+    Test.stopTest();
+
+    System.assertNotEquals(null, rcsOk);
+    System.assertNotEquals(null, smsOk);
+    System.assertEquals(1, rcsSkip.skippedCount);
+    System.assertEquals(true, emptyThrew);
+  }
+
+  @IsTest
+  static void testScheduledSends_RequireSelectionAndClearSchedule() {
+    Integer threwCount = 0;
+    Test.startTest();
+    try {
+      OfflineCampaignManagementController.sendOfflineCampaignJourneyScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      OfflineCampaignManagementController.sendOfflineCampaignRcsScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      OfflineCampaignManagementController.sendOfflineCampaignSmsScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      OfflineCampaignManagementController.sendOfflineCampaignEmailScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    Test.stopTest();
+
+    System.assertEquals(4, threwCount, 'Each scheduled send needs at least one record.');
+    System.assertEquals(null, BWM_CampaignScheduleContext.scheduledDateTime, 'Schedule must be cleared after the send.');
   }
 }

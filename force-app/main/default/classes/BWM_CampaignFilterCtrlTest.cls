@@ -2,10 +2,10 @@
 private class BWM_CampaignFilterCtrlTest {
     @TestSetup
     static void setupData() {
-        insert new List<Lead>{
+        insert as system new List<Lead>{
             new Lead(
-                LastName = 'Filter Lead',
-                Company = 'Filter Co',
+                LastName = 'Filter Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+                Company = 'Filter Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
                 Status = 'Prospect',
                 Department_Name__c = 'Crash Barrier',
                 Country__c = 'India',
@@ -14,26 +14,26 @@ private class BWM_CampaignFilterCtrlTest {
         };
 
         Account accountRecord = new Account(
-            Name = 'Filter Account',
+            Name = 'Filter Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
             Phone = '9876543210',
             Email__c = 'filter.account@example.com',
             Department_Name__c = 'Crash Barrier',
             Country__c = 'India',
             State__c = 'Maharashtra'
         );
-        insert accountRecord;
+        insert as system accountRecord;
 
-        insert new Contact(
-            LastName = 'Filter Contact',
+        insert as system new Contact(
+            LastName = 'Filter Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
             AccountId = accountRecord.Id,
-            Email = 'filter.contact@example.com',
+            Email = 'filter.contact+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com',
             Phone = '9876543211',
             Country__c = 'India',
             State__c = 'Karnataka'
         );
 
-        insert new Opportunity(
-            Name = 'Filter Opportunity',
+        insert as system new Opportunity(
+            Name = 'Filter Opportunity ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
             StageName = 'Nurture',
             CloseDate = Date.today().addDays(30),
             Department_Name__c = 'Crash Barrier',
@@ -41,9 +41,9 @@ private class BWM_CampaignFilterCtrlTest {
             State__c = 'Delhi'
         );
 
-        insert new Offline_Campaign__c(
-            Name = 'Filter Offline Campaign',
-            Phone__c = '9876543210',
+        insert as system new Offline_Campaign__c(
+            Name = 'Filter Offline Campaign ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+            Phone__c = '9876543212',
             Email__c = 'filter.offline@example.com',
             Department__c = 'Crash Barrier',
             Group_List__c = 'North Region List',
@@ -69,6 +69,34 @@ private class BWM_CampaignFilterCtrlTest {
         System.assertNotEquals(null, BWM_CampaignFilterCtrl.getAccountDepartmentOptions());
         System.assertNotEquals(null, BWM_CampaignFilterCtrl.getOfflineCampaignDepartmentOptions());
         Test.stopTest();
+    }
+
+    @IsTest
+    static void searchLeadsIncludesQualifiedStage() {
+        insert as system new Lead(
+            LastName = 'Qualified Filter Lead',
+            Company = 'Qualified Co',
+            Status = 'Qualified',
+            Department_Name__c = 'Crash Barrier'
+        );
+
+        Test.startTest();
+        List<Lead> leads = BWM_CampaignFilterCtrl.searchLeads(
+            'Qualified Filter',
+            new List<String>{ 'Qualified' },
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
+        Test.stopTest();
+
+        System.assertEquals(1, leads.size());
+        System.assertEquals('Qualified', leads[0].Status);
     }
 
     @IsTest
@@ -132,8 +160,8 @@ private class BWM_CampaignFilterCtrlTest {
 
     @IsTest
     static void searchOfflineCampaignsUsesExactGroupListMatch() {
-        insert new Offline_Campaign__c(
-            Name = 'Exact Group Match',
+        insert as system new Offline_Campaign__c(
+            Name = 'Exact Group Match ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
             Group_List__c = 'test 1',
             Active__c = true
         );

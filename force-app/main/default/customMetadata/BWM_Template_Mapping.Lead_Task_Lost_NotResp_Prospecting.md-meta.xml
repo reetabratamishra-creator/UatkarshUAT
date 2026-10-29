@@ -88,7 +88,7 @@
     </values>
     <values>
         <field>RCS_Template_Name__c</field>
-        <value xsi:type="xsd:string">Prospecting_nt_resp</value>
+        <value xsi:type="xsd:string">pr_not_resp_lost_gen</value>
     </values>
     <values>
         <field>Recipient_Type__c</field>

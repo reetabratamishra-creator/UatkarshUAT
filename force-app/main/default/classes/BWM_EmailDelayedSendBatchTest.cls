@@ -15,7 +15,7 @@ private class BWM_EmailDelayedSendBatchTest {
     scheduled.Status__c = BWM_EmailConstants.SCHEDULE_STATUS_PENDING;
     scheduled.Process_After__c = System.now().addMinutes(-5);
     scheduled.Trigger_Point__c = BWM_EmailConstants.TRIGGER_LEAD_TASK_LOST_DETAILS_PROSPECTING_DELAYED;
-    insert scheduled;
+    insert as system scheduled;
 
     Test.startTest();
     new BWM_EmailDelayedSendBatch()
@@ -39,17 +39,17 @@ private class BWM_EmailDelayedSendBatchTest {
     BWM_EmailLeadTriggerHandler.skipEnqueueForTests = true;
 
     Lead leadRecord = new Lead(
-      LastName = 'Ineligible Delayed Lead',
-      Company = 'Delayed Co',
-      Company_Name__c = 'Delayed Co',
+      LastName = 'Ineligible Delayed Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Delayed Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company_Name__c = 'Delayed Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       LeadSource = 'INBOUND EMAIL',
       Status = 'Prospecting',
       Department_Name__c = 'Steel Pipes',
-      Phone = '9876543301',
-      Email = 'ineligible.delayed@example.com',
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'ineligible.delayed+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com',
       Lost_Reason__c = BWM_EmailConstants.LOST_REASON_DETAILS_NOT_RECEIVED
     );
-    insert leadRecord;
+    insert as system leadRecord;
 
     BWM_Email_Scheduled_Send__c scheduled = new BWM_Email_Scheduled_Send__c();
     scheduled.Lead__c = leadRecord.Id;
@@ -57,10 +57,10 @@ private class BWM_EmailDelayedSendBatchTest {
     scheduled.Trigger_Point__c = BWM_EmailConstants.TRIGGER_LEAD_TASK_LOST_DETAILS_PROSPECTING_DELAYED;
     scheduled.Process_After__c = System.now().addMinutes(-5);
     scheduled.Status__c = BWM_EmailConstants.SCHEDULE_STATUS_PENDING;
-    insert scheduled;
+    insert as system scheduled;
 
     leadRecord.Lost_Reason__c = null;
-    update leadRecord;
+    update as system leadRecord;
 
     Test.startTest();
     new BWM_EmailDelayedSendBatch()
@@ -89,17 +89,17 @@ private class BWM_EmailDelayedSendBatchTest {
     BWM_EmailLeadTriggerHandler.skipEnqueueForTests = true;
 
     Lead leadRecord = new Lead(
-      LastName = 'Delayed Email Lead',
-      Company = 'Delayed Co',
-      Company_Name__c = 'Delayed Co',
+      LastName = 'Delayed Email Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Delayed Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company_Name__c = 'Delayed Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       LeadSource = 'INBOUND EMAIL',
       Status = 'Prospecting',
       Department_Name__c = 'Steel Pipes',
-      Phone = '9876543300',
-      Email = 'delayed.email@example.com',
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'delayed.email+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com',
       Lost_Reason__c = BWM_EmailConstants.LOST_REASON_DETAILS_NOT_RECEIVED
     );
-    insert leadRecord;
+    insert as system leadRecord;
 
     BWM_Email_Scheduled_Send__c scheduled = new BWM_Email_Scheduled_Send__c();
     scheduled.Lead__c = leadRecord.Id;
@@ -107,7 +107,7 @@ private class BWM_EmailDelayedSendBatchTest {
     scheduled.Trigger_Point__c = BWM_EmailConstants.TRIGGER_LEAD_TASK_LOST_DETAILS_PROSPECTING_DELAYED;
     scheduled.Process_After__c = System.now().addMinutes(-5);
     scheduled.Status__c = BWM_EmailConstants.SCHEDULE_STATUS_PENDING;
-    insert scheduled;
+    insert as system scheduled;
 
     Test.startTest();
     new BWM_EmailDelayedSendBatch()
@@ -131,10 +131,10 @@ private class BWM_EmailDelayedSendBatchTest {
    */
   @IsTest
   static void testExecute_OpportunityNoLongerEligible_CancelsScheduledSend() {
-    Account accountRecord = new Account(Name = 'Delayed Opp Account');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'Delayed Opp Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())));
+    insert as system accountRecord;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Delayed Opp',
+      Name = 'Delayed Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
       StageName = BWM_EmailConstants.STAGE_NURTURE,
       CloseDate = Date.today().addDays(30),
@@ -142,7 +142,7 @@ private class BWM_EmailDelayedSendBatchTest {
       Lost_Reason__c = BWM_EmailConstants.LOST_REASON_DETAILS_NOT_RECEIVED,
       Email__c = 'delayed.opp@example.com'
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
 
     BWM_Email_Scheduled_Send__c scheduled = new BWM_Email_Scheduled_Send__c();
     scheduled.Opportunity__c = opportunityRecord.Id;
@@ -150,10 +150,10 @@ private class BWM_EmailDelayedSendBatchTest {
     scheduled.Trigger_Point__c = BWM_EmailConstants.TRIGGER_OPP_LOST_DETAILS_NURTURE_DELAYED;
     scheduled.Process_After__c = System.now().addMinutes(-5);
     scheduled.Status__c = BWM_EmailConstants.SCHEDULE_STATUS_PENDING;
-    insert scheduled;
+    insert as system scheduled;
 
     opportunityRecord.Lost_Reason__c = null;
-    update opportunityRecord;
+    update as system opportunityRecord;
 
     Test.startTest();
     new BWM_EmailDelayedSendBatch()

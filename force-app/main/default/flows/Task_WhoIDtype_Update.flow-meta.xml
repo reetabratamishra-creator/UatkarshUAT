@@ -5,17 +5,31 @@
     <decisions>
         <name>Opportunity_or_Case</name>
         <label>Opportunity or Case?</label>
-        <locationX>413</locationX>
-        <locationY>316</locationY>
+        <locationX>464</locationX>
+        <locationY>313</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Opportunity</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.WhatId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.WhatId</leftValueReference>
                 <operator>StartsWith</operator>
                 <rightValue>
                     <stringValue>006</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.TaskSubtype</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Email</stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -28,6 +42,13 @@
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.WhatId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.WhatId</leftValueReference>
                 <operator>StartsWith</operator>
                 <rightValue>
                     <stringValue>500</stringValue>
@@ -38,8 +59,38 @@
             </connector>
             <label>Case</label>
         </rules>
+        <rules>
+            <name>Lead</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.WhoId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.WhoId</leftValueReference>
+                <operator>StartsWith</operator>
+                <rightValue>
+                    <stringValue>00Q</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.TaskSubtype</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Email</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_the_related_lead</targetReference>
+            </connector>
+            <label>Lead</label>
+        </rules>
     </decisions>
-    <description>created from v1: WhoIdType for Opportunity and Case</description>
+    <description>Created from v7: Guard added for email subtype tasks to be excluded on leads
+Created from V2 : Added element to populate follow up datetime and follow up remark on lead</description>
     <environments>Default</environments>
     <interviewLabel>Task WhoIDtype Update {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Task WhoIDtype Update</label>
@@ -63,9 +114,43 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordUpdates>
+        <name>Update_the_related_lead</name>
+        <label>Update the related lead</label>
+        <locationX>50</locationX>
+        <locationY>484</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.WhoId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Prospect</stringValue>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Follow_Up_Date_Time__c</field>
+            <value>
+                <elementReference>$Record.Follow_Up_Date_Time__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Remarks_for_Follow_up__c</field>
+            <value>
+                <elementReference>$Record.Description</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Lead</object>
+    </recordUpdates>
+    <recordUpdates>
         <name>update_whoIdType_Case</name>
         <label>update whoIdType Case</label>
-        <locationX>271</locationX>
+        <locationX>330</locationX>
         <locationY>577</locationY>
         <inputAssignments>
             <field>Who_ID_Type__c</field>
@@ -78,8 +163,8 @@
     <recordUpdates>
         <name>update_whoIdType_Opportunity</name>
         <label>update whoIdType Opportunity</label>
-        <locationX>734</locationX>
-        <locationY>552</locationY>
+        <locationX>861</locationX>
+        <locationY>511</locationY>
         <inputAssignments>
             <field>Who_ID_Type__c</field>
             <value>
@@ -89,14 +174,21 @@
         <inputReference>$Record</inputReference>
     </recordUpdates>
     <start>
-        <locationX>609</locationX>
-        <locationY>48</locationY>
+        <locationX>790</locationX>
+        <locationY>47</locationY>
         <connector>
             <targetReference>Opportunity_or_Case</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
+        <filterLogic>or</filterLogic>
         <filters>
             <field>WhatId</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>WhoId</field>
             <operator>IsNull</operator>
             <value>
                 <booleanValue>false</booleanValue>

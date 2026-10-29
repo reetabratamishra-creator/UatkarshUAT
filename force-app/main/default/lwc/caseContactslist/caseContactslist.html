@@ -1,0 +1,75 @@
+<template>
+    <article class="slds-card slds-card_boundary">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name={iconName} size="small" alternative-text={cardTitle}></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="card-title slds-text-heading_medium">{titleWithCount}</span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+
+        <div class="slds-card__body slds-is-relative">
+            <template lwc:if={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+
+            <template lwc:if={error}>
+                <div class="slds-text-color_error slds-p-horizontal_medium slds-p-bottom_small">{error}</div>
+            </template>
+
+            <template lwc:if={isEmpty}>
+                <div class="slds-text-color_weak slds-p-horizontal_medium slds-p-bottom_small">
+                    No case contacts to display.
+                </div>
+            </template>
+
+            <template lwc:if={hasRows}>
+                <div class="table-wrapper">
+                    <div class="scroll-container">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Case Contact: Case Contacts Name">Case Contact: Case Contacts Name</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Phone">Phone</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Email">Email</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={rows} for:item="row">
+                                    <tr key={row.recordId} class="slds-hint-parent">
+                                        <th scope="row">
+                                            <div class="slds-truncate" title={row.name}>
+                                                <a href={row.recordUrl} data-id={row.recordId} onclick={handleNavigate}>{row.name}</a>
+                                            </div>
+                                        </th>
+                                        <td>
+                                            <div class="slds-truncate" title={row.phone}>{row.phone}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-truncate" title={row.email}>
+                                                <template lwc:if={row.email}>
+                                                    <a href={row.emailHref}>{row.email}</a>
+                                                </template>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </article>
+</template>

@@ -275,6 +275,20 @@ public with sharing class DealerOpportunityManagementController {
         }
     }
 
+    @AuraEnabled
+    public static BWM_CampaignEmailService.SendCampaignEmailResult sendOpportunityCampaignEmailScheduled(
+        List<Id> opportunityIds,
+        String infobipTemplateId,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendOpportunityCampaignEmail(opportunityIds, infobipTemplateId);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
+    }
+
     /**
      * @description Loads Bluewave/Infobip email template options for the Opportunity campaign UI.
      * @return List of TemplateOption values from BWM_InfobipEmailTemplateService.
@@ -311,6 +325,26 @@ public with sharing class DealerOpportunityManagementController {
         return BWM_CampaignJourneyService.sendToOpportunities(
             opportunityIds,
             journeyName
+        );
+    }
+
+    /**
+     * @description Starts the selected campaign journey at the given UTC schedule time.
+     * @param opportunityIds Opportunity Ids to enroll in the journey.
+     * @param journeyName Name of the journey definition to send.
+     * @param scheduledDateTime UTC timestamp yyyy-MM-ddTHH:mm:ssZ written to scheduledatetime.
+     * @return SendJourneyResult from BWM_CampaignJourneyService.
+     */
+    @AuraEnabled
+    public static BWM_JourneyDefinitionService.SendJourneyResult sendOpportunityJourneyScheduled(
+        List<Id> opportunityIds,
+        String journeyName,
+        String scheduledDateTime
+    ) {
+        return BWM_CampaignJourneyService.sendToOpportunities(
+            opportunityIds,
+            journeyName,
+            scheduledDateTime
         );
     }
 
@@ -392,6 +426,20 @@ public with sharing class DealerOpportunityManagementController {
         );
     }
 
+    @AuraEnabled
+    public static DealerOpportunityRcsService.SendRcsResult sendOpportunityRcsScheduled(
+        List<Id> opportunityIds,
+        String templateName,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendOpportunityRcs(opportunityIds, templateName);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
+    }
+
     /**
      * @description Loads approved SMS template options for Opportunity campaign sends.
      * @return List of SmsTemplateOption values.
@@ -416,6 +464,20 @@ public with sharing class DealerOpportunityManagementController {
             opportunityIds,
             templateName
         );
+    }
+
+    @AuraEnabled
+    public static DealerOpportunitySmsService.SendSmsResult sendOpportunitySmsScheduled(
+        List<Id> opportunityIds,
+        String templateName,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendOpportunitySms(opportunityIds, templateName);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
     }
 
     /**

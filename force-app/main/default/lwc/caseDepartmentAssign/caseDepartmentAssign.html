@@ -27,16 +27,9 @@
                     <dd class="slds-dl_horizontal__detail">{currentOwnerName}</dd>
                 </dl>
 
-                <lightning-combobox
-                    name="department"
-                    label="Department"
-                    placeholder="Select a department"
-                    options={departments}
-                    value={selectedDepartment}
-                    onchange={handleDepartmentChange}
-                    required
-                    disabled={isSaving}
-                    class="slds-m-bottom_small">
+                <lightning-combobox name="department" label="Department" placeholder="Select a department"
+                    options={departments} value={selectedDepartment} onchange={handleDepartmentChange} required
+                    disabled={isSaving} class="slds-m-bottom_small">
                 </lightning-combobox>
 
                 <template lwc:if={isLoadingUsers}>
@@ -46,16 +39,57 @@
                 </template>
 
                 <template lwc:if={showUserPicker}>
-                    <lightning-combobox
-                        name="assignee"
-                        label="Assign to"
-                        placeholder="Select a user"
-                        options={users}
-                        value={selectedUserId}
-                        onchange={handleUserChange}
-                        required
-                        disabled={isSaving}>
-                    </lightning-combobox>
+                    <div class="slds-form-element slds-combobox_container">
+                        <label class="slds-form-element__label" for="assignee-search">
+            <abbr class="slds-required" title="required">*</abbr> Assign to
+        </label>
+                        <div class="slds-form-element__control">
+                            <div class={comboboxClass}>
+                                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                                    role="none">
+                                    <input
+                        id="assignee-search"
+                        type="text"
+                        class="slds-input slds-combobox__input"
+                        placeholder="Search or select a user"
+                        autocomplete="off"
+                        role="combobox"
+                        aria-expanded={isDropdownOpen}
+                        value={searchDisplayValue}
+                        disabled={isSaving}
+                        onfocus={handleSearchFocus}
+                        oninput={handleSearchInput}
+                        onblur={handleSearchBlur} />
+                                    <lightning-icon class="slds-icon slds-input__icon slds-input__icon_right"
+                                        icon-name="utility:search" size="x-small">
+                                    </lightning-icon>
+                                </div>
+
+                                <template lwc:if={isDropdownOpen}>
+                                    <div class="slds-m-top_xx-small slds-theme_default"
+                                        style="width:100%; max-height:180px; overflow-y:auto; border:1px solid #c9c9c9; border-radius:0.25rem; box-shadow:0 2px 3px 0 rgba(0,0,0,0.16);"
+                                        role="listbox" onmousedown={preventBlur}>
+                                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                            <template for:each={filteredUsers} for:item="user">
+                                                <li key={user.value} role="presentation" class="slds-listbox__item">
+                                                    <div class="slds-listbox__option slds-listbox__option_plain slds-p-vertical_x-small slds-p-horizontal_small"
+                                                        role="option" style="cursor:pointer;" data-value={user.value}
+                                                        data-label={user.label} onmousedown={handleUserSelect}>
+                                                        {user.label}
+                                                    </div>
+                                                </li>
+                                            </template>
+                                            <template lwc:if={noSearchResults}>
+                                                <li class="slds-listbox__item slds-p-around_small slds-text-color_weak">
+                                                    No matching users found
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
                 </template>
 
                 <template lwc:if={showNoUsers}>
@@ -74,17 +108,11 @@
         </template>
 
         <div slot="footer">
-            <lightning-button
-                label="Cancel"
-                onclick={handleClose}>
+            <lightning-button label="Cancel" onclick={handleClose}>
             </lightning-button>
             <template lwc:if={showForm}>
-                <lightning-button
-                    class="slds-m-left_x-small"
-                    variant="brand"
-                    label="Assign case"
-                    disabled={saveDisabled}
-                    onclick={handleSave}>
+                <lightning-button class="slds-m-left_x-small" variant="brand" label="Assign case"
+                    disabled={saveDisabled} onclick={handleSave}>
                 </lightning-button>
             </template>
         </div>

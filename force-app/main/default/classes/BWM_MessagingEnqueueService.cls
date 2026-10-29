@@ -14,6 +14,18 @@ public without sharing class BWM_MessagingEnqueueService {
       return;
     }
 
+    if (
+      FeatureManagement.checkPermission(BWM_EmailEnqueueService.BYPASS_PERMISSION)
+    ) {
+      System.debug(
+        LoggingLevel.WARN,
+        'BWM messaging skipped: running user has ' +
+          BWM_EmailEnqueueService.BYPASS_PERMISSION +
+          '.'
+      );
+      return;
+    }
+
     if (Limits.getQueueableJobs() < Limits.getLimitQueueableJobs()) {
       System.enqueueJob(new BWM_MessagingQueueable(requests));
       return;

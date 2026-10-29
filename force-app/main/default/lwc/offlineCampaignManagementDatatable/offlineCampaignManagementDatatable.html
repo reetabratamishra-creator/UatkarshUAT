@@ -1,102 +1,62 @@
 <template>
     <lightning-card title="Offline Campaign" icon-name="standard:campaign">
-        <div slot="actions">
-            <template if:true={hasSelection}>
-                <lightning-button
-                    label="Send Campaign Email"
-                    icon-name="utility:world"
-                    onclick={handleSendBluewaveEmail}
-                    class="slds-m-right_x-small"
-                ></lightning-button>
-                <lightning-button
-                    label="Send WhatsApp Campaign"
-                    icon-name="utility:chat"
-                    onclick={handleSendCustomerJourney}
-                    class="slds-m-right_x-small"
-                ></lightning-button>
-                <lightning-button
-                    label="Send RCS"
-                    icon-name="utility:comments"
-                    onclick={handleSendRcs}
-                    class="slds-m-right_x-small"
-                ></lightning-button>
-                <lightning-button
-                    label="Send SMS"
-                    icon-name="utility:text"
-                    onclick={handleSendSms}
-                    class="slds-m-right_x-small"
-                ></lightning-button>
-                <lightning-button
-                    label="Send Journey"
-                    icon-name="utility:trail"
-                    onclick={handleSendJourney}
-                ></lightning-button>
-            </template>
-        </div>
-
-        <div class="slds-m-around_medium">
-                        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
-                <div class="slds-col slds-size_1-of-3">
-                    <lightning-input
-                        type="search"
-                        label="Search by Offline Campaign Name"
-                        value={searchTerm}
-                        onchange={handleSearchChange}
-                    ></lightning-input>
+        <div class="workspace">
+            <aside class="filters">
+                <div class="filters__head">
+                    <span class="filters__title">Filters</span>
+                    <button type="button" class="filters__reset" onclick={handleResetFilters}>Reset</button>
                 </div>
-                <div class="slds-col slds-size_1-of-3">
-                    <lightning-input
-                        type="search"
-                        label="Phone"
-                        value={phoneFilter}
-                        onchange={handlePhoneFilterChange}
-                    ></lightning-input>
+                <lightning-input type="search" label="Name" placeholder="Offline campaign name" value={searchTerm} onchange={handleSearchChange}></lightning-input>
+                <div class="filter-block">
+                    <lightning-input type="search" label="Phone" value={phoneFilter} onchange={handlePhoneFilterChange}></lightning-input>
                 </div>
-                <div class="slds-col slds-size_1-of-3">
-                    <lightning-input
-                        type="search"
-                        label="Email"
-                        value={emailFilter}
-                        onchange={handleEmailFilterChange}
-                    ></lightning-input>
+                <div class="filter-block">
+                    <lightning-input type="search" label="Email" value={emailFilter} onchange={handleEmailFilterChange}></lightning-input>
                 </div>
-                <div class="slds-col slds-size_1-of-3">
-                    <c-campaign-checkbox-multi-select
-                        label="Department"
-                        options={departmentOptions}
-                        value={selectedDepartments}
-                        onchange={handleDepartmentSelection}
-                    ></c-campaign-checkbox-multi-select>
+                <div class="filter-block">
+                    <c-campaign-checkbox-multi-select label="Department" options={departmentOptions} value={selectedDepartments} onchange={handleDepartmentSelection}></c-campaign-checkbox-multi-select>
                 </div>
-                <div class="slds-col slds-size_1-of-3">
-                    <lightning-input
-                        type="search"
-                        label="Group / List"
-                        value={groupListFilter}
-                        onchange={handleGroupListFilterChange}
-                    ></lightning-input>
+                <div class="filter-block">
+                    <lightning-input type="search" label="Group / List" value={groupListFilter} onchange={handleGroupListFilterChange}></lightning-input>
                 </div>
-                <div class="slds-col slds-size_1-of-4 slds-align-bottom">
-                    <lightning-button
-                        label="Search"
-                        variant="brand"
-                        onclick={handleSearch}
-                        class="slds-m-top_large"
-                    ></lightning-button>
+                <p class="filters__hint">Click Search to update the results.</p>
+            </aside>
+            <section class="results">
+                <div class="results__head">
+                    <div class="chips">
+                        <template for:each={appliedChips} for:item="chip">
+                            <span key={chip.key} class="chip">
+                                <span class="chip__text">{chip.label}</span>
+                                <button type="button" class="chip__remove" data-key={chip.key} onclick={handleRemoveAppliedChip} title="Remove filter">×<span class="slds-assistive-text">Remove {chip.label}</span></button>
+                            </span>
+                        </template>
+                    </div>
+                    <span class="results__count">{totalRecordCount} records</span>
                 </div>
-            </div>
-
-            <div class="slds-m-bottom_small slds-text-body_regular">
-                Total records: {totalRecordCount} | Selected: {selectedRecordCount}
-            </div>
-
-            <lightning-datatable
-                key-field="Id"
-                data={offlineCampaigns}
-                columns={columns}
-                onrowselection={handleRowSelection}
-                is-loading={isLoading}
-            ></lightning-datatable>
+                <template if:true={filtersAreStale}>
+                    <div class="status-banner status-banner_stale">
+                        <span>{staleFilterMessage}</span>
+                        <lightning-button label="Search" variant="brand" onclick={handleSearch}></lightning-button>
+                    </div>
+                </template>
+                <template if:false={filtersAreStale}>
+                    <div class="status-banner status-banner_fresh">Showing {totalRecordCount} records for the filters above.</div>
+                </template>
+                <template if:true={hasSelection}>
+                    <div class="selection-bar">
+                        <span class="selection-bar__count">{selectedRecordCount} selected</span>
+                        <div class="send-actions">
+                            <lightning-button label="Send Campaign Email" icon-name="utility:world" onclick={handleSendBluewaveEmail}></lightning-button>
+                            <lightning-button label="Send WhatsApp Campaign" icon-name="utility:chat" onclick={handleSendCustomerJourney}></lightning-button>
+                            <lightning-button label="Send RCS" icon-name="utility:comments" onclick={handleSendRcs}></lightning-button>
+                            <lightning-button label="Send SMS" icon-name="utility:text" onclick={handleSendSms}></lightning-button>
+                            <lightning-button label="Send Journey" icon-name="utility:trail" onclick={handleSendJourney}></lightning-button>
+                            <button type="button" class="text-action" onclick={handleClearSelection}>Clear selection</button>
+                        </div>
+                    </div>
+                </template>
+                <lightning-datatable key-field="Id" data={offlineCampaigns} columns={columns} selected-rows={selectedRowIds} onrowselection={handleRowSelection} is-loading={isLoading}></lightning-datatable>
+            </section>
         </div>
     </lightning-card>
 
@@ -939,6 +899,7 @@
         is-open={isCampaignNameModalOpen}
         is-sending={isCampaignNameModalSending}
         send-button-label={campaignNameSendButtonLabel}
+        collect-schedule={collectJourneySchedule}
         oncancel={handleCampaignNameModalCancel}
         onconfirm={handleCampaignNameModalConfirm}
     ></c-campaign-name-modal>

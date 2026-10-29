@@ -20,12 +20,12 @@
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>if_different_department</name>
-            <conditionLogic>1 AND (2 OR 3)</conditionLogic>
+            <conditionLogic>or</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.Department_Name__c</leftValueReference>
-                <operator>NotEqualTo</operator>
+                <leftValueReference>IsDifferentDept</leftValueReference>
+                <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>$Record.Owner:User.Department</elementReference>
+                    <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <conditions>
@@ -48,8 +48,13 @@
             <label>if different department</label>
         </rules>
     </decisions>
-    <description>created from v1: Putting Custom validation on Closed and Lost Lead with Same department logic</description>
+    <description>created from v2: Putting Custom validation on Closed and Lost Lead with Same department logic with OR</description>
     <environments>Default</environments>
+    <formulas>
+        <name>IsDifferentDept</name>
+        <dataType>Boolean</dataType>
+        <expression>NOT(CONTAINS({!$Record.Owner:User.Department}, TEXT({!$Record.Department_Name__c})))</expression>
+    </formulas>
     <interviewLabel>Lead: Owner Change Error message {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Lead: Owner Change Error message</label>
     <processMetadataValues>
@@ -83,6 +88,13 @@
             <operator>IsChanged</operator>
             <value>
                 <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>InQualificationProcess__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
             </value>
         </filters>
         <object>Lead</object>

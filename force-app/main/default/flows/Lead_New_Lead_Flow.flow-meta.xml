@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionCalls>
+        <name>Add_Lead_File_Admin</name>
+        <label>Add Lead File Admin</label>
+        <locationX>523</locationX>
+        <locationY>1485</locationY>
+        <actionName>FileUploadImprovedHelper</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>Create_Product_Category_fo_admin</targetReference>
+        </connector>
+        <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>recordId</name>
+            <value>
+                <elementReference>Create_Lead_Admin.Id</elementReference>
+                <inputConfiguratorMode>Resource</inputConfiguratorMode>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>versIds</name>
+            <value>
+                <elementReference>contentDocId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>visibleToAllUsers</name>
+            <value>
+                <booleanValue>true</booleanValue>
+                <inputConfiguratorMode>Resource</inputConfiguratorMode>
+            </value>
+        </inputParameters>
+        <nameSegment>FileUploadImprovedHelper</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
+    <actionCalls>
         <name>Send_Prospect_Enq_Email_Admin</name>
         <label>Send Prospect Enq Email Admin</label>
         <locationX>1634</locationX>
@@ -138,50 +172,6 @@
         </assignmentItems>
         <connector>
             <targetReference>UpdateLoop_ForOther</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_Docs_to_Leads</name>
-        <label>Assign Docs to Leads</label>
-        <locationX>895</locationX>
-        <locationY>1229</locationY>
-        <assignmentItems>
-            <assignToReference>ContentDocLinkVar.ContentDocumentId</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Looping_through_Docs.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>ContentDocLinkVar.LinkedEntityId</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Create_Lead_Admin.Id</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>ContentDocLinkVar.ShareType</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>V</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>ContentDocLinkVar.Visibility</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <stringValue>AllUsers</stringValue>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>ContentDocLinkCollectionVar</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>ContentDocLinkVar</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Looping_through_Docs</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -330,8 +320,8 @@
     <assignments>
         <name>CRM_Head_different_Dept</name>
         <label>CRM Head different Dept</label>
-        <locationX>454</locationX>
-        <locationY>489</locationY>
+        <locationX>489</locationX>
+        <locationY>486</locationY>
         <assignmentItems>
             <assignToReference>leadSourceValue</assignToReference>
             <operator>Assign</operator>
@@ -354,7 +344,7 @@
         <name>CRM_Head_Same_Dept</name>
         <label>CRM Head Same Dept</label>
         <locationX>633</locationX>
-        <locationY>517</locationY>
+        <locationY>518</locationY>
         <assignmentItems>
             <assignToReference>leadSourceValue</assignToReference>
             <operator>Assign</operator>
@@ -415,6 +405,59 @@
         <label>CRMUser Different Dept</label>
         <locationX>1128</locationX>
         <locationY>513</locationY>
+        <assignmentItems>
+            <assignToReference>leadSourceValue</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>LeadSource_CRM</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>DepartmentVar</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>DepartmentAdminCRMUser</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Owner_Screen_for_Admin</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Dept_CRM_User_same_Dept</name>
+        <label>Dept CRM User same Dept</label>
+        <locationX>967</locationX>
+        <locationY>633</locationY>
+        <assignmentItems>
+            <assignToReference>leadOwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>leadSourceValue</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>LeadSource_CRM</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>DepartmentVar</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>DepartmentAdminCRMUser</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>AdminLeadRepeter_loop</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Dept_CRMUser_Different_Dept</name>
+        <label>Dept CRMUser Different Dept</label>
+        <locationX>1041</locationX>
+        <locationY>610</locationY>
         <assignmentItems>
             <assignToReference>leadSourceValue</assignToReference>
             <operator>Assign</operator>
@@ -1951,7 +1994,7 @@
         <name>Checking_if_System_Administrator</name>
         <label>Checking if System Administrator</label>
         <locationX>1468</locationX>
-        <locationY>316</locationY>
+        <locationY>317</locationY>
         <defaultConnector>
             <targetReference>Get_UserRole</targetReference>
         </defaultConnector>
@@ -1999,6 +2042,13 @@
                 <operator>EqualTo</operator>
                 <rightValue>
                     <stringValue>Utkarsh HOD</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Profile.Name</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Utakrsh Department CRM User</stringValue>
                 </rightValue>
             </conditions>
             <connector>
@@ -2088,8 +2138,8 @@
     <decisions>
         <name>is_CRM_user_with_department_enquiry</name>
         <label>is CRM user with department enquiry</label>
-        <locationX>813</locationX>
-        <locationY>192</locationY>
+        <locationX>589</locationX>
+        <locationY>68</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
             <name>Profile_UtkarshAdmin_and_SystemAdmin</name>
@@ -2168,10 +2218,10 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>DepartmentHODCRMHeadSales</leftValueReference>
-                <operator>EqualTo</operator>
+                <leftValueReference>$User.Department</leftValueReference>
+                <operator>Contains</operator>
                 <rightValue>
-                    <elementReference>$User.Department</elementReference>
+                    <elementReference>DepartmentHODCRMHeadSales</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -2212,10 +2262,10 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>DepartmentHODCRMHeadSales</leftValueReference>
-                <operator>EqualTo</operator>
+                <leftValueReference>$User.Department</leftValueReference>
+                <operator>Contains</operator>
                 <rightValue>
-                    <elementReference>$User.Department</elementReference>
+                    <elementReference>DepartmentHODCRMHeadSales</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -2256,10 +2306,10 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>DepartmentHODCRMHeadSales</leftValueReference>
-                <operator>EqualTo</operator>
+                <leftValueReference>$User.Department</leftValueReference>
+                <operator>Contains</operator>
                 <rightValue>
-                    <elementReference>$User.Department</elementReference>
+                    <elementReference>DepartmentHODCRMHeadSales</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -2288,6 +2338,50 @@
                 <targetReference>Utkarsh_Sales_different_Dept</targetReference>
             </connector>
             <label>Utkarsh Sales different Department</label>
+        </rules>
+        <rules>
+            <name>Department_CRM_User_with_same_department</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Profile.Name</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Utakrsh Department CRM User</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$User.Department</leftValueReference>
+                <operator>Contains</operator>
+                <rightValue>
+                    <elementReference>DepartmentAdminCRMUser</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Dept_CRM_User_same_Dept</targetReference>
+            </connector>
+            <label>Department CRM User with same department</label>
+        </rules>
+        <rules>
+            <name>Department_CRM_User_with_different_department</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Profile.Name</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Utakrsh Department CRM User</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>DepartmentAdminCRMUser</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>$User.Department</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Dept_CRMUser_Different_Dept</targetReference>
+            </connector>
+            <label>Department CRM User with different department</label>
         </rules>
     </decisions>
     <decisions>
@@ -2341,7 +2435,10 @@
             <label>If HOD/CRM Head</label>
         </rules>
     </decisions>
-    <description>created from v58 - put visibility condition on Zone
+    <description>created from v61 - Updated Improved file upload
+created from v 60 - Making Department as contains
+created from v59- department CRM user fix
+created from v58 - put visibility condition on Zone
 created from v57 - fixed CRM User Lead Source assignment
 created from v56- active users and PEB name fix
 created from v55-tender user exclusion from dropdown
@@ -2811,20 +2908,6 @@ IF(
         </noMoreValuesConnector>
     </loops>
     <loops>
-        <name>Looping_through_Docs</name>
-        <label>Looping through Docs</label>
-        <locationX>661</locationX>
-        <locationY>1227</locationY>
-        <collectionReference>getUploadedContentDocument</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Assign_Docs_to_Leads</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>create_Content_Document_Link</targetReference>
-        </noMoreValuesConnector>
-    </loops>
-    <loops>
         <name>Update_Loop</name>
         <label>Update Loop</label>
         <locationX>1056</locationX>
@@ -2872,25 +2955,12 @@ IF(
     </processMetadataValues>
     <processType>Flow</processType>
     <recordCreates>
-        <name>create_Content_Document_Link</name>
-        <label>create Content Document Link</label>
-        <locationX>616</locationX>
-        <locationY>1440</locationY>
-        <connector>
-            <targetReference>Create_Product_Category_fo_admin</targetReference>
-        </connector>
-        <faultConnector>
-            <targetReference>rollBack_Records</targetReference>
-        </faultConnector>
-        <inputReference>ContentDocLinkVar</inputReference>
-    </recordCreates>
-    <recordCreates>
         <name>Create_Lead_Admin</name>
         <label>Create Lead Admin</label>
-        <locationX>463</locationX>
-        <locationY>1217</locationY>
+        <locationX>519</locationX>
+        <locationY>1219</locationY>
         <connector>
-            <targetReference>Looping_through_Docs</targetReference>
+            <targetReference>Add_Lead_File_Admin</targetReference>
         </connector>
         <faultConnector>
             <targetReference>rollBack_Records</targetReference>
@@ -3155,8 +3225,8 @@ IF(
     <recordCreates>
         <name>Create_Product_Category_fo_admin</name>
         <label>Create Product Category fo admin</label>
-        <locationX>831</locationX>
-        <locationY>1435</locationY>
+        <locationX>928</locationX>
+        <locationY>1515</locationY>
         <connector>
             <targetReference>Update_Loop</targetReference>
         </connector>
@@ -3283,30 +3353,6 @@ IF(
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>UserRole</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>getUploadedContentDocument</name>
-        <label>getUploadedContentDocument</label>
-        <locationX>271</locationX>
-        <locationY>1219</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Create_Lead_Admin</targetReference>
-        </connector>
-        <faultConnector>
-            <targetReference>rollBack_Records</targetReference>
-        </faultConnector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>In</operator>
-            <value>
-                <elementReference>UploadDocumentAdmin.contentDocIds</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>ContentDocument</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordRollbacks>
@@ -4861,13 +4907,13 @@ IF(
     <screens>
         <name>File_Screen_for_Admin_0</name>
         <label>File Screen for Admin</label>
-        <locationX>270</locationX>
-        <locationY>980</locationY>
+        <locationX>172</locationX>
+        <locationY>990</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
-            <targetReference>getUploadedContentDocument</targetReference>
+            <targetReference>Create_Lead_Admin</targetReference>
         </connector>
         <fields>
             <name>File_Screen_for_Admin_0_Section1</name>
@@ -4889,47 +4935,51 @@ IF(
                     </styleProperties>
                 </fields>
                 <fields>
-                    <name>UploadDocumentAdmin</name>
-                    <extensionName>forceContent:fileUpload</extensionName>
+                    <name>UploadDocumentAdmin_Custom</name>
+                    <extensionName>c:fileUploadImproved</extensionName>
                     <fieldType>ComponentInstance</fieldType>
                     <inputParameters>
-                        <name>label</name>
-                        <value>
-                            <stringValue>Upload Document</stringValue>
-                        </value>
-                    </inputParameters>
-                    <inputParameters>
-                        <name>multiple</name>
+                        <name>required</name>
                         <value>
                             <booleanValue>true</booleanValue>
                         </value>
                     </inputParameters>
                     <inputParameters>
-                        <name>contentDocIds</name>
+                        <name>cb_required</name>
                         <value>
-                            <elementReference>contentDocId</elementReference>
+                            <stringValue>CB_TRUE</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>allowMultiple</name>
+                        <value>
+                            <booleanValue>true</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>cb_allowMultiple</name>
+                        <value>
+                            <stringValue>CB_TRUE</stringValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>renderFilesBelow</name>
+                        <value>
+                            <booleanValue>true</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>cb_renderFilesBelow</name>
+                        <value>
+                            <stringValue>CB_TRUE</stringValue>
                         </value>
                     </inputParameters>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
                     <isRequired>true</isRequired>
-                    <storeOutputAutomatically>true</storeOutputAutomatically>
-                    <styleProperties>
-                        <verticalAlignment>
-                            <stringValue>top</stringValue>
-                        </verticalAlignment>
-                        <width>
-                            <stringValue>12</stringValue>
-                        </width>
-                    </styleProperties>
-                    <validationRule>
-                        <errorMessage>&lt;p&gt;&lt;strong style=&quot;color: rgb(221, 8, 8); background-color: rgb(255, 255, 255);&quot;&gt;This is a required to upload a file for the Lead source &lt;/strong&gt;&lt;/p&gt;</errorMessage>
-                        <formulaExpression>IF(LEN({!UploadDocumentAdmin.contentDocIds})&gt;2, TRUE,FALSE)</formulaExpression>
-                    </validationRule>
-                </fields>
-                <fields>
-                    <name>UploadedFilesNames</name>
-                    <fieldText>&lt;p&gt;&lt;strong&gt;{!UploadDocumentAdmin.fileNames}&lt;/strong&gt;&lt;/p&gt;</fieldText>
-                    <fieldType>DisplayText</fieldType>
+                    <outputParameters>
+                        <assignToReference>contentDocId</assignToReference>
+                        <name>contentVersionIds</name>
+                    </outputParameters>
                     <styleProperties>
                         <verticalAlignment>
                             <stringValue>top</stringValue>
@@ -5099,8 +5149,8 @@ IF(
     <screens>
         <name>New_Lead_Screen_for_Admin</name>
         <label>New Lead Screen for Admin</label>
-        <locationX>1067</locationX>
-        <locationY>77</locationY>
+        <locationX>1164</locationX>
+        <locationY>18</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -5348,12 +5398,19 @@ IF(
                         </width>
                     </styleProperties>
                     <visibilityRule>
-                        <conditionLogic>and</conditionLogic>
+                        <conditionLogic>or</conditionLogic>
                         <conditions>
                             <leftValueReference>currentUserProfileName</leftValueReference>
                             <operator>EqualTo</operator>
                             <rightValue>
                                 <stringValue>Utkarsh CRM</stringValue>
+                            </rightValue>
+                        </conditions>
+                        <conditions>
+                            <leftValueReference>currentUserProfileName</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>Utakrsh Department CRM User</stringValue>
                             </rightValue>
                         </conditions>
                     </visibilityRule>
@@ -5536,6 +5593,13 @@ IF(
                             <operator>EqualTo</operator>
                             <rightValue>
                                 <stringValue>Utkarsh CRM</stringValue>
+                            </rightValue>
+                        </conditions>
+                        <conditions>
+                            <leftValueReference>currentUserProfileName</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>Utakrsh Department CRM User</stringValue>
                             </rightValue>
                         </conditions>
                     </visibilityRule>
@@ -6986,7 +7050,7 @@ OR(
             <targetReference>Checking_if_System_Administrator</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Obsolete</status>
     <variables>
         <name>Categorycollectionvar</name>
         <dataType>SObject</dataType>

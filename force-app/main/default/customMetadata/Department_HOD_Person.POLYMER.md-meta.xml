@@ -12,10 +12,10 @@
     </values>
     <values>
         <field>Dept_HOD_Person_Name__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">Shivendra Polymer HOD</value>
     </values>
     <values>
         <field>HOD_Person_Email__c</field>
-        <value xsi:type="xsd:string">polymer.hod@utkarshindia.invalid</value>
+        <value xsi:type="xsd:string">shivkp1999@gmail.com</value>
     </values>
 </CustomMetadata>

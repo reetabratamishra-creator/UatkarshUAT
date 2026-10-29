@@ -1,0 +1,158 @@
+<template>
+    <lightning-card title="Custom Account Creation" icon-name="standard:account">
+        <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+
+            <template if:true={loading}>
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </template>
+
+            <template if:true={notAllowed}>
+                <p class="slds-text-color_error slds-text-align_center slds-p-vertical_large">
+                    <strong>Your profile don't have permission to create Account manually.</strong>
+                </p>
+            </template>
+
+            <template if:true={isAllowed}>
+
+                <!-- STEP 1: Record Type -->
+                <template if:true={isStep1}>
+                    <lightning-radio-group
+                        name="recordType"
+                        label="Select Record Type"
+                        options={initData.recordTypeOptions}
+                        value={recordTypeId}
+                        onchange={handleRecordTypeChange}
+                        type="radio">
+                    </lightning-radio-group>
+                    <div class="slds-grid slds-grid_align-end slds-p-top_medium">
+                        <lightning-button variant="brand" label="Next" onclick={goToStep2}></lightning-button>
+                    </div>
+                </template>
+
+                <!-- STEP 2: Details -->
+                <template if:true={isStep2}>
+                    <h3 class="slds-text-heading_small slds-p-bottom_small">Account Details</h3>
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input label="Account Name" value={accountName} required onchange={handleAccountName}></lightning-input>
+                            <lightning-input type="checkbox" label="Site Account" checked={isChildAccount} onchange={handleIsChildAccount} class="slds-p-top_small"></lightning-input>
+                            <template if:true={isChildAccount}>
+                                <lightning-record-picker
+                                    label="Parent Account"
+                                    object-api-name="Account"
+                                    filter={parentAccountFilter}
+                                    onchange={handleParentAccount}>
+                                </lightning-record-picker>
+                            </template>
+                            <lightning-combobox label="Account Source" options={initData.accountSourceOptions} value={accountSource} onchange={handleAccountSource} required class="slds-p-top_small"></lightning-combobox>
+                            <lightning-combobox label="Industry" options={initData.industryOptions} value={industry} onchange={handleIndustry} required class="slds-p-top_small"></lightning-combobox>
+
+                            <template if:false={isDealer}>
+                                <lightning-combobox label="Department Name" options={initData.departmentOptions} value={departmentName} onchange={handleDepartment} class="slds-p-top_small"></lightning-combobox>
+                            </template>
+                            <template if:true={isDealer}>
+                                <lightning-dual-listbox
+                                    label="Department Name (Dealer - multiple allowed)"
+                                    source-label="Available"
+                                    selected-label="Selected"
+                                    options={initData.multiDepartmentOptions}
+                                    value={selectedMultiDepartments}
+                                    onchange={handleMultiDepartment}
+                                    class="slds-p-top_small">
+                                </lightning-dual-listbox>
+                            </template>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input type="tel" label="Phone" value={phone} required onchange={handlePhone}></lightning-input>
+                            <lightning-input type="email" label="Email" value={email} required onchange={handleEmail} class="slds-p-top_small"></lightning-input>
+                            <lightning-input label="Website" value={website} onchange={handleWebsite} class="slds-p-top_small" placeholder="www.example.com"></lightning-input>
+                            <lightning-input label="PAN" value={pan} onchange={handlePan} class="slds-p-top_small" placeholder="ABCDE1234F"></lightning-input>
+                            <lightning-input label="GSTIN" value={gstin} onchange={handleGstin} class="slds-p-top_small" placeholder="29ABCDE1234F1Z5"></lightning-input>
+                        </div>
+                    </div>
+
+                    <h3 class="slds-text-heading_small slds-p-vertical_small">Contact Details</h3>
+                    <lightning-input type="checkbox" label="Choose Existing Contact" checked={useExistingContact} onchange={handleUseExistingContact}></lightning-input>
+                    <template if:true={useExistingContact}>
+                        <lightning-record-picker
+                            label="Existing Contact"
+                            object-api-name="Contact"
+                            onchange={handleExistingContact}>
+                        </lightning-record-picker>
+                    </template>
+                    <template if:false={useExistingContact}>
+                        <div class="slds-grid slds-wrap slds-gutters slds-p-top_small">
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input label="First Name" value={contactFirstName} onchange={handleContactFirstName}></lightning-input>
+                                <lightning-input label="Last Name" value={contactLastName} required onchange={handleContactLastName} class="slds-p-top_small"></lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input type="email" label="Email" value={contactEmail} required onchange={handleContactEmail}></lightning-input>
+                                <lightning-input type="tel" label="Phone" value={contactPhone} onchange={handleContactPhone} class="slds-p-top_small"></lightning-input>
+                            </div>
+                        </div>
+                    </template>
+
+                    <h3 class="slds-text-heading_small slds-p-vertical_small">Primary Address</h3>
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-input label="Street" value={primaryAddress.street} data-field="street" required onchange={handlePrimaryField}></lightning-input>
+                            <lightning-input label="City" value={primaryAddress.city} data-field="city" required onchange={handlePrimaryField} class="slds-p-top_small"></lightning-input>
+                            <lightning-input label="PIN" value={primaryAddress.pin} data-field="pin" required onchange={handlePrimaryField} class="slds-p-top_small"></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning-combobox label="Country" options={initData.countryOptions} value={primaryAddress.country} data-field="country" required onchange={handlePrimaryCombobox}></lightning-combobox>
+                            <template if:true={showIndiaFieldsPrimary}>
+                                <lightning-combobox label="State" options={initData.stateOptions} value={primaryAddress.state} data-field="state" required onchange={handlePrimaryCombobox} class="slds-p-top_small"></lightning-combobox>
+                                <lightning-combobox label="Zone" options={initData.zoneOptions} value={primaryAddress.zone} data-field="zone" required onchange={handlePrimaryCombobox} class="slds-p-top_small"></lightning-combobox>
+                            </template>
+                        </div>
+                    </div>
+
+                    <lightning-input type="checkbox" label="Fill More Address Details" checked={fillMoreAddresses} onchange={handleFillMoreAddresses} class="slds-p-top_medium"></lightning-input>
+                    <template if:true={fillMoreAddresses}>
+                        <template for:each={additionalAddresses} for:item="addr">
+                            <div key={addr.key} class="slds-box slds-m-top_small slds-theme_shade">
+                                <div class="slds-grid slds-wrap slds-gutters">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <lightning-input label="Street" value={addr.street} data-key={addr.key} data-field="street" onchange={handleAdditionalField}></lightning-input>
+                                        <lightning-input label="City" value={addr.city} data-key={addr.key} data-field="city" onchange={handleAdditionalField} class="slds-p-top_small"></lightning-input>
+                                        <lightning-input label="PIN" value={addr.pin} data-key={addr.key} data-field="pin" onchange={handleAdditionalField} class="slds-p-top_small"></lightning-input>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <lightning-combobox label="Country" options={initData.countryOptions} value={addr.country} data-key={addr.key} data-field="country" onchange={handleAdditionalCombobox}></lightning-combobox>
+                                        <lightning-combobox label="State" options={initData.stateOptions} value={addr.state} data-key={addr.key} data-field="state" onchange={handleAdditionalCombobox} class="slds-p-top_small"></lightning-combobox>
+                                        <lightning-combobox label="Zone" options={initData.zoneOptions} value={addr.zone} data-key={addr.key} data-field="zone" onchange={handleAdditionalCombobox} class="slds-p-top_small"></lightning-combobox>
+                                    </div>
+                                </div>
+                                <div class="slds-p-top_small slds-text-align_right">
+                                    <lightning-button label="Remove" data-key={addr.key} onclick={removeAddress}></lightning-button>
+                                </div>
+                            </div>
+                        </template>
+                        <lightning-button label="Add Another Address" onclick={addAnotherAddress} class="slds-p-top_small"></lightning-button>
+                    </template>
+
+                    <div class="slds-grid slds-grid_align-spread slds-p-top_medium">
+                        <lightning-button label="Back" onclick={goToStep1}></lightning-button>
+                        <lightning-button variant="brand" label="Create Account" onclick={handleSubmit} disabled={submitting}></lightning-button>
+                    </div>
+                </template>
+
+                <!-- STEP 3: Success -->
+                <template if:true={isStep3}>
+                    <div class="slds-text-align_center slds-p-vertical_large">
+                        <lightning-icon icon-name="utility:success" variant="success" size="large"></lightning-icon>
+                        <p class="slds-text-heading_small slds-text-color_success slds-p-top_small">Success!</p>
+                        <p class="slds-p-top_small">The Account, Contact, and Address Book records have been successfully created and linked.</p>
+                        <div class="slds-p-top_medium">
+                            <lightning-button variant="brand" label="View Account" onclick={navigateToAccount}></lightning-button>
+                            <lightning-button label="Create Another" onclick={startOver} class="slds-m-left_small"></lightning-button>
+                        </div>
+                    </div>
+                </template>
+
+            </template>
+        </div>
+    </lightning-card>
+</template>

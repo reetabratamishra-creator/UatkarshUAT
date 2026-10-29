@@ -13,7 +13,7 @@ private class LeadProspectNotContacted24BatchTest {
     Lead leadRecord = createProspectLead();
     leadRecord.Prospect_Stage_Entry_Date__c = System.now().addHours(-25);
     leadRecord.Escalation_24_Sent__c = false;
-    update leadRecord;
+    update as system leadRecord;
 
     leadRecord = queryLead(leadRecord.Id);
     assignTemplateOverride();
@@ -39,7 +39,7 @@ private class LeadProspectNotContacted24BatchTest {
     Lead leadRecord = createProspectLead();
     leadRecord.Prospect_Stage_Entry_Date__c = System.now().addHours(-25);
     leadRecord.Escalation_24_Sent__c = false;
-    update leadRecord;
+    update as system leadRecord;
 
     Task activityTask = new Task(
       WhoId = leadRecord.Id,
@@ -47,7 +47,7 @@ private class LeadProspectNotContacted24BatchTest {
       Status = 'Completed',
       ActivityDate = Date.today()
     );
-    insert activityTask;
+    insert as system activityTask;
 
     leadRecord = queryLead(leadRecord.Id);
     assignTemplateOverride();
@@ -104,17 +104,18 @@ private class LeadProspectNotContacted24BatchTest {
   private static Lead createProspectLead() {
     String uniqueKey = String.valueOf(Crypto.getRandomInteger()).replace('-', '');
     Lead leadRecord = new Lead(
-      LastName = 'Prospect24h' + uniqueKey,
-      Company = 'Escalation Test Co ' + uniqueKey,
+      LastName = 'Prospect24h ' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + uniqueKey,
+      Company = 'Escalation Test Co  ' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + uniqueKey,
       LeadSource = 'OUTBOUND PHONE CALL',
       Status = 'Prospect',
       Department_Name__c = 'Enquiry',
-      Email = 'prospect24h' + uniqueKey + '@example.com',
-      Phone = '9876543210'
+      Email = 'prospect24h.' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + uniqueKey + '@example.com',
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
     Database.DMLOptions dmlOptions = new Database.DMLOptions();
     dmlOptions.DuplicateRuleHeader.AllowSave = true;
-    Database.insert(leadRecord, dmlOptions);
+    dmlOptions.optAllOrNone = true;
+    insert as system leadRecord;
     return leadRecord;
   }
 

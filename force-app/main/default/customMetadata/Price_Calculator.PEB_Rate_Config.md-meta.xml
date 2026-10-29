@@ -21,6 +21,7 @@
     <values>
         <field>JSON_Payload__c</field>
         <value xsi:type="xsd:string">{
+  &quot;benchmarkRate&quot;: 102,
   &quot;sectionA&quot;: {
     &quot;builtUp&quot;: {
       &quot;label&quot;: &quot;Built up section - Grade 350&quot;,

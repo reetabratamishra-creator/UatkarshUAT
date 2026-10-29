@@ -25,7 +25,23 @@
         <type>StandardAppMenuItem</type>
     </appMenuItems>
     <appMenuItems>
+        <name>U_Account</name>
+        <type>CustomTab</type>
+    </appMenuItems>
+    <appMenuItems>
+        <name>Case_Management1</name>
+        <type>CustomTab</type>
+    </appMenuItems>
+    <appMenuItems>
         <name>Qualified_Leads</name>
+        <type>CustomTab</type>
+    </appMenuItems>
+    <appMenuItems>
+        <name>Attendance</name>
+        <type>CustomTab</type>
+    </appMenuItems>
+    <appMenuItems>
+        <name>New_Expense_From</name>
         <type>CustomTab</type>
     </appMenuItems>
     <appMenuItems>

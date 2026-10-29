@@ -100,3 +100,8 @@
     gap: 0.5rem;
     flex-shrink: 0;
 }
+
+.schedule-time {
+    display: block;
+    margin-top: 0.75rem;
+}

@@ -732,4 +732,142 @@ private class PunchControllerTest {
             'Should return true when recent Logger location data exists'
         );
     }
+
+    // ─── WFH / WFO start notification (Utkarsh HOD / CRM Head recipients) ─────
+
+    private static Id getProfileIdOrNull(String profileName) {
+        List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = :profileName LIMIT 1];
+        return profiles.isEmpty() ? null : profiles[0].Id;
+    }
+
+    private static User buildNotificationTestUser(Id profileId, String department, String departments) {
+        String rand = EncodingUtil.convertToHex(Crypto.generateAesKey(128)).substring(0, 8);
+        return new User(
+            Alias = rand,
+            Email = rand + '@wfhnotify.test',
+            Username = rand + '@wfhnotify.test.' + System.currentTimeMillis(),
+            LastName = 'WfhNotify' + rand,
+            ProfileId = profileId,
+            TimeZoneSidKey = 'Asia/Kolkata',
+            LocaleSidKey = 'en_IN',
+            EmailEncodingKey = 'UTF-8',
+            LanguageLocaleKey = 'en_US',
+            Department = department,
+            Departments__c = departments,
+            IsActive = true
+        );
+    }
+
+    @isTest
+    static void testSendWfhWfoStartNotification_CrmHeadMultipleDepartments() {
+        Id crmHeadProfileId = getProfileIdOrNull('CRM Head');
+        Id standardProfileId = getProfileIdOrNull('Standard User');
+        if (crmHeadProfileId == null || standardProfileId == null) {
+            return;
+        }
+
+        User employee = buildNotificationTestUser(standardProfileId, 'HDPE', null);
+        // Matches: HDPE_Pipe_Department maps to 'HDPE'
+        User matchingCrmHead = buildNotificationTestUser(
+            crmHeadProfileId, null, 'Solar_Structure_Department;HDPE_Pipe_Department'
+        );
+        // Does not match: only Crash Barrier
+        User otherCrmHead = buildNotificationTestUser(
+            crmHeadProfileId, null, 'Crash_Barrier_Department'
+        );
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert new List<User>{ employee, matchingCrmHead, otherCrmHead };
+        }
+
+        Boolean failed = false;
+        Test.startTest();
+        try {
+            PunchController.sendWfhWfoStartNotification(employee.Id, 'WFO');
+        } catch (Exception e) {
+            failed = true;
+        }
+        Test.stopTest();
+
+        System.assertEquals(false, failed, 'Notification to the matching CRM Head should be sent without errors');
+    }
+
+    @isTest
+    static void testSendWfhWfoStartNotification_CrmHeadDepartmentApiValue() {
+        Id crmHeadProfileId = getProfileIdOrNull('CRM Head');
+        Id standardProfileId = getProfileIdOrNull('Standard User');
+        if (crmHeadProfileId == null || standardProfileId == null) {
+            return;
+        }
+
+        // Employee Department holds the Departments__c API value itself
+        User employee = buildNotificationTestUser(standardProfileId, 'Solar_Structure_Department', null);
+        User crmHead = buildNotificationTestUser(
+            crmHeadProfileId, null, 'Solar_Structure_Department;HDPE_Pipe_Department'
+        );
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert new List<User>{ employee, crmHead };
+        }
+
+        Boolean failed = false;
+        Test.startTest();
+        try {
+            PunchController.sendWfhWfoStartNotification(employee.Id, 'WFH');
+        } catch (Exception e) {
+            failed = true;
+        }
+        Test.stopTest();
+
+        System.assertEquals(false, failed, 'Notification should be sent when Department equals the Departments__c value');
+    }
+
+    @isTest
+    static void testSendWfhWfoStartNotification_HodSameDepartment() {
+        Id hodProfileId = getProfileIdOrNull('Utkarsh HOD');
+        Id standardProfileId = getProfileIdOrNull('Standard User');
+        if (hodProfileId == null || standardProfileId == null) {
+            return;
+        }
+
+        User employee = buildNotificationTestUser(standardProfileId, 'Solar Structure', null);
+        User hod = buildNotificationTestUser(hodProfileId, 'Solar Structure', null);
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert new List<User>{ employee, hod };
+        }
+
+        Boolean failed = false;
+        Test.startTest();
+        try {
+            PunchController.sendWfhWfoStartNotification(employee.Id, 'WFH');
+        } catch (Exception e) {
+            failed = true;
+        }
+        Test.stopTest();
+
+        System.assertEquals(false, failed, 'Notification to the HOD of the same Department should be sent without errors');
+    }
+
+    @isTest
+    static void testSendWfhWfoStartNotification_NoRecipients() {
+        Id standardProfileId = getProfileIdOrNull('Standard User');
+        if (standardProfileId == null) {
+            return;
+        }
+
+        // No HOD or CRM Head covers this Department
+        User employee = buildNotificationTestUser(standardProfileId, 'No Such Department ' + System.currentTimeMillis(), null);
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert employee;
+        }
+
+        Boolean failed = false;
+        Test.startTest();
+        try {
+            PunchController.sendWfhWfoStartNotification(employee.Id, 'WFO');
+        } catch (Exception e) {
+            failed = true;
+        }
+        Test.stopTest();
+
+        System.assertEquals(false, failed, 'Method should return quietly when there are no recipients');
+    }
 }

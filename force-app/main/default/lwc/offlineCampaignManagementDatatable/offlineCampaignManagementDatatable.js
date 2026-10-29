@@ -11,14 +11,15 @@ import getWhatsAppTemplates from '@salesforce/apex/OfflineCampaignManagementCont
 import getRcsTemplates from '@salesforce/apex/OfflineCampaignManagementController.getRcsTemplates';
 import getSmsTemplates from '@salesforce/apex/OfflineCampaignManagementController.getSmsTemplates';
 import getBluewaveEmailTemplates from '@salesforce/apex/OfflineCampaignManagementController.getBluewaveEmailTemplates';
-import sendOfflineCampaignEmail from '@salesforce/apex/OfflineCampaignManagementController.sendOfflineCampaignEmail';
+import sendOfflineCampaignEmail from '@salesforce/apex/OfflineCampaignManagementController.sendOfflineCampaignEmailScheduled';
 import getCampaignJourneys from '@salesforce/apex/OfflineCampaignManagementController.getCampaignJourneys';
-import sendOfflineCampaignJourney from '@salesforce/apex/OfflineCampaignManagementController.sendOfflineCampaignJourney';
-import sendOfflineCampaignWhatsApp from '@salesforce/apex/BWM_WaCampCtrlA.sendOfflineCampaignWhatsApp';
-import sendOfflineCampaignRcs from '@salesforce/apex/OfflineCampaignManagementController.sendOfflineCampaignRcs';
-import sendOfflineCampaignSms from '@salesforce/apex/OfflineCampaignManagementController.sendOfflineCampaignSms';
-import createCampaignWithMembers from '@salesforce/apex/BWM_CustomCampaignMemberCtrl.createCampaignWithMembers';
+import sendOfflineCampaignJourney from '@salesforce/apex/OfflineCampaignManagementController.sendOfflineCampaignJourneyScheduled';
+import sendOfflineCampaignWhatsApp from '@salesforce/apex/BWM_WaCampCtrlA.sendOfflineCampaignWhatsAppScheduled';
+import sendOfflineCampaignRcs from '@salesforce/apex/OfflineCampaignManagementController.sendOfflineCampaignRcsScheduled';
+import sendOfflineCampaignSms from '@salesforce/apex/OfflineCampaignManagementController.sendOfflineCampaignSmsScheduled';
+import createCampaignWithMembers from '@salesforce/apex/BWM_CustomCampaignMemberCtrl.createScheduledCampaignWithMembers';
 import { SEND_ACTION, MEMBER_TYPE, trackCampaignMembers } from 'c/campaignSendActions';
+import { changedFieldCount, filtersMatch, listChipLabel, optionLabels } from 'c/campaignFilterUi';
 
 const COLUMNS = [
     {
@@ -48,6 +49,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
     selectedDepartments = [];
     departmentOptions = [];
     groupListFilter = '';
+    appliedFilters;
 
     isEmailModalOpen = false;
     isSendingEmail = false;
@@ -88,6 +90,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
     smsTemplateSearch = '';
 
     isCampaignNameModalOpen = false;
+    collectJourneySchedule = false;
     pendingSendAction = null;
 
     @wire(getOfflineCampaignDepartmentOptions)
@@ -117,6 +120,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
      */
     async loadOfflineCampaigns(notifyWhenEmpty) {
         this.isLoading = true;
+        const requestedFilters = this.buildFilterState();
 
         try {
             const data = await searchOfflineCampaigns({
@@ -134,6 +138,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
                 Email__c: row.Email__c || '',
                 Phone: row.Phone__c || ''
             }));
+            this.appliedFilters = requestedFilters;
 
             if (notifyWhenEmpty && this.offlineCampaigns.length === 0) {
                 this.showToast('Search', 'No offline campaign records match your search criteria.', 'info');
@@ -197,6 +202,45 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
     handleSearch() {
         this.selectedRows = [];
         this.loadOfflineCampaigns(true);
+    }
+
+    handleResetFilters() {
+        this.searchTerm = '';
+        this.phoneFilter = '';
+        this.emailFilter = '';
+        this.selectedDepartments = [];
+        this.groupListFilter = '';
+        this.handleSearch();
+    }
+
+    handleRemoveAppliedChip(event) {
+        const key = event.currentTarget.dataset.key;
+        if (key === 'search') {
+            this.searchTerm = '';
+        } else if (key === 'phone') {
+            this.phoneFilter = '';
+        } else if (key === 'email') {
+            this.emailFilter = '';
+        } else if (key === 'departments') {
+            this.selectedDepartments = [];
+        } else if (key === 'group') {
+            this.groupListFilter = '';
+        }
+        this.handleSearch();
+    }
+
+    handleClearSelection() {
+        this.selectedRows = [];
+    }
+
+    buildFilterState() {
+        return {
+            searchTerm: this.searchTerm || '',
+            phoneFilter: this.phoneFilter || '',
+            emailFilter: this.emailFilter || '',
+            departments: this.selectedDepartments || [],
+            groupListFilter: this.groupListFilter || ''
+        };
     }
 
 
@@ -306,14 +350,15 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
         this.openCampaignNameModal(SEND_ACTION.BLUEWAVE_EMAIL);
     }
 
-    async executeSendBluewaveEmail(campaignName) {
+    async executeSendBluewaveEmail(campaignName, scheduledDateTime) {
         const offlineCampaignIds = this.selectedRows.map((row) => row.Id);
         this.isSendingBluewaveEmail = true;
 
         try {
             const result = await sendOfflineCampaignEmail({
                 offlineCampaignIds,
-                infobipTemplateId: this.selectedBluewaveTemplateId
+                infobipTemplateId: this.selectedBluewaveTemplateId,
+                scheduledDateTime
             });
 
             let message = `${result.sentCount} campaign email(s) sent successfully.`;
@@ -331,7 +376,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
             );
 
             if (result.sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isBluewaveEmailModalOpen = false;
                 this.selectedBluewaveTemplateId = null;
             }
@@ -431,14 +476,15 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
         this.openCampaignNameModal(SEND_ACTION.JOURNEY);
     }
 
-    async executeSendCampaignJourney(campaignName) {
+    async executeSendCampaignJourney(campaignName, scheduledDateTime) {
         const offlineCampaignIds = this.selectedRows.map((row) => row.Id);
         this.isSendingCampaignJourney = true;
 
         try {
             const result = await sendOfflineCampaignJourney({
                 offlineCampaignIds,
-                journeyName: this.selectedCampaignJourneyName
+                journeyName: this.selectedCampaignJourneyName,
+                scheduledDateTime
             });
 
             let message = `${result.sentCount} journey message(s) queued in Bluewave.`;
@@ -459,7 +505,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
             );
 
             if (result.sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isCampaignJourneyModalOpen = false;
                 this.selectedCampaignJourneyName = null;
             }
@@ -815,7 +861,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
         this.openCampaignNameModal(SEND_ACTION.MESSAGES);
     }
 
-    async executeSendMessages(campaignName) {
+    async executeSendMessages(campaignName, scheduledDateTime) {
         const offlineCampaignIds = this.selectedRows.map((row) => row.Id);
         const sendRcs = !!this.selectedRcsTemplateName;
         const sendSms = !!this.selectedSmsTemplateName;
@@ -829,7 +875,8 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
             try {
                 whatsAppResult = await sendOfflineCampaignWhatsApp({
                     offlineCampaignIds,
-                    templateName: this.selectedWhatsAppTemplateName
+                    templateName: this.selectedWhatsAppTemplateName,
+                    scheduledDateTime
                 });
             } catch (whatsAppError) {
                 whatsAppResult = {
@@ -843,7 +890,8 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
                 try {
                     rcsResult = await sendOfflineCampaignRcs({
                         offlineCampaignIds,
-                        templateName: this.selectedRcsTemplateName
+                        templateName: this.selectedRcsTemplateName,
+                        scheduledDateTime
                     });
                 } catch (rcsError) {
                     rcsResult = {
@@ -858,7 +906,8 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
                 try {
                     smsResult = await sendOfflineCampaignSms({
                         offlineCampaignIds,
-                        templateName: this.selectedSmsTemplateName
+                        templateName: this.selectedSmsTemplateName,
+                        scheduledDateTime
                     });
                 } catch (smsError) {
                     smsResult = {
@@ -907,7 +956,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
             );
 
             if (totalSent > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isJourneyModalOpen = false;
                 this.journeyModalMode = 'campaign';
                 this.journeyModalStep = 'whatsapp';
@@ -930,14 +979,15 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
         this.openCampaignNameModal(SEND_ACTION.RCS_ONLY);
     }
 
-    async executeSendRcsOnly(campaignName) {
+    async executeSendRcsOnly(campaignName, scheduledDateTime) {
         const offlineCampaignIds = this.selectedRows.map((row) => row.Id);
         this.isSendingWhatsApp = true;
 
         try {
             const rcsResult = await sendOfflineCampaignRcs({
                 offlineCampaignIds,
-                templateName: this.selectedRcsTemplateName
+                templateName: this.selectedRcsTemplateName,
+                scheduledDateTime
             });
 
             const sentCount = rcsResult.sentCount || 0;
@@ -957,7 +1007,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
             this.showToast('Send RCS', message, sentCount > 0 ? 'success' : 'warning');
 
             if (sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isJourneyModalOpen = false;
                 this.journeyModalMode = 'campaign';
                 this.journeyModalStep = 'whatsapp';
@@ -980,14 +1030,15 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
         this.openCampaignNameModal(SEND_ACTION.SMS_ONLY);
     }
 
-    async executeSendSmsOnly(campaignName) {
+    async executeSendSmsOnly(campaignName, scheduledDateTime) {
         const offlineCampaignIds = this.selectedRows.map((row) => row.Id);
         this.isSendingWhatsApp = true;
 
         try {
             const smsResult = await sendOfflineCampaignSms({
                 offlineCampaignIds,
-                templateName: this.selectedSmsTemplateName
+                templateName: this.selectedSmsTemplateName,
+                scheduledDateTime
             });
 
             const sentCount = smsResult.sentCount || 0;
@@ -1007,7 +1058,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
             this.showToast('Send SMS', message, sentCount > 0 ? 'success' : 'warning');
 
             if (sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isJourneyModalOpen = false;
                 this.journeyModalMode = 'campaign';
                 this.journeyModalStep = 'whatsapp';
@@ -1025,12 +1076,19 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
 
     openCampaignNameModal(action) {
         this.pendingSendAction = action;
+        this.collectJourneySchedule =
+            action === 'bluewaveEmail' ||
+            action === 'journey' ||
+            action === 'messages' ||
+            action === 'rcsOnly' ||
+            action === 'smsOnly';
         this.isCampaignNameModalOpen = true;
     }
 
     closeCampaignNameModal() {
         this.isCampaignNameModalOpen = false;
         this.pendingSendAction = null;
+        this.collectJourneySchedule = false;
         const modal = this.template.querySelector('c-campaign-name-modal');
         if (modal) {
             modal.reset();
@@ -1045,24 +1103,25 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
 
     async handleCampaignNameModalConfirm(event) {
         const campaignName = event.detail.campaignName;
+        const scheduledDateTime = event.detail.scheduledDateTime;
         const action = this.pendingSendAction;
 
         try {
             switch (action) {
                 case SEND_ACTION.BLUEWAVE_EMAIL:
-                    await this.executeSendBluewaveEmail(campaignName);
+                    await this.executeSendBluewaveEmail(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.JOURNEY:
-                    await this.executeSendCampaignJourney(campaignName);
+                    await this.executeSendCampaignJourney(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.MESSAGES:
-                    await this.executeSendMessages(campaignName);
+                    await this.executeSendMessages(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.RCS_ONLY:
-                    await this.executeSendRcsOnly(campaignName);
+                    await this.executeSendRcsOnly(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.SMS_ONLY:
-                    await this.executeSendSmsOnly(campaignName);
+                    await this.executeSendSmsOnly(campaignName, scheduledDateTime);
                     break;
                 default:
                     break;
@@ -1074,7 +1133,7 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
         }
     }
 
-    async trackCampaignMembersForSelection(campaignName) {
+    async trackCampaignMembersForSelection(campaignName, scheduledDateTime) {
         const recordIds = this.selectedRows.map((row) => row.Id);
         await trackCampaignMembers(
             createCampaignWithMembers,
@@ -1082,7 +1141,8 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
             MEMBER_TYPE.OFFLINE_CAMPAIGN,
             recordIds,
             (title, message, variant) => this.showToast(title, message, variant),
-            (error) => this.extractError(error)
+            (error) => this.extractError(error),
+            scheduledDateTime
         );
     }
 
@@ -1464,6 +1524,42 @@ export default class OfflineCampaignManagementDatatable extends LightningElement
 
     get totalRecordCount() {
         return this.offlineCampaigns.length;
+    }
+
+    get selectedRowIds() {
+        return (this.selectedRows || []).map((row) => row.Id);
+    }
+
+    get filtersAreStale() {
+        return (
+            !!this.appliedFilters &&
+            !this.isLoading &&
+            !filtersMatch(this.buildFilterState(), this.appliedFilters)
+        );
+    }
+
+    get staleFilterMessage() {
+        const count = changedFieldCount(this.buildFilterState(), this.appliedFilters);
+        return `${count} ${count === 1 ? 'filter' : 'filters'} changed. Results below are out of date.`;
+    }
+
+    get appliedChips() {
+        const applied = this.appliedFilters;
+        if (!applied) {
+            return [];
+        }
+        const chips = [];
+        const pushChip = (key, label) => {
+            if (label) {
+                chips.push({ key, label });
+            }
+        };
+        pushChip('search', applied.searchTerm);
+        pushChip('phone', applied.phoneFilter);
+        pushChip('email', applied.emailFilter);
+        pushChip('departments', listChipLabel(optionLabels(applied.departments, this.departmentOptions)));
+        pushChip('group', applied.groupListFilter);
+        return chips;
     }
 
     /**

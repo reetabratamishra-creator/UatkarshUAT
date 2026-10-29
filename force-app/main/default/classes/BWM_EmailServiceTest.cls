@@ -1598,6 +1598,13 @@ private class BWM_EmailServiceTest {
         'Out of service area'
       )
     );
+    System.assertEquals(
+      BWM_EmailConstants.TRIGGER_OPP_LOST_OPERATIONAL_NEGOTIATION,
+      BWM_EmailOpportunityLostReasonRouter.resolveTriggerPoint(
+        BWM_EmailConstants.STAGE_NEGOTIATION,
+        'Internal Problem'
+      )
+    );
     System.assertEquals(null, BWM_EmailOpportunityLostReasonRouter.resolveTriggerPoint('', 'Not responding'));
     System.assertEquals(null, BWM_EmailOpportunityLostReasonRouter.resolveTriggerPoint('Nurture', ''));
   }

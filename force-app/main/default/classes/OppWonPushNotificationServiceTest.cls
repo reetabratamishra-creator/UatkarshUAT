@@ -140,7 +140,7 @@ private class OppWonPushNotificationServiceTest {
 
   private static Opportunity createOpportunity(String name, String stageName) {
     Account accountRecord = new Account(Name = name + ' Account');
-    insert accountRecord;
+    insert as system accountRecord;
 
     Opportunity opportunityRecord = new Opportunity(
       Name = name,
@@ -149,7 +149,7 @@ private class OppWonPushNotificationServiceTest {
       CloseDate = Date.today().addDays(30),
       Department_Name__c = 'Enquiry'
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
 
     return [
       SELECT

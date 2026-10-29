@@ -11,23 +11,23 @@ private class LeadManagementSmsServiceTest {
     BWM_LeadMessagingTriggerHandler.skipEnqueueForTests = true;
     BWM_EmailLeadTriggerHandler.skipEnqueueForTests = true;
 
-    insert new List<Lead>{
+    insert as system new List<Lead>{
       new Lead(
-        LastName = 'SMS Lead',
-        Company = 'SMS Co',
-        Company_Name__c = 'SMS Co',
+        LastName = 'SMS Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Company = 'SMS Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Company_Name__c = 'SMS Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
         Status = 'Prospect',
         Department_Name__c = 'Crash Barrier',
-        Phone = '9876543280',
-        Email = 'sms.lead@example.com'
+        Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+        Email = 'sms.lead+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
       ),
       new Lead(
-        LastName = 'SMS No Phone',
-        Company = 'SMS Co',
-        Company_Name__c = 'SMS Co',
+        LastName = 'SMS No Phone ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Company = 'SMS Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Company_Name__c = 'SMS Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
         Status = 'Prospect',
         Department_Name__c = 'Crash Barrier',
-        Email = 'sms.nophone@example.com'
+        Email = 'sms.nophone+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
       )
     };
   }
@@ -39,7 +39,7 @@ private class LeadManagementSmsServiceTest {
   static void testSendToLeads_EmptyIdsOrBlankTemplate_ThrowsError() {
     Boolean emptyThrew = false;
     Boolean blankThrew = false;
-    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName = 'SMS Lead' LIMIT 1];
+    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName LIKE 'SMS Lead%' LIMIT 1];
 
     Test.startTest();
     try {
@@ -63,7 +63,7 @@ private class LeadManagementSmsServiceTest {
    */
   @IsTest
   static void testSendToLeads_NoPhone_Skipped() {
-    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName = 'SMS No Phone' LIMIT 1];
+    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName LIKE 'SMS No Phone%' LIMIT 1];
 
     Test.startTest();
     LeadManagementSmsService.SendSmsResult result = LeadManagementSmsService.sendToLeads(
@@ -100,7 +100,7 @@ private class LeadManagementSmsServiceTest {
         '{"code":"200","message":"unused"}'
       )
     );
-    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName = 'SMS Lead' LIMIT 1];
+    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName LIKE 'SMS Lead%' LIMIT 1];
 
     Test.startTest();
     LeadManagementSmsService.SendSmsResult result = LeadManagementSmsService.sendToLeads(
@@ -144,7 +144,7 @@ private class LeadManagementSmsServiceTest {
       }
     );
     BWM_Messaging_Settings__mdt settings = BWM_SettingsService.getSettings();
-    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName = 'SMS Lead' LIMIT 1];
+    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName LIKE 'SMS Lead%' LIMIT 1];
     Boolean incompleteThrew = false;
     Boolean blankThrew = false;
     try {

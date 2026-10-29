@@ -8,18 +8,18 @@
 private class OpportunityQuoteControllerTest {
   @TestSetup
   static void setupCommonData() {
-    Account accountRecord = new Account(Name = 'Quote Controller Account');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'Quote Controller Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())));
+    insert as system accountRecord;
 
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Quote Controller Opp',
+      Name = 'Quote Controller Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
       StageName = 'Nurture',
       CloseDate = Date.today().addDays(30),
       Department_Name__c = 'Crash Barrier',
       Customer_Journey__c = BWM_MessagingConstants.CUSTOMER_JOURNEY_REFER_DEALER
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
   }
 
   /**
@@ -48,7 +48,7 @@ private class OpportunityQuoteControllerTest {
     Opportunity opportunityRecord = [
       SELECT Id
       FROM Opportunity
-      WHERE Name = 'Quote Controller Opp'
+      WHERE Name LIKE 'Quote Controller Opp%'
       LIMIT 1
     ];
     Boolean threw = false;
@@ -96,31 +96,31 @@ private class OpportunityQuoteControllerTest {
     Opportunity opportunityRecord = [
       SELECT Id
       FROM Opportunity
-      WHERE Name = 'Quote Controller Opp'
+      WHERE Name LIKE 'Quote Controller Opp%'
       LIMIT 1
     ];
     Quote quoteRecord = new Quote(
-      Name = 'Controller Quote',
+      Name = 'Controller Quote ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       OpportunityId = opportunityRecord.Id
     );
-    insert quoteRecord;
+    insert as system quoteRecord;
 
     Contact contactRecord = new Contact(
-      LastName = 'Quote Controller Contact',
+      LastName = 'Quote Controller Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = [SELECT Id FROM Account LIMIT 1].Id,
-      Phone = '9876543299',
-      MobilePhone = '9876543299',
-      Email = 'quote.controller@example.com'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'quote.controller+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
     );
-    insert contactRecord;
-    insert new OpportunityContactRole(
+    insert as system contactRecord;
+    insert as system new OpportunityContactRole(
       OpportunityId = opportunityRecord.Id,
       ContactId = contactRecord.Id,
       IsPrimary = true,
       Role = 'Decision Maker'
     );
 
-    update new Opportunity(
+    update as system new Opportunity(
       Id = opportunityRecord.Id,
       SyncedQuoteId = quoteRecord.Id,
       Quotation_Date__c = Date.today(),
@@ -145,31 +145,31 @@ private class OpportunityQuoteControllerTest {
     Opportunity opportunityRecord = [
       SELECT Id
       FROM Opportunity
-      WHERE Name = 'Quote Controller Opp'
+      WHERE Name LIKE 'Quote Controller Opp%'
       LIMIT 1
     ];
     Quote quoteRecord = new Quote(
-      Name = 'Skipped Controller Quote',
+      Name = 'Skipped Controller Quote ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       OpportunityId = opportunityRecord.Id
     );
-    insert quoteRecord;
+    insert as system quoteRecord;
 
     Contact contactRecord = new Contact(
-      LastName = 'Skipped Controller Contact',
+      LastName = 'Skipped Controller Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = [SELECT Id FROM Account LIMIT 1].Id,
-      Phone = '9876543288',
-      MobilePhone = '9876543288',
-      Email = 'skipped.controller@example.com'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'skipped.controller+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
     );
-    insert contactRecord;
-    insert new OpportunityContactRole(
+    insert as system contactRecord;
+    insert as system new OpportunityContactRole(
       OpportunityId = opportunityRecord.Id,
       ContactId = contactRecord.Id,
       IsPrimary = true,
       Role = 'Decision Maker'
     );
 
-    update new Opportunity(
+    update as system new Opportunity(
       Id = opportunityRecord.Id,
       SyncedQuoteId = quoteRecord.Id,
       Quotation_Date__c = Date.today(),

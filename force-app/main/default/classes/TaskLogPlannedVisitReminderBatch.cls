@@ -6,7 +6,7 @@
  * @date 2026-08-17
  */
 public without sharing class TaskLogPlannedVisitReminderBatch
-    implements Database.Batchable<SObject>, Schedulable {
+    implements Database.Batchable<SObject>{
 
     public static final String TEMPLATE_EMPLOYEE_1DAY =
         'Planned_Visit_Not_Completed_1786603471519';

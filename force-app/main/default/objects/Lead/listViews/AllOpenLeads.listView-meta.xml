@@ -12,5 +12,10 @@
     <columns>Lead_Owner__c</columns>
     <columns>Product_to_Purchase__c</columns>
     <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.STATUS</field>
+        <operation>notEqual</operation>
+        <value>Lost,Qualified</value>
+    </filters>
     <label>All Open Leads</label>
 </ListView>

@@ -22,6 +22,7 @@ export const MEMBER_TYPE = {
  * @param {Array<string>} recordIds Selected record ids.
  * @param {Function} showToast Toast callback(title, message, variant).
  * @param {Function} extractError Error parser.
+ * @param {string} scheduledDateTime UTC schedule from the schedule screen (yyyy-MM-ddTHH:mm:ssZ).
  * @returns {Promise<void>}
  */
 export async function trackCampaignMembers(
@@ -30,13 +31,15 @@ export async function trackCampaignMembers(
     memberType,
     recordIds,
     showToast,
-    extractError
+    extractError,
+    scheduledDateTime
 ) {
     try {
         await createCampaignWithMembers({
             campaignName,
             memberType,
-            recordIds
+            recordIds,
+            scheduledDateTime
         });
     } catch (error) {
         showToast(

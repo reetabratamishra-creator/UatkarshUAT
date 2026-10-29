@@ -166,6 +166,17 @@
             text-align: center; margin-top: 10px; line-height: 1.5;
         }
 
+        /* ── BLANK PAGE FIX — Deepanjan (24th September 2026) ──
+           When the offer letter ends right at the bottom of a page, the empty
+           space after its last line (p margin + inline-block baseline gap +
+           2mm body padding) spilled onto a new page, and the Annexure's
+           page-break then started yet another page - a blank page with only
+           the header. Nothing visible is removed: these are gaps at the very
+           end of a block. */
+        div.document-body-inner { padding-bottom: 0mm; }
+        .signoff { vertical-align: top; }
+        .signoff-last { margin-bottom: 0; }
+
     </style>
 </head>
 <body>
@@ -530,7 +541,7 @@
             <p>Hopefully you will find our rates, terms &amp; condition competitive and
             thereby proceed to award the contract in our favour.</p>
             <br/>
-            <p>
+            <p class="signoff-last">
                 Thanking you,<br/>
                 Yours faithfully,<br/>
                 <span class="bold">For Utkarsh India Limited</span><br/>

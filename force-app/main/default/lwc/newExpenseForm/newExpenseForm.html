@@ -6,8 +6,8 @@
                 <lightning-icon icon-name="custom:custom17" size="medium"></lightning-icon>
             </div>
             <div class="header-text">
-                <h1 class="card-title">Expense Claim</h1>
-                <p class="card-subtitle">Submit your travel &amp; reimbursement details</p>
+                <h1 class="card-title">{cardTitle}</h1>
+                <p class="card-subtitle">{cardSubtitle}</p>
             </div>
         </div>
 
@@ -22,6 +22,28 @@
             <template if:true={eligibilityError}>
                 <div class="eligibility-error">
                     {eligibilityError}
+                </div>
+            </template>
+
+            <!-- Edit mode (rejected expense resubmission) -->
+            <template if:true={isLoadingEdit}>
+                <div class="spinner-overlay">
+                    <lightning-spinner alternative-text="Loading expense" size="medium"></lightning-spinner>
+                </div>
+            </template>
+            <template if:true={editLoadError}>
+                <div class="eligibility-error">
+                    {editLoadError}
+                </div>
+            </template>
+            <template if:true={showEditBanner}>
+                <div class="edit-banner">
+                    <div class="edit-banner-status">{editExpenseStatus}</div>
+                    <template if:true={hasEditRemark}>
+                        <div class="edit-banner-remark">
+                            <span class="edit-banner-label">Remark:</span> {editExpenseRemark}
+                        </div>
+                    </template>
                 </div>
             </template>
 
@@ -86,6 +108,7 @@
                         <template for:each={expenseTypeOptions} for:item="opt">
                             <div key={opt.value} class="toggle-card">
                                 <lightning-input type="toggle" label={opt.label} value={opt.value} data-type={opt.value}
+                                    checked={opt.checked}
                                     message-toggle-active="Added" message-toggle-inactive="Skip"
                                     onchange={handleTypeSelection}>
                                 </lightning-input>
@@ -788,13 +811,23 @@
                                         </template>
 
                                         <!-- 2. Conditional Justification & Proof Upload Section -->
-                                        <template if:true={item.requiresJustificationAndProof}>
+                                        <template if:true={item.showJustificationSection}>
                                             <div class="out-of-policy-box">
                                                 <div class="out-of-policy-header">
                                                     <span class="out-of-policy-icon">⚠️</span>
-                                                    <span class="out-of-policy-title">Special Approval Required (Limit
-                                                        Exceeded / Out of Criteria)</span>
+                                                    <template if:true={item.requiresJustificationAndProof}>
+                                                        <span class="out-of-policy-title">Special Approval Required (Limit
+                                                            Exceeded / Out of Criteria)</span>
+                                                    </template>
+                                                    <template if:true={item.requiresJustificationOnly}>
+                                                        <span class="out-of-policy-title">Justification Required (Overlapping Dates)</span>
+                                                    </template>
                                                 </div>
+
+                                                <!-- Lodging only: overlapping dates warning -->
+                                                <template if:true={item.hasDateOverlap}>
+                                                    <div class="overlap-message">{item.overlapMessage}</div>
+                                                </template>
 
                                                 <lightning-layout multiple-rows class="justification-row-layout">
                                                     <lightning-layout-item size="12" medium-device-size="7"
@@ -811,7 +844,9 @@
                                                         padding="around-small">
                                                         <div class="file-upload-wrapper">
                                                             <label class="file-upload-label">
-                                                                <abbr class="slds-required" title="required">*</abbr>Upload Approval
+                                                                <template if:true={item.requiresJustificationAndProof}>
+                                                                    <abbr class="slds-required" title="required">*</abbr>
+                                                                </template>Upload Approval
                                                             </label>
                                                             <lightning-file-upload
                                                                 label=""
@@ -864,7 +899,7 @@
 
                 <!-- Submit -->
                 <div class="submit-section">
-                    <lightning-button variant="brand" label="Submit Expense Claim" onclick={saveExpense}
+                    <lightning-button variant="brand" label={submitButtonLabel} onclick={saveExpense}
                         disabled={isSubmitDisabled}>
                     </lightning-button>
                 </div>

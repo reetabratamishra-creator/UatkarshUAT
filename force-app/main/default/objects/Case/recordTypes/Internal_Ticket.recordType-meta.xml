@@ -3,6 +3,7 @@
     <fullName>Internal_Ticket</fullName>
     <active>true</active>
     <businessProcess>Internal Ticket</businessProcess>
+    <compactLayoutAssignment>Internal_ticket</compactLayoutAssignment>
     <description>Internal cases</description>
     <label>Internal Ticket</label>
     <picklistValues>

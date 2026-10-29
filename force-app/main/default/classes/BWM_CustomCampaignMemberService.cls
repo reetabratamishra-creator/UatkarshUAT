@@ -8,6 +8,8 @@ public without sharing class BWM_CustomCampaignMemberService {
     public static final String MEMBER_TYPE_CONTACT = 'CONTACT';
     public static final String MEMBER_TYPE_ACCOUNT = 'ACCOUNT';
     public static final String MEMBER_TYPE_OFFLINE_CAMPAIGN = 'OFFLINE_CAMPAIGN';
+    public static final String STATUS_SCHEDULED = 'Scheduled';
+    public static final String STATUS_COMPLETED = 'Completed';
 
     public class CreateCampaignResult {
         @AuraEnabled
@@ -28,13 +30,36 @@ public without sharing class BWM_CustomCampaignMemberService {
         String memberType,
         List<Id> recordIds
     ) {
+        return createCampaignWithMembers(campaignName, memberType, recordIds, null);
+    }
+
+    /**
+     * @description Creates a Campaign with the chosen schedule and one Custom Campaign Member per record id.
+     *              Status is Scheduled when the schedule is in the future, otherwise Completed.
+     * @param campaignName User-entered campaign name.
+     * @param memberType One of the MEMBER_TYPE_* constants.
+     * @param recordIds Recipient record ids for the selected object type.
+     * @param scheduledDateTime UTC timestamp from the schedule screen (yyyy-MM-ddTHH:mm:ssZ), or blank.
+     * @return CreateCampaignResult with campaign id and member count.
+     */
+    public static CreateCampaignResult createCampaignWithMembers(
+        String campaignName,
+        String memberType,
+        List<Id> recordIds,
+        String scheduledDateTime
+    ) {
         validateInputs(campaignName, memberType, recordIds);
         assertCreateAccess();
 
+        Datetime scheduledAt = parseScheduledDateTime(scheduledDateTime);
         Campaign campaignRecord = new Campaign(
             Name = campaignName.trim(),
             IsActive = true,
-            Status = 'In Progress'
+            Scheduled_Date_Time__c = scheduledAt,
+            Sent_Date_Time__c = scheduledAt == null ? Datetime.now() : null,
+            Status = scheduledAt != null && scheduledAt > Datetime.now()
+                ? STATUS_SCHEDULED
+                : STATUS_COMPLETED
         );
         insert campaignRecord;
 
@@ -49,6 +74,19 @@ public without sharing class BWM_CustomCampaignMemberService {
         result.campaignId = campaignRecord.Id;
         result.memberCount = members.size();
         return result;
+    }
+
+    @TestVisible
+    private static Datetime parseScheduledDateTime(String scheduledDateTime) {
+        if (String.isBlank(scheduledDateTime)) {
+            return null;
+        }
+        String value = scheduledDateTime.trim();
+        try {
+            return (Datetime) JSON.deserialize('"' + value + '"', Datetime.class);
+        } catch (Exception ex) {
+            throw new AuraHandledException('Invalid scheduled date and time: ' + value);
+        }
     }
 
     private static void validateInputs(

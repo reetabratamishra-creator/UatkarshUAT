@@ -1341,85 +1341,147 @@
     }
 }
 
-/* ── Day Activity Log Modal ──────────────────────────────────────────────── */
-.up-day-activity-container {
-    border-radius: 16px;
+/* ── Day Activity Log Modal (End WFH / WFO) ───────────────────────────────
+   Mirrors the Check-In modal in punchTimeline (.pt-backdrop / .pt-modal). */
+.up-dal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 99999;
+    padding: 3rem 1rem 1rem;
+    overflow-y: auto;
+}
+
+.up-dal-modal {
+    background: #FFFEF5;
+    width: 100%;
+    max-width: 440px;
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.25),
+                0 0 0 1px rgba(0,0,0,0.05);
     overflow: hidden;
-    max-width: 420px;
-}
-
-.up-day-activity-header {
-    background: #f3eefc;
-    border-bottom: none;
-    text-align: left;
-    padding: 1.1rem 1.25rem 0.5rem;
-}
-
-.up-day-activity-header h2 {
-    font-weight: 700;
-    color: #1a1a2e;
-    margin: 0;
-}
-
-.up-day-activity-subtitle {
-    margin: 0.35rem 0 0;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #1a1a2e;
-}
-
-.up-day-activity-body {
-    background: #f6f3fc;
     display: flex;
     flex-direction: column;
-    gap: 0.85rem;
+    max-height: 85vh;
+    margin: auto 0;
+    flex-shrink: 0;
 }
 
-.up-day-activity-field {
-    background: #fff;
-    border-radius: 12px;
-    padding: 0.65rem 0.75rem;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.up-day-activity-footer {
+.up-dal-header {
+    background: linear-gradient(135deg, #FFF8E1, #FFF3CD);
+    padding: 1.1rem 1.5rem;
     display: flex;
-    gap: 0.75rem;
-    background: #f6f3fc;
-    border-top: none;
-    padding: 0.85rem 1rem 1.1rem;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-.up-btn-day-back {
-    flex: 1;
+.up-dal-header h2 {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1a1a2e;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.up-dal-close-btn {
+    background: rgba(0,0,0,0.06);
     border: none;
-    border-radius: 12px;
-    padding: 0.85rem 1rem;
-    font-weight: 700;
-    font-size: 0.95rem;
-    background: #6d28d9;
-    color: #fff;
     cursor: pointer;
-}
-
-.up-btn-day-submit {
-    flex: 1;
-    border: 1px solid #93c5fd;
-    border-radius: 12px;
-    padding: 0.85rem 1rem;
-    font-weight: 700;
-    font-size: 0.95rem;
-    background: #fff;
-    color: #2563eb;
-    cursor: pointer;
-    display: inline-flex;
+    padding: 0.35rem;
+    color: #555;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    transition: all 0.2s;
 }
 
-.up-btn-day-back:disabled,
-.up-btn-day-submit:disabled {
-    opacity: 0.6;
+.up-dal-close-btn:hover {
+    background: rgba(0,0,0,0.12);
+    transform: rotate(90deg);
+}
+
+.up-dal-close-btn[disabled] {
+    opacity: 0.45;
     cursor: not-allowed;
+}
+
+.up-dal-body {
+    padding: 1.5rem;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 65vh;
+    color: #111;
+}
+
+.up-dal-field {
+    margin-bottom: 1.4rem;
+}
+
+.up-dal-field:last-child {
+    margin-bottom: 0;
+}
+
+.up-dal-footer {
+    padding: 1rem 1.5rem;
+    background: #FAFAF2;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.up-dal-btn {
+    padding: 0.55rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    letter-spacing: 0.01em;
+}
+
+.up-dal-btn[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.up-dal-btn-cancel {
+    background: transparent;
+    color: #555;
+    border: 1px solid #d1d5db;
+}
+
+.up-dal-btn-cancel:hover:not([disabled]) {
+    background: #f0f0f0;
+}
+
+.up-dal-btn-save {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.up-dal-btn-save:hover:not([disabled]) {
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+    transform: translateY(-1px);
+}
+
+.up-dal-pop-in {
+    animation: upDalPopIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes upDalPopIn {
+    from { opacity: 0; transform: scale(0.92) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
 }

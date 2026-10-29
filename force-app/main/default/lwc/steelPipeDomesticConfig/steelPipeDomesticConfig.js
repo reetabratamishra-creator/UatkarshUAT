@@ -81,10 +81,10 @@ const UOM_OPTIONS = [
 
 // Map containing specific descriptions and their assigned baseline characteristics
 const CORE_PIPE_DATA = {
-    "Supply of Galvanized STAY & REGISTER ARM Small Tube(33.7X28.40mm),As per specification ETI/OHE/11(5/89)& ETI/OHE/13(4/84).": { uom: "Meters", minRate: 140, shortName: "Small Tube 33.7x28.40" },
-    "Supply of Galvanized Large Tube (49.00X40.90mm),As per specification ETI/OHE/11(5/89)& ETI/OHE/13(4/84)": { uom: "Meters", minRate: 335, shortName: "Large Tube 49.00x40.90" },
-    "Supply of Galvanized BRACKET Standard Tube (38.00X29.90mm),As per specification ETI/OHE/11(5/89)& ETI/OHE/13(4/84).": { uom: "Meters", minRate: 250, shortName: "BRACKET Tube 38.00x29.90" },
-    "Supply of Galvanized GUIDE Counter Weight Tube 25mm(NB),Length- 5.6MTR. Drawing No. ETI/OHE/P/5060-2 Rev-C": { uom: "Pieces", minRate: 900, shortName: "GUIDE Tube 25mm" }
+    "Supply of Galvanized STAY & REGISTER ARM Small Tube(33.7X28.40mm),As per specification ETI/OHE/11(5/89)& ETI/OHE/13(4/84).": { uom: "Meters", minRate: 140, shortName: "Small Tube 33.7x28.40", spec: "ETI/OHE/11", kgPerMeter: 1.9 },
+    "Supply of Galvanized Large Tube (49.00X40.90mm),As per specification ETI/OHE/11(5/89)& ETI/OHE/13(4/84)": { uom: "Meters", minRate: 335, shortName: "Large Tube 49.00x40.90", spec: "ETI/OHE/11", kgPerMeter: 4.0 },
+    "Supply of Galvanized BRACKET Standard Tube (38.00X29.90mm),As per specification ETI/OHE/11(5/89)& ETI/OHE/13(4/84).": { uom: "Meters", minRate: 250, shortName: "BRACKET Tube 38.00x29.90", spec: "ETI/OHE/11", kgPerMeter: 3.1 },
+    "Supply of Galvanized GUIDE Counter Weight Tube 25mm(NB),Length- 5.6MTR. Drawing No. ETI/OHE/P/5060-2 Rev-C": { uom: "Pieces", minRate: 900, shortName: "GUIDE Tube 25mm", spec: "ETI/OHE/P/5060-2", kgPerMeter: 1.9 }
 };
 
 const STANDARD_DIMENSIONS_MAP = {
@@ -126,7 +126,7 @@ const STANDARD_DIMENSIONS_MAP = {
     }
 };
 
-const FALLBACK_DOMESTIC_CONFIG = {"WEIGHT_MAP":{"IS 1239|Light|2|15mm":0.947,"IS 1239|Light|2.3|20mm":1.38,"IS 1239|Light|2.6|25mm":1.98,"IS 1239|Light|2.6|32mm":2.54,"IS 1239|Light|2.9|40mm":3.23,"IS 1239|Light|2.9|50mm":4.08,"IS 1239|Light|3.2|65mm":5.71,"IS 1239|Light|3.2|80mm":6.72,"IS 1239|Light|3.6|100mm":9.75,"IS 1239|Medium|2.6|15mm":1.21,"IS 1239|Medium|2.6|20mm":1.56,"IS 1239|Medium|3.2|25mm":2.41,"IS 1239|Medium|3.2|32mm":3.1,"IS 1239|Medium|3.2|40mm":3.56,"IS 1239|Medium|3.6|50mm":5.03,"IS 1239|Medium|3.6|65mm":6.42,"IS 1239|Medium|4|80mm":8.36,"IS 1239|Medium|4.5|100mm":12.2,"IS 1239|Heavy|3.2|15mm":1.44,"IS 1239|Heavy|3.2|20mm":1.87,"IS 1239|Heavy|4|25mm":2.93,"IS 1239|Heavy|4|32mm":3.79,"IS 1239|Heavy|4|40mm":4.37,"IS 1239|Heavy|4.5|50mm":6.19,"IS 1239|Heavy|4.5|65mm":7.93,"IS 1239|Heavy|4.8|80mm":9.9,"IS 1239|Heavy|5.4|100mm":14.5,"IS 1161|Default|2|15mm":0.95,"IS 1161|Default|2.5|15mm":1.16,"IS 1161|Default|3|15mm":1.35,"IS 1161|Default|2|20mm":1.23,"IS 1161|Default|2.5|20mm":1.5,"IS 1161|Default|3|20mm":1.77,"IS 1161|Default|2|25mm":1.56,"IS 1161|Default|2.5|25mm":1.92,"IS 1161|Default|3|25mm":2.27,"IS 1161|Default|2|32mm":1.99,"IS 1161|Default|2.5|32mm":2.46,"IS 1161|Default|3|32mm":2.91,"IS 1161|Default|4|32mm":3.79,"IS 1161|Default|2|40mm":2.28,"IS 1161|Default|2.5|40mm":2.82,"IS 1161|Default|3|40mm":3.35,"IS 1161|Default|4|40mm":4.37,"IS 1161|Default|2|50mm":2.88,"IS 1161|Default|2.5|50mm":3.56,"IS 1161|Default|3|50mm":4.24,"IS 1161|Default|4|50mm":5.55,"IS 1161|Default|2|65mm":3.65,"IS 1161|Default|2.5|65mm":4.54,"IS 1161|Default|3|65mm":5.41,"IS 1161|Default|4|65mm":7.11,"IS 1161|Default|5|65mm":8.77,"IS 1161|Default|2|80mm":4.29,"IS 1161|Default|2.5|80mm":5.33,"IS 1161|Default|3|80mm":6.36,"IS 1161|Default|4|80mm":8.38,"IS 1161|Default|5|80mm":10.35,"IS 1161|Default|2|90mm":4.91,"IS 1161|Default|2.5|90mm":6.11,"IS 1161|Default|3|90mm":7.29,"IS 1161|Default|4|90mm":9.63,"IS 1161|Default|5|90mm":11.91,"IS 1161|Default|2.5|100mm":6.89,"IS 1161|Default|3|100mm":8.23,"IS 1161|Default|4|100mm":10.88,"IS 1161|Default|5|100mm":13.48,"IS 1161|Default|6|100mm":16.03,"IS 1161|Default|6.3|100mm":16.78,"IS 1161|Default|2.9|110mm":8.88,"IS 1161|Default|3.2|110mm":9.77,"IS 1161|Default|3.6|110mm":10.96,"IS 1161|Default|4|110mm":12.13,"IS 1161|Default|5|110mm":15.04,"IS 1161|Default|3|125mm":10.11,"IS 1161|Default|4|125mm":13.39,"IS 1161|Default|5|125mm":16.61,"IS 1161|Default|6|125mm":19.78,"IS 1161|Default|6.3|125mm":20.73,"IS 1161|Default|3|135mm":11.05,"IS 1161|Default|4|135mm":14.64,"IS 1161|Default|5|135mm":18.18,"IS 1161|Default|6|135mm":21.66,"IS 1161|Default|6.3|135mm":22.7,"IS 1161|Default|3|150mm":11.99,"IS 1161|Default|4|150mm":15.89,"IS 1161|Default|5|150mm":19.74,"IS 1161|Default|6|150mm":23.54,"IS 1161|Default|6.3|150mm":24.67,"IS 1161|Default|4|175mm":18.71,"IS 1161|Default|5|175mm":23.27,"IS 1161|Default|6|175mm":27.77,"IS 1161|Default|6.3|175mm":29.12,"IS 1161|Default|4|200mm":21.22,"IS 1161|Default|5|200mm":26.4,"IS 1161|Default|6|200mm":31.53,"IS 1161|Default|6.3|200mm":33.06,"IS 1161|Default|8|200mm":41.65,"IS 1161|Default|5|250mm":33.05,"IS 1161|Default|6|250mm":39.51,"IS 1161|Default|6.3|250mm":41.44,"IS 1161|Default|8|250mm":52.28,"IS 1161|Default|6|300mm":47.04,"IS 1161|Default|6.3|300mm":49.34,"IS 1161|Default|8|300mm":62.32,"IS 1161|Default|5|350mm":43.23,"IS 1161|Default|6|350mm":51.73,"IS 1161|Default|6.3|350mm":54.27,"IS 1161|Default|8|350mm":68.58,"IS 3589|Default|4|150mm":16.207,"IS 3589|Default|4.5|150mm":18.177,"IS 3589|Default|4.85|150mm":18.549,"IS 3589|Default|5|150mm":20.135,"IS 3589|Default|5.4|150mm":21.692,"IS 3589|Default|5.5|150mm":22.081,"IS 3589|Default|6|150mm":24.014,"IS 3589|Default|6.35|150mm":25.36,"IS 3589|Default|7|150mm":27.844,"IS 3589|Default|4|200mm":21.217,"IS 3589|Default|4.5|200mm":23.814,"IS 3589|Default|4.85|200mm":25.625,"IS 3589|Default|5|200mm":26.399,"IS 3589|Default|5.4|200mm":28.457,"IS 3589|Default|5.5|200mm":28.971,"IS 3589|Default|6|200mm":31.53,"IS 3589|Default|6.35|200mm":33.315,"IS 3589|Default|7|200mm":36.613,"IS 3589|Default|7.5|200mm":39.135,"IS 3589|Default|8|200mm":41.646,"IS 3589|Default|9|200mm":46.63,"IS 3589|Default|9.5|200mm":49.103,"IS 3589|Default|10|200mm":51.564,"IS 3589|Default|10.5|200mm":54.013,"IS 3589|Default|4|250mm":26.534,"IS 3589|Default|4.5|250mm":29.795,"IS 3589|Default|4.85|250mm":32.071,"IS 3589|Default|5|250mm":33.044,"IS 3589|Default|5.4|250mm":35.635,"IS 3589|Default|5.5|250mm":36.281,"IS 3589|Default|6|250mm":39.505,"IS 3589|Default|6.35|250mm":41.755,"IS 3589|Default|7|250mm":45.917,"IS 3589|Default|7.5|250mm":49.104,"IS 3589|Default|8|250mm":52.279,"IS 3589|Default|9|250mm":58.592,"IS 3589|Default|9.5|250mm":61.73,"IS 3589|Default|10|250mm":64.856,"IS 3589|Default|10.5|250mm":67.969,"IS 3589|Default|4|300mm":31.555,"IS 3589|Default|4.5|300mm":35.444,"IS 3589|Default|4.85|300mm":38.159,"IS 3589|Default|5|300mm":39.32,"IS 3589|Default|5.4|300mm":42.413,"IS 3589|Default|5.5|300mm":43.185,"IS 3589|Default|6|300mm":47.036,"IS 3589|Default|6.35|300mm":49.725,"IS 3589|Default|7|300mm":54.703,"IS 3589|Default|7.5|300mm":58.518,"IS 3589|Default|8|300mm":62.321,"IS 3589|Default|9|300mm":69.889,"IS 3589|Default|9.5|300mm":73.654,"IS 3589|Default|10|300mm":77.408,"IS 3589|Default|10.5|300mm":81.149,"IS 3589|Default|4|350mm":34.682,"IS 3589|Default|4.5|350mm":38.962,"IS 3589|Default|4.85|350mm":41.95,"IS 3589|Default|5|350mm":43.229,"IS 3589|Default|5.4|350mm":46.634,"IS 3589|Default|5.5|350mm":47.484,"IS 3589|Default|6|350mm":51.727,"IS 3589|Default|6.35|350mm":54.689,"IS 3589|Default|7|350mm":60.175,"IS 3589|Default|7.5|350mm":64.381,"IS 3589|Default|8|350mm":68.575,"IS 3589|Default|9|350mm":76.924,"IS 3589|Default|9.5|350mm":81.081,"IS 3589|Default|10|350mm":85.225,"IS 3589|Default|10.5|350mm":89.357,"IS 3589|Default|4|400mm":39.702,"IS 3589|Default|4.5|400mm":44.654,"IS 3589|Default|4.85|400mm":48.086,"IS 3589|Default|5|400mm":49.554,"IS 3589|Default|5.4|400mm":53.465,"IS 3589|Default|5.5|400mm":54.442,"IS 3589|Default|6|400mm":59.317,"IS 3589|Default|6.35|400mm":62.723,"IS 3589|Default|7|400mm":69.031,"IS 3589|Default|7.5|400mm":73.869,"IS 3589|Default|8|400mm":78.695,"IS 3589|Default|9|400mm":88.31,"IS 3589|Default|9.5|400mm":93.099,"IS 3589|Default|10|400mm":97.876,"IS 3589|Default|10.5|400mm":102.64,"IS 4270|Default|5|100mm": 13.48, "IS 4270|Default|5.4|100mm": 14.50, "IS 4270|Default|6|100mm": 16.02, "IS 4270|Default|6.4|100mm": 17.03, "IS 4270|Default|5|125mm": 16.80, "IS 4270|Default|5.4|125mm": 18.10, "IS 4270|Default|6|125mm": 20.02, "IS 4270|Default|6.4|125mm": 21.29, "IS 4270|Default|5|150mm": 20.14, "IS 4270|Default|5.4|150mm": 21.69, "IS 4270|Default|6|150mm": 24.01, "IS 4270|Default|6.4|150mm": 25.55, "IS 4270|Default|7.1|150mm": 28.22, "IS 4270|Default|5.4|175mm": 25.07, "IS 4270|Default|6|175mm": 27.77, "IS 4270|Default|6.4|175mm": 29.56, "IS 4270|Default|7.1|175mm": 32.67, "IS 4270|Default|5.4|200mm": 28.45, "IS 4270|Default|6|200mm": 31.53, "IS 4270|Default|6.4|200mm": 33.57, "IS 4270|Default|7.1|200mm": 37.12, "IS 4270|Default|8|200mm": 41.65, "IS 4270|Default|6|225mm": 35.29, "IS 4270|Default|7.1|225mm": 41.56, "IS 4270|Default|8|225mm": 46.66, "IS 4270|Default|7.1|250mm": 46.57, "IS 4270|Default|8|250mm": 52.30, "IS 4270|Default|9|250mm": 58.61, "IS 4270|Default|10|250mm": 64.88, "IS 4270|Default|7.1|300mm": 55.46, "IS 4270|Default|8|300mm": 62.32, "IS 4270|Default|10|300mm": 77.41, "IS 4270|Default|8|350mm": 68.57, "IS 4270|Default|10|350mm": 85.23, "IS 4270|Default|12|350mm": 101.68, "IS 4270|Default|8|400mm": 78.60, "IS 4270|Default|10|400mm": 97.75, "IS 4270|Default|12|400mm": 116.72, "IS 4270|Default|14|400mm": 135.48,"IS 4923|Square|1.8|19":0.91,"IS 4923|Square|2|19":0.99,"IS 4923|Square|2.3|19":1.1,"IS 4923|Square|2.6|19":1.2,"IS 4923|Square|3|19":1.32,"IS 4923|Square|3.2|19":1.38,"IS 4923|Square|3.6|19":1.48,"IS 4923|Square|1.8|25":1.25,"IS 4923|Square|2|25":1.36,"IS 4923|Square|2.3|25":1.53,"IS 4923|Square|2.6|25":1.69,"IS 4923|Square|3|25":1.89,"IS 4923|Square|3.2|25":1.98,"IS 4923|Square|3.6|25":2.16,"IS 4923|Square|1.8|32":1.64,"IS 4923|Square|2|32":1.8,"IS 4923|Square|2.3|32":2.04,"IS 4923|Square|2.6|32":2.26,"IS 4923|Square|3|32":2.55,"IS 4923|Square|3.2|32":2.69,"IS 4923|Square|3.6|32":2.95,"IS 4923|Square|1.8|38":1.98,"IS 4923|Square|2|38":2.18,"IS 4923|Square|2.3|38":2.47,"IS 4923|Square|2.6|38":2.94,"IS 4923|Square|3|38":3.11,"IS 4923|Square|3.2|38":3.29,"IS 4923|Square|3.6|38":3.63,"IS 4923|Square|1.8|49.5":2.63,"IS 4923|Square|2|49.5":2.9,"IS 4923|Square|2.3|49.5":3.3,"IS 4923|Square|2.6|49.5":3.69,"IS 4923|Square|3|49.5":4.2,"IS 4923|Square|3.2|49.5":4.44,"IS 4923|Square|3.6|49.5":4.93,"IS 4923|Square|2|60":3.6,"IS 4923|Square|2.3|60":4.12,"IS 4923|Square|2.6|60":4.63,"IS 4923|Square|2.9|60":5.13,"IS 4923|Square|3|60":5.3,"IS 4923|Square|3.2|60":5.63,"IS 4923|Square|3.6|60":6.29,"IS 4923|Square|4|60":6.92,"IS 4923|Square|4.3|60":7.39,"IS 4923|Square|4.5|60":7.7,"IS 4923|Square|4.8|60":8.16,"IS 4923|Square|5|60":8.46,"IS 4923|Square|2.5|72":5.38,"IS 4923|Square|2.6|72":5.58,"IS 4923|Square|2.9|72":6.18,"IS 4923|Square|3|72":6.38,"IS 4923|Square|3.2|72":6.78,"IS 4923|Square|3.6|72":7.55,"IS 4923|Square|4|72":8.32,"IS 4923|Square|4.3|72":8.89,"IS 4923|Square|4.5|72":9.27,"IS 4923|Square|4.8|72":9.83,"IS 4923|Square|5|72":10.2,"IS 4923|Square|2.5|80":6.01,"IS 4923|Square|2.6|80":6.24,"IS 4923|Square|2.9|80":6.91,"IS 4923|Square|3|80":7.13,"IS 4923|Square|3.2|80":7.58,"IS 4923|Square|3.6|80":8.46,"IS 4923|Square|4|80":9.32,"IS 4923|Square|4.3|80":9.97,"IS 4923|Square|4.5|80":10.39,"IS 4923|Square|4.8|80":11.03,"IS 4923|Square|5|80":11.46,"IS 4923|Square|2.5|91.5":6.91,"IS 4923|Square|2.6|91.5":7.18,"IS 4923|Square|2.9|91.5":7.96,"IS 4923|Square|3|91.5":8.22,"IS 4923|Square|3.2|91.5":8.74,"IS 4923|Square|3.6|91.5":9.76,"IS 4923|Square|4|91.5":10.77,"IS 4923|Square|4.3|91.5":11.52,"IS 4923|Square|4.5|91.5":12.02,"IS 4923|Square|4.8|91.5":12.76,"IS 4923|Square|5|91.5":13.25,"IS 4923|Square|2.8|100":8.458,"IS 4923|Square|3|100":9.022,"IS 4923|Square|3.2|100":9.581,"IS 4923|Square|3.6|100":10.683,"IS 4923|Square|4|100":11.764,"IS 4923|Square|4.3|100":12.561,"IS 4923|Square|4.5|100":13.085,"IS 4923|Square|4.8|100":13.862,"IS 4923|Square|5|100":14.373,"IS 4923|Square|3|113.5":10.29,"IS 4923|Square|3.2|113.5":10.95,"IS 4923|Square|3.6|113.5":12.25,"IS 4923|Square|4|113.5":13.53,"IS 4923|Square|4.3|113.5":14.49,"IS 4923|Square|4.5|113.5":15.13,"IS 4923|Square|4.8|113.5":16.08,"IS 4923|Square|5|113.5":16.71,"IS 4923|Square|2|120":7.431,"IS 4923|Square|2.3|120":8.499,"IS 4923|Square|2.5|120":9.205,"IS 4923|Square|2.6|120":9.556,"IS 4923|Square|2.9|120":10.601,"IS 4923|Square|3|120":10.947,"IS 4923|Square|3.2|120":11.634,"IS 4923|Square|3.6|120":12.992,"IS 4923|Square|4|120":14.33,"IS 4923|Square|4.3|120":15.319,"IS 4923|Square|4.5|120":15.971,"IS 4923|Square|4.8|120":16.94,"IS 4923|Square|5|120":17.58,"IS 4923|Square|6|120":20.697,"IS 4923|Square|3.6|132":14.34,"IS 4923|Square|4|132":15.85,"IS 4923|Square|4.3|132":16.99,"IS 4923|Square|4.5|132":17.74,"IS 4923|Square|4.8|132":18.87,"IS 4923|Square|5|132":19.61,"IS 4923|Square|3.6|150":16.37,"IS 4923|Square|4|150":18.11,"IS 4923|Square|4.3|150":19.42,"IS 4923|Square|4.5|150":20.28,"IS 4923|Square|4.8|150":21.58,"IS 4923|Square|5|150":22.44,"IS 4923|Square|3.5|180":19.68,"IS 4923|Square|3.6|180":19.68,"IS 4923|Square|4|180":21.88,"IS 4923|Square|4.3|180":23.47,"IS 4923|Square|4.5|180":24.52,"IS 4923|Square|4.8|180":26.09,"IS 4923|Square|5|180":27.15,"IS 4923|Square|3.6|220":24.2,"IS 4923|Square|4|220":26.81,"IS 4923|Square|4.3|220":28.75,"IS 4923|Square|4.5|220":30.04,"IS 4923|Square|4.8|220":31.97,"IS 4923|Square|5|220":33.25,"IS 4923|Square|3.6|260":28.72,"IS 4923|Square|4|260":31.83,"IS 4923|Square|4.3|260":34.15,"IS 4923|Square|4.5|260":35.69,"IS 4923|Square|4.8|260":38,"IS 4923|Square|5|260":39.53,"IS 4923|Rectangular|1.8|50":1.95,"IS 4923|Rectangular|2|50":2.15,"IS 4923|Rectangular|2.3|50":2.44,"IS 4923|Rectangular|2.5|50":2.62,"IS 4923|Rectangular|2.8|50":2.89,"IS 4923|Rectangular|3|50":3.07,"IS 4923|Rectangular|3.2|50":3.24,"IS 4923|Rectangular|3.6|50":3.57,"IS 4923|Rectangular|1.8|60":2.66,"IS 4923|Rectangular|2|60":2.93,"IS 4923|Rectangular|2.3|60":3.34,"IS 4923|Rectangular|2.5|60":3.6,"IS 4923|Rectangular|2.8|60":3.99,"IS 4923|Rectangular|3|60":4.25,"IS 4923|Rectangular|3.2|60":4.5,"IS 4923|Rectangular|3.6|60":4.98,"IS 4923|Rectangular|1.8|66":2.63,"IS 4923|Rectangular|2|66":2.9,"IS 4923|Rectangular|2.3|66":3.3,"IS 4923|Rectangular|2.5|66":3.56,"IS 4923|Rectangular|2.8|66":3.95,"IS 4923|Rectangular|3|66":4.2,"IS 4923|Rectangular|3.2|66":4.44,"IS 4923|Rectangular|3.6|66":4.93,"IS 4923|Rectangular|2.5|70":3.6,"IS 4923|Rectangular|2.8|70":3.99,"IS 4923|Rectangular|3|70":4.25,"IS 4923|Rectangular|3.2|70":4.5,"IS 4923|Rectangular|3.6|70":4.98,"IS 4923|Rectangular|4|70":5.45,"IS 4923|Rectangular|4.3|70":5.8,"IS 4923|Rectangular|4.5|70":6.02,"IS 4923|Rectangular|2.5|75":3.6,"IS 4923|Rectangular|2.8|75":3.99,"IS 4923|Rectangular|3|75":4.25,"IS 4923|Rectangular|3.2|75":4.5,"IS 4923|Rectangular|3.6|75":4.98,"IS 4923|Rectangular|4|75":5.45,"IS 4923|Rectangular|4.3|75":5.8,"IS 4923|Rectangular|4.5|75":6.02,"IS 4923|Rectangular|2.5|80":4.39,"IS 4923|Rectangular|2.8|80":4.87,"IS 4923|Rectangular|3|80":5.19,"IS 4923|Rectangular|3.2|80":5.5,"IS 4923|Rectangular|3.6|80":6.11,"IS 4923|Rectangular|4|80":6.71,"IS 4923|Rectangular|4.3|80":7.15,"IS 4923|Rectangular|4.5|80":7.43,"IS 4923|Rectangular|2.5|96":5.357,"IS 4923|Rectangular|2.8|96":5.944,"IS 4923|Rectangular|3|96":6.329,"IS 4923|Rectangular|3.2|96":6.71,"IS 4923|Rectangular|3.6|96":7.47,"IS 4923|Rectangular|4|96":8.22,"IS 4923|Rectangular|4.3|96":8.77,"IS 4923|Rectangular|4.5|96":9.13,"IS 4923|Rectangular|2.5|100":5.598,"IS 4923|Rectangular|2.8|100":6.213,"IS 4923|Rectangular|3|100":6.617,"IS 4923|Rectangular|3.2|100":7.016,"IS 4923|Rectangular|3.5|100":7.61,"IS 4923|Rectangular|3.6|100":7.81,"IS 4923|Rectangular|4|100":8.59,"IS 4923|Rectangular|4.3|100":9.17,"IS 4923|Rectangular|4.5|100":9.55,"IS 4923|Rectangular|2.5|122":6.92,"IS 4923|Rectangular|2.8|122":7.695,"IS 4923|Rectangular|3|122":8.205,"IS 4923|Rectangular|3.2|122":8.709,"IS 4923|Rectangular|3.5|122":9.42,"IS 4923|Rectangular|3.6|122":9.67,"IS 4923|Rectangular|4|122":10.67,"IS 4923|Rectangular|4.3|122":11.4,"IS 4923|Rectangular|4.5|122":11.88,"IS 4923|Rectangular|5|122":13.07,"IS 4923|Rectangular|3.5|145":11.84,"IS 4923|Rectangular|3.6|145":12.16,"IS 4923|Rectangular|4|145":13.43,"IS 4923|Rectangular|4.3|145":14.37,"IS 4923|Rectangular|4.5|145":14.99,"IS 4923|Rectangular|5|145":16.53,"IS 4923|Rectangular|2|150":7.751,"IS 4923|Rectangular|2.3|150":8.868,"IS 4923|Rectangular|2.5|150":9.606,"IS 4923|Rectangular|2.8|150":10.703,"IS 4923|Rectangular|3|150":11.428,"IS 4923|Rectangular|3.2|150":12.147,"IS 4923|Rectangular|3.5|150":13.216,"IS 4923|Rectangular|3.6|150":13.57,"IS 4923|Rectangular|4|150":14.971,"IS 4923|Rectangular|4.3|150":16.008,"IS 4923|Rectangular|4.5|150":16.693,"IS 4923|Rectangular|5|150":18.381,"IS 4923|Rectangular|6|150":21.659,"IS 4923|Rectangular|2|172":8.2,"IS 4923|Rectangular|2.3|172":9.385,"IS 4923|Rectangular|2.5|172":10.167,"IS 4923|Rectangular|2.8|172":11.332,"IS 4923|Rectangular|3|172":12.101,"IS 4923|Rectangular|3.2|172":12.865,"IS 4923|Rectangular|6|172":23.006,"IS 4923|Rectangular|3.5|172":13.87,"IS 4923|Rectangular|3.6|172":14.25,"IS 4923|Rectangular|4|172":15.75,"IS 4923|Rectangular|4.3|172":16.87,"IS 4923|Rectangular|4.5|172":17.61,"IS 4923|Rectangular|5|172":19.43,"IS 4923|Rectangular|2|200":9.355,"IS 4923|Rectangular|2.3|200":10.712,"IS 4923|Rectangular|2.5|200":11.61,"IS 4923|Rectangular|2.8|200":12.948,"IS 4923|Rectangular|3|200":13.833,"IS 4923|Rectangular|3.2|200":14.712,"IS 4923|Rectangular|3.5|200":16.022,"IS 4923|Rectangular|3.6|200":16.456,"IS 4923|Rectangular|4|200":18.178,"IS 4923|Rectangular|4.3|200":19.455,"IS 4923|Rectangular|4.5|200":20.301,"IS 4923|Rectangular|5|200":22.39,"IS 4923|Rectangular|6|200":26.469,"IS 4923|Rectangular|2|240":11.279,"IS 4923|Rectangular|2.3|240":12.925,"IS 4923|Rectangular|2.5|240":14.016,"IS 4923|Rectangular|2.8|240":15.642,"IS 4923|Rectangular|3|240":16.719,"IS 4923|Rectangular|3.2|240":17.791,"IS 4923|Rectangular|3.5|240":19.389,"IS 4923|Rectangular|3.6|240":19.919,"IS 4923|Rectangular|4|240":22.026,"IS 4923|Rectangular|4.3|240":23.592,"IS 4923|Rectangular|4.5|240":24.63,"IS 4923|Rectangular|5|240":27.2,"IS 4923|Rectangular|6|240":32.242,"IS 9295|Default|3.65|63.5":5.39,"IS 9295|Default|4.5|63.5":6.55,"IS 9295|Default|3.65|76.1":6.52,"IS 9295|Default|4.5|76.1":7.95,"IS 9295|Default|4.05|88.9":8.47,"IS 9295|Default|4.85|88.9":10.05,"IS 9295|Default|6.3|88.9":12.83,"IS 9295|Default|4.05|101.6":9.74,"IS 9295|Default|4.85|101.6":11.57,"IS 9295|Default|6.3|101.6":14.81,"IS 9295|Default|4.05|108":10.38,"IS 9295|Default|4.85|108":12.34,"IS 9295|Default|6.3|108":15.80,"IS 9295|Default|4.5|114.3":12.19,"IS 9295|Default|5.4|114.3":14.5,"IS 9295|Default|6.3|114.3":16.78,"IS 9295|Default|4.5|120":12.82,"IS 9295|Default|5.4|120":15.26,"IS 9295|Default|6.3|120":17.66,"IS 9295|Default|4.5|127":13.6,"IS 9295|Default|4.85|127":14.61,"IS 9295|Default|5.4|127":16.19,"IS 9295|Default|6.3|127":18.75,"IS 9295|Default|4.5|133":14.26,"IS 9295|Default|4.85|133":15.33,"IS 9295|Default|5.4|133":16.99,"IS 9295|Default|6.3|133":19.68,"IS 9295|Default|4.5|139.7":15,"IS 9295|Default|4.85|139.7":16.13,"IS 9295|Default|5.4|139.7":17.89,"IS 9295|Default|6.3|139.7":20.73,"IS 9295|Default|4.5|152.4":16.41,"IS 9295|Default|4.85|152.4":17.65,"IS 9295|Default|5.4|152.4":19.58,"IS 9295|Default|6.3|152.4":22.7,"IS 9295|Default|4.5|159":17.15,"IS 9295|Default|4.85|159":18.44,"IS 9295|Default|5.4|159":20.46,"IS 9295|Default|6.3|159":23.72,"IS 9295|Default|4.5|165.1":17.82,"IS 9295|Default|4.85|165.1":19.17,"IS 9295|Default|5.4|165.1":21.27,"IS 9295|Default|6.3|165.1":24.67,"IS 9295|Default|4.5|168.3":18.18,"IS 9295|Default|4.85|168.3":19.55,"IS 9295|Default|5.4|168.3":21.69,"IS 9295|Default|6.3|168.3":25.17,"IS 9295|Default|5.4|193.7":25.08,"IS 9295|Default|6.3|193.7":29.12,"IS 9295|Default|7.1|193.7":32.67,"IS 9295|Default|5.4|219.1":28.46,"IS 9295|Default|6.3|219.1":33.06,"IS 9295|Default|7.1|219.1":37.12,"IS 10577|Light|2|15mm":0.952,"IS 10577|Light|2.35|20mm":1.41,"IS 10577|Light|2.65|25mm":2.01,"IS 10577|Medium|2.65|15mm":1.22,"IS 10577|Medium|2.65|20mm":1.58,"IS 10577|Medium|3.25|25mm":2.44,"IS 10577|Heavy|3.25|15mm":1.45,"IS 10577|Heavy|3.25|20mm":1.9,"IS 10577|Heavy|4.05|25mm":2.97,"ASTMA|SCH-40|2.77|15mm":1.27,"ASTMA|SCH-40|2.87|20mm":1.69,"ASTMA|SCH-40|3.38|25mm":2.5,"ASTMA|SCH-40|3.56|32mm":3.39,"ASTMA|SCH-40|3.68|40mm":4.05,"ASTMA|SCH-40|3.91|50mm":5.44,"ASTMA|SCH-40|5.16|65mm":8.63,"ASTMA|SCH-40|5.49|80mm":11.29,"ASTMA|SCH-40|5.74|90mm":13.57,"ASTMA|SCH-40|6.02|100mm":16.07,"ASTMA|SCH-40|6.55|125mm":21.77,"ASTMA|SCH-40|7.11|150mm":28.26,"ASTMA|SCH-20|6.35|200mm":33.31,"ASTMA|SCH-30|7.04|200mm":36.81,"ASTMA|SCH-40|8.18|200mm":42.55,"ASTMA|SCH-60|10.31|200mm":53.08,"ASTMA|SCH-20|6.35|250mm":41.75,"ASTMA|SCH-30|7.80|250mm":51.01,"ASTMA|SCH-40|9.27|250mm":60.29,"ASTMA|SCH-20|6.35|300mm":49.73,"ASTMA|SCH-30|8.38|300mm":65.20,"ASTMA|SCH-10|6.35|350mm":54.69,"ASTMA|SCH-20|7.92|350mm":67.90,"ASTMA|SCH-30|9.52|350mm":81.25,"ASTMA|SCH-10|6.35|400mm":62.72,"ASTMA|SCH-20|7.92|400mm":77.92,"ASTMA|SCH-30|9.52|400mm":93.29,"ASTMA-B|SCH-40|2.77|15mm":1.27,"ASTMA-B|SCH-40|2.87|20mm":1.69,"ASTMA-B|SCH-40|3.38|25mm":2.5,"ASTMA-B|SCH-40|3.56|32mm":3.39,"ASTMA-B|SCH-40|3.68|40mm":4.05,"ASTMA-B|SCH-40|3.91|50mm":5.44,"ASTMA-B|SCH-40|5.16|65mm":8.63,"ASTMA-B|SCH-40|5.49|80mm":11.29,"ASTMA-B|SCH-40|5.74|90mm":13.57,"ASTMA-B|SCH-40|6.02|100mm":16.07,"ASTMA-B|SCH-40|6.55|125mm":21.77,"ASTMA-B|SCH-40|7.11|150mm":28.26,"ASTMA-B|SCH-10|3.76|200mm":20.17,"ASTMA-B|SCH-20|6.35|200mm":33.31,"ASTMA-B|SCH-30|7.04|200mm":36.81,"ASTMA-B|SCH-40|8.18|200mm":42.55,"ASTMA-B|SCH-60|10.31|200mm":53.08,"ASTMA-B|SCH-10|4.19|250mm":27.85,"ASTMA-B|SCH-20|6.35|250mm":41.75,"ASTMA-B|SCH-30|7.80|250mm":51.01,"ASTMA-B|SCH-40|9.27|250mm":60.29,"ASTMA-B|SCH-10|4.57|300mm":36.22,"ASTMA-B|SCH-20|6.35|300mm":49.73,"ASTMA-B|SCH-30|8.38|300mm":65.20,"ASTMA-B|SCH-40|10.31|300mm":79.74,"ASTMA-B|SCH-10|6.35|350mm":54.69,"ASTMA-B|SCH-20|7.92|350mm":67.90,"ASTMA-B|SCH-30|9.52|350mm":81.25,"ASTMA-B|SCH-10|6.35|400mm":62.72,"ASTMA-B|SCH-20|7.92|400mm":77.92,"ASTMA-B|SCH-30|9.52|400mm":93.29},"SHAPE_DEPENDENT_MAP":{"IS 1239":["Light","Medium","Heavy"],"IS 4923":["Square","Rectangular"],"IS 10577":["Light","Medium","Heavy"],"IS 4270":["Default"],"ASTMA":["SCH-10","SCH-20","SCH-30","SCH-40","SCH-60"],"ASTMA-B":["SCH-10","SCH-20","SCH-30","SCH-40","SCH-60"]},"CLASS_DEPENDENT_MAP":{"IS 1239|Light":["2","2.3","2.6","2.9","3.2","3.6"],"IS 1239|Medium":["2.6","3.2","3.6","4","4.5","4.8"],"IS 1239|Heavy":["3.2","4","4.5","4.8","5.4"],"IS 1161|Default":["2","2.5","2.9","3","3.2","3.6","4","5","6","6.3","8"],"IS 3589|Default":["4","4.5","4.85","5","5.4","5.5","6","6.35","7","7.5","8","9","9.5","10","10.5"],"IS 4270|Default":["5","5.4","6","6.4","7.1","8","9","10","12","14"],"IS 4923|Square":["1.8","2","2.3","2.5","2.6","2.8","2.9","3","3.2","3.6","4","4.3","4.5","4.8","5","6"],"IS 4923|Rectangular":["1.8","2","2.3","2.5","2.8","3","3.2","3.5","3.6","4","4.3","4.5","5","6"],"IS 9295|Default":["3.65","4.05","4.5","4.85","5.4","6.3","7.1"],"IS 10577|Light":["2","2.35","2.65"],"IS 10577|Medium":["2.65","3.25"],"IS 10577|Heavy":["3.25","4.05"],"ASTMA|SCH-10":["6.35"],"ASTMA|SCH-20":["6.35","7.92"],"ASTMA|SCH-30":["7.04","7.80","8.38","9.52"],"ASTMA|SCH-40":["2.77","2.87","3.38","3.56","3.68","3.91","5.16","5.49","5.74","6.02","6.55","7.11","8.18","9.27"],"ASTMA|SCH-60":["10.31"],"ASTMA-B|SCH-10":["3.76","4.19","4.57","6.35"],"ASTMA-B|SCH-20":["6.35","7.92"],"ASTMA-B|SCH-30":["7.04","7.80","8.38","9.52"],"ASTMA-B|SCH-40":["2.77","2.87","3.38","3.56","3.68","3.91","5.16","5.49","5.74","6.02","6.55","7.11","8.18","9.27","10.31"],"ASTMA-B|SCH-60":["10.31"]},"BASE_RATES":{"Black Steel":62.5,"Galvanized Iron (GI)":70,"Stainless Steel":150}};
+const FALLBACK_DOMESTIC_CONFIG = {"WEIGHT_MAP":{"IS 1239|Light|2|15mm":0.947,"IS 1239|Light|2.3|20mm":1.38,"IS 1239|Light|2.6|25mm":1.98,"IS 1239|Light|2.6|32mm":2.54,"IS 1239|Light|2.9|40mm":3.23,"IS 1239|Light|2.9|50mm":4.08,"IS 1239|Light|3.2|65mm":5.71,"IS 1239|Light|3.2|80mm":6.72,"IS 1239|Light|3.6|100mm":9.75,"IS 1239|Medium|2.6|15mm":1.21,"IS 1239|Medium|2.6|20mm":1.56,"IS 1239|Medium|3.2|25mm":2.41,"IS 1239|Medium|3.2|32mm":3.1,"IS 1239|Medium|3.2|40mm":3.56,"IS 1239|Medium|3.6|50mm":5.03,"IS 1239|Medium|3.6|65mm":6.42,"IS 1239|Medium|4|80mm":8.36,"IS 1239|Medium|4.5|100mm":12.2,"IS 1239|Medium|4.8|125mm":15.9,"IS 1239|Medium|4.8|150mm":18.9,"IS 1239|Heavy|3.2|15mm":1.44,"IS 1239|Heavy|3.2|20mm":1.87,"IS 1239|Heavy|4|25mm":2.93,"IS 1239|Heavy|4|32mm":3.79,"IS 1239|Heavy|4|40mm":4.37,"IS 1239|Heavy|4.5|50mm":6.19,"IS 1239|Heavy|4.5|65mm":7.93,"IS 1239|Heavy|4.8|80mm":9.9,"IS 1239|Heavy|5.4|100mm":14.5,"IS 1239|Heavy|5.4|125mm":17.9,"IS 1239|Heavy|5.4|150mm":21.3,"IS 1161|Default|2|15mm":0.95,"IS 1161|Default|2.5|15mm":1.16,"IS 1161|Default|3|15mm":1.35,"IS 1161|Default|2|20mm":1.23,"IS 1161|Default|2.5|20mm":1.5,"IS 1161|Default|3|20mm":1.77,"IS 1161|Default|2|25mm":1.56,"IS 1161|Default|2.5|25mm":1.92,"IS 1161|Default|3|25mm":2.27,"IS 1161|Default|2|32mm":1.99,"IS 1161|Default|2.5|32mm":2.46,"IS 1161|Default|3|32mm":2.91,"IS 1161|Default|4|32mm":3.79,"IS 1161|Default|2|40mm":2.28,"IS 1161|Default|2.5|40mm":2.82,"IS 1161|Default|3|40mm":3.35,"IS 1161|Default|4|40mm":4.37,"IS 1161|Default|2|50mm":2.88,"IS 1161|Default|2.5|50mm":3.56,"IS 1161|Default|3|50mm":4.24,"IS 1161|Default|4|50mm":5.55,"IS 1161|Default|2|65mm":3.65,"IS 1161|Default|2.5|65mm":4.54,"IS 1161|Default|3|65mm":5.41,"IS 1161|Default|4|65mm":7.11,"IS 1161|Default|5|65mm":8.77,"IS 1161|Default|2|80mm":4.29,"IS 1161|Default|2.5|80mm":5.33,"IS 1161|Default|3|80mm":6.36,"IS 1161|Default|4|80mm":8.38,"IS 1161|Default|5|80mm":10.35,"IS 1161|Default|2|90mm":4.91,"IS 1161|Default|2.5|90mm":6.11,"IS 1161|Default|3|90mm":7.29,"IS 1161|Default|4|90mm":9.63,"IS 1161|Default|5|90mm":11.91,"IS 1161|Default|2.5|100mm":6.89,"IS 1161|Default|3|100mm":8.23,"IS 1161|Default|4|100mm":10.88,"IS 1161|Default|5|100mm":13.48,"IS 1161|Default|6|100mm":16.03,"IS 1161|Default|6.3|100mm":16.78,"IS 1161|Default|2.9|110mm":8.88,"IS 1161|Default|3.2|110mm":9.77,"IS 1161|Default|3.6|110mm":10.96,"IS 1161|Default|4|110mm":12.13,"IS 1161|Default|5|110mm":15.04,"IS 1161|Default|3|125mm":10.11,"IS 1161|Default|4|125mm":13.39,"IS 1161|Default|5|125mm":16.61,"IS 1161|Default|6|125mm":19.78,"IS 1161|Default|6.3|125mm":20.73,"IS 1161|Default|3|135mm":11.05,"IS 1161|Default|4|135mm":14.64,"IS 1161|Default|5|135mm":18.18,"IS 1161|Default|6|135mm":21.66,"IS 1161|Default|6.3|135mm":22.7,"IS 1161|Default|3|150mm":11.99,"IS 1161|Default|4|150mm":15.89,"IS 1161|Default|5|150mm":19.74,"IS 1161|Default|6|150mm":23.54,"IS 1161|Default|6.3|150mm":24.67,"IS 1161|Default|4|175mm":18.71,"IS 1161|Default|5|175mm":23.27,"IS 1161|Default|6|175mm":27.77,"IS 1161|Default|6.3|175mm":29.12,"IS 1161|Default|4|200mm":21.22,"IS 1161|Default|5|200mm":26.4,"IS 1161|Default|6|200mm":31.53,"IS 1161|Default|6.3|200mm":33.06,"IS 1161|Default|8|200mm":41.65,"IS 1161|Default|5|250mm":33.05,"IS 1161|Default|6|250mm":39.51,"IS 1161|Default|6.3|250mm":41.44,"IS 1161|Default|8|250mm":52.28,"IS 1161|Default|6|300mm":47.04,"IS 1161|Default|6.3|300mm":49.34,"IS 1161|Default|8|300mm":62.32,"IS 1161|Default|5|350mm":43.23,"IS 1161|Default|6|350mm":51.73,"IS 1161|Default|6.3|350mm":54.27,"IS 1161|Default|8|350mm":68.58,"IS 3589|Default|4|150mm":16.207,"IS 3589|Default|4.5|150mm":18.177,"IS 3589|Default|4.85|150mm":18.549,"IS 3589|Default|5|150mm":20.135,"IS 3589|Default|5.4|150mm":21.692,"IS 3589|Default|5.5|150mm":22.081,"IS 3589|Default|6|150mm":24.014,"IS 3589|Default|6.35|150mm":25.36,"IS 3589|Default|7|150mm":27.844,"IS 3589|Default|4|200mm":21.217,"IS 3589|Default|4.5|200mm":23.814,"IS 3589|Default|4.85|200mm":25.625,"IS 3589|Default|5|200mm":26.399,"IS 3589|Default|5.4|200mm":28.457,"IS 3589|Default|5.5|200mm":28.971,"IS 3589|Default|6|200mm":31.53,"IS 3589|Default|6.35|200mm":33.315,"IS 3589|Default|7|200mm":36.613,"IS 3589|Default|7.5|200mm":39.135,"IS 3589|Default|8|200mm":41.646,"IS 3589|Default|9|200mm":46.63,"IS 3589|Default|9.5|200mm":49.103,"IS 3589|Default|10|200mm":51.564,"IS 3589|Default|10.5|200mm":54.013,"IS 3589|Default|4|250mm":26.534,"IS 3589|Default|4.5|250mm":29.795,"IS 3589|Default|4.85|250mm":32.071,"IS 3589|Default|5|250mm":33.044,"IS 3589|Default|5.4|250mm":35.635,"IS 3589|Default|5.5|250mm":36.281,"IS 3589|Default|6|250mm":39.505,"IS 3589|Default|6.35|250mm":41.755,"IS 3589|Default|7|250mm":45.917,"IS 3589|Default|7.5|250mm":49.104,"IS 3589|Default|8|250mm":52.279,"IS 3589|Default|9|250mm":58.592,"IS 3589|Default|9.5|250mm":61.73,"IS 3589|Default|10|250mm":64.856,"IS 3589|Default|10.5|250mm":67.969,"IS 3589|Default|4|300mm":31.555,"IS 3589|Default|4.5|300mm":35.444,"IS 3589|Default|4.85|300mm":38.159,"IS 3589|Default|5|300mm":39.32,"IS 3589|Default|5.4|300mm":42.413,"IS 3589|Default|5.5|300mm":43.185,"IS 3589|Default|6|300mm":47.036,"IS 3589|Default|6.35|300mm":49.725,"IS 3589|Default|7|300mm":54.703,"IS 3589|Default|7.5|300mm":58.518,"IS 3589|Default|8|300mm":62.321,"IS 3589|Default|9|300mm":69.889,"IS 3589|Default|9.5|300mm":73.654,"IS 3589|Default|10|300mm":77.408,"IS 3589|Default|10.5|300mm":81.149,"IS 3589|Default|4|350mm":34.682,"IS 3589|Default|4.5|350mm":38.962,"IS 3589|Default|4.85|350mm":41.95,"IS 3589|Default|5|350mm":43.229,"IS 3589|Default|5.4|350mm":46.634,"IS 3589|Default|5.5|350mm":47.484,"IS 3589|Default|6|350mm":51.727,"IS 3589|Default|6.35|350mm":54.689,"IS 3589|Default|7|350mm":60.175,"IS 3589|Default|7.5|350mm":64.381,"IS 3589|Default|8|350mm":68.575,"IS 3589|Default|9|350mm":76.924,"IS 3589|Default|9.5|350mm":81.081,"IS 3589|Default|10|350mm":85.225,"IS 3589|Default|10.5|350mm":89.357,"IS 3589|Default|4|400mm":39.702,"IS 3589|Default|4.5|400mm":44.654,"IS 3589|Default|4.85|400mm":48.086,"IS 3589|Default|5|400mm":49.554,"IS 3589|Default|5.4|400mm":53.465,"IS 3589|Default|5.5|400mm":54.442,"IS 3589|Default|6|400mm":59.317,"IS 3589|Default|6.35|400mm":62.723,"IS 3589|Default|7|400mm":69.031,"IS 3589|Default|7.5|400mm":73.869,"IS 3589|Default|8|400mm":78.695,"IS 3589|Default|9|400mm":88.31,"IS 3589|Default|9.5|400mm":93.099,"IS 3589|Default|10|400mm":97.876,"IS 3589|Default|10.5|400mm":102.64,"IS 4270|Default|5|100mm": 13.48, "IS 4270|Default|5.4|100mm": 14.50, "IS 4270|Default|6|100mm": 16.02, "IS 4270|Default|6.4|100mm": 17.03, "IS 4270|Default|5|125mm": 16.80, "IS 4270|Default|5.4|125mm": 18.10, "IS 4270|Default|6|125mm": 20.02, "IS 4270|Default|6.4|125mm": 21.29, "IS 4270|Default|5|150mm": 20.14, "IS 4270|Default|5.4|150mm": 21.69, "IS 4270|Default|6|150mm": 24.01, "IS 4270|Default|6.4|150mm": 25.55, "IS 4270|Default|7.1|150mm": 28.22, "IS 4270|Default|5.4|175mm": 25.07, "IS 4270|Default|6|175mm": 27.77, "IS 4270|Default|6.4|175mm": 29.56, "IS 4270|Default|7.1|175mm": 32.67, "IS 4270|Default|5.4|200mm": 28.45, "IS 4270|Default|6|200mm": 31.53, "IS 4270|Default|6.4|200mm": 33.57, "IS 4270|Default|7.1|200mm": 37.12, "IS 4270|Default|8|200mm": 41.65, "IS 4270|Default|6|225mm": 35.29, "IS 4270|Default|7.1|225mm": 41.56, "IS 4270|Default|8|225mm": 46.66, "IS 4270|Default|7.1|250mm": 46.57, "IS 4270|Default|8|250mm": 52.30, "IS 4270|Default|9|250mm": 58.61, "IS 4270|Default|10|250mm": 64.88, "IS 4270|Default|7.1|300mm": 55.46, "IS 4270|Default|8|300mm": 62.32, "IS 4270|Default|10|300mm": 77.41, "IS 4270|Default|8|350mm": 68.57, "IS 4270|Default|10|350mm": 85.23, "IS 4270|Default|12|350mm": 101.68, "IS 4270|Default|8|400mm": 78.60, "IS 4270|Default|10|400mm": 97.75, "IS 4270|Default|12|400mm": 116.72, "IS 4270|Default|14|400mm": 135.48,"IS 4923|Square|1.8|19":0.91,"IS 4923|Square|2|19":0.99,"IS 4923|Square|2.3|19":1.1,"IS 4923|Square|2.6|19":1.2,"IS 4923|Square|3|19":1.32,"IS 4923|Square|3.2|19":1.38,"IS 4923|Square|3.6|19":1.48,"IS 4923|Square|1.8|25":1.25,"IS 4923|Square|2|25":1.36,"IS 4923|Square|2.3|25":1.53,"IS 4923|Square|2.6|25":1.69,"IS 4923|Square|3|25":1.89,"IS 4923|Square|3.2|25":1.98,"IS 4923|Square|3.6|25":2.16,"IS 4923|Square|1.8|32":1.64,"IS 4923|Square|2|32":1.8,"IS 4923|Square|2.3|32":2.04,"IS 4923|Square|2.6|32":2.26,"IS 4923|Square|3|32":2.55,"IS 4923|Square|3.2|32":2.69,"IS 4923|Square|3.6|32":2.95,"IS 4923|Square|1.8|38":1.98,"IS 4923|Square|2|38":2.18,"IS 4923|Square|2.3|38":2.47,"IS 4923|Square|2.6|38":2.94,"IS 4923|Square|3|38":3.11,"IS 4923|Square|3.2|38":3.29,"IS 4923|Square|3.6|38":3.63,"IS 4923|Square|1.8|49.5":2.63,"IS 4923|Square|2|49.5":2.9,"IS 4923|Square|2.3|49.5":3.3,"IS 4923|Square|2.6|49.5":3.69,"IS 4923|Square|3|49.5":4.2,"IS 4923|Square|3.2|49.5":4.44,"IS 4923|Square|3.6|49.5":4.93,"IS 4923|Square|2|60":3.6,"IS 4923|Square|2.3|60":4.12,"IS 4923|Square|2.6|60":4.63,"IS 4923|Square|2.9|60":5.13,"IS 4923|Square|3|60":5.3,"IS 4923|Square|3.2|60":5.63,"IS 4923|Square|3.6|60":6.29,"IS 4923|Square|4|60":6.92,"IS 4923|Square|4.3|60":7.39,"IS 4923|Square|4.5|60":7.7,"IS 4923|Square|4.8|60":8.16,"IS 4923|Square|5|60":8.46,"IS 4923|Square|2.5|72":5.38,"IS 4923|Square|2.6|72":5.58,"IS 4923|Square|2.9|72":6.18,"IS 4923|Square|3|72":6.38,"IS 4923|Square|3.2|72":6.78,"IS 4923|Square|3.6|72":7.55,"IS 4923|Square|4|72":8.32,"IS 4923|Square|4.3|72":8.89,"IS 4923|Square|4.5|72":9.27,"IS 4923|Square|4.8|72":9.83,"IS 4923|Square|5|72":10.2,"IS 4923|Square|2.5|80":6.01,"IS 4923|Square|2.6|80":6.24,"IS 4923|Square|2.9|80":6.91,"IS 4923|Square|3|80":7.13,"IS 4923|Square|3.2|80":7.58,"IS 4923|Square|3.6|80":8.46,"IS 4923|Square|4|80":9.32,"IS 4923|Square|4.3|80":9.97,"IS 4923|Square|4.5|80":10.39,"IS 4923|Square|4.8|80":11.03,"IS 4923|Square|5|80":11.46,"IS 4923|Square|2.5|91.5":6.91,"IS 4923|Square|2.6|91.5":7.18,"IS 4923|Square|2.9|91.5":7.96,"IS 4923|Square|3|91.5":8.22,"IS 4923|Square|3.2|91.5":8.74,"IS 4923|Square|3.6|91.5":9.76,"IS 4923|Square|4|91.5":10.77,"IS 4923|Square|4.3|91.5":11.52,"IS 4923|Square|4.5|91.5":12.02,"IS 4923|Square|4.8|91.5":12.76,"IS 4923|Square|5|91.5":13.25,"IS 4923|Square|2.8|100":8.458,"IS 4923|Square|3|100":9.022,"IS 4923|Square|3.2|100":9.581,"IS 4923|Square|3.6|100":10.683,"IS 4923|Square|4|100":11.764,"IS 4923|Square|4.3|100":12.561,"IS 4923|Square|4.5|100":13.085,"IS 4923|Square|4.8|100":13.862,"IS 4923|Square|5|100":14.373,"IS 4923|Square|3|113.5":10.29,"IS 4923|Square|3.2|113.5":10.95,"IS 4923|Square|3.6|113.5":12.25,"IS 4923|Square|4|113.5":13.53,"IS 4923|Square|4.3|113.5":14.49,"IS 4923|Square|4.5|113.5":15.13,"IS 4923|Square|4.8|113.5":16.08,"IS 4923|Square|5|113.5":16.71,"IS 4923|Square|2|120":7.431,"IS 4923|Square|2.3|120":8.499,"IS 4923|Square|2.5|120":9.205,"IS 4923|Square|2.6|120":9.556,"IS 4923|Square|2.9|120":10.601,"IS 4923|Square|3|120":10.947,"IS 4923|Square|3.2|120":11.634,"IS 4923|Square|3.6|120":12.992,"IS 4923|Square|4|120":14.33,"IS 4923|Square|4.3|120":15.319,"IS 4923|Square|4.5|120":15.971,"IS 4923|Square|4.8|120":16.94,"IS 4923|Square|5|120":17.58,"IS 4923|Square|6|120":20.697,"IS 4923|Square|3.6|132":14.34,"IS 4923|Square|4|132":15.85,"IS 4923|Square|4.3|132":16.99,"IS 4923|Square|4.5|132":17.74,"IS 4923|Square|4.8|132":18.87,"IS 4923|Square|5|132":19.61,"IS 4923|Square|3.6|150":16.37,"IS 4923|Square|4|150":18.11,"IS 4923|Square|4.3|150":19.42,"IS 4923|Square|4.5|150":20.28,"IS 4923|Square|4.8|150":21.58,"IS 4923|Square|5|150":22.44,"IS 4923|Square|3.5|180":19.68,"IS 4923|Square|3.6|180":19.68,"IS 4923|Square|4|180":21.88,"IS 4923|Square|4.3|180":23.47,"IS 4923|Square|4.5|180":24.52,"IS 4923|Square|4.8|180":26.09,"IS 4923|Square|5|180":27.15,"IS 4923|Square|3.6|220":24.2,"IS 4923|Square|4|220":26.81,"IS 4923|Square|4.3|220":28.75,"IS 4923|Square|4.5|220":30.04,"IS 4923|Square|4.8|220":31.97,"IS 4923|Square|5|220":33.25,"IS 4923|Square|3.6|260":28.72,"IS 4923|Square|4|260":31.83,"IS 4923|Square|4.3|260":34.15,"IS 4923|Square|4.5|260":35.69,"IS 4923|Square|4.8|260":38,"IS 4923|Square|5|260":39.53,"IS 4923|Rectangular|1.8|50":1.95,"IS 4923|Rectangular|2|50":2.15,"IS 4923|Rectangular|2.3|50":2.44,"IS 4923|Rectangular|2.5|50":2.62,"IS 4923|Rectangular|2.8|50":2.89,"IS 4923|Rectangular|3|50":3.07,"IS 4923|Rectangular|3.2|50":3.24,"IS 4923|Rectangular|3.6|50":3.57,"IS 4923|Rectangular|1.8|60":2.66,"IS 4923|Rectangular|2|60":2.93,"IS 4923|Rectangular|2.3|60":3.34,"IS 4923|Rectangular|2.5|60":3.6,"IS 4923|Rectangular|2.8|60":3.99,"IS 4923|Rectangular|3|60":4.25,"IS 4923|Rectangular|3.2|60":4.5,"IS 4923|Rectangular|3.6|60":4.98,"IS 4923|Rectangular|1.8|66":2.63,"IS 4923|Rectangular|2|66":2.9,"IS 4923|Rectangular|2.3|66":3.3,"IS 4923|Rectangular|2.5|66":3.56,"IS 4923|Rectangular|2.8|66":3.95,"IS 4923|Rectangular|3|66":4.2,"IS 4923|Rectangular|3.2|66":4.44,"IS 4923|Rectangular|3.6|66":4.93,"IS 4923|Rectangular|2.5|70":3.6,"IS 4923|Rectangular|2.8|70":3.99,"IS 4923|Rectangular|3|70":4.25,"IS 4923|Rectangular|3.2|70":4.5,"IS 4923|Rectangular|3.6|70":4.98,"IS 4923|Rectangular|4|70":5.45,"IS 4923|Rectangular|4.3|70":5.8,"IS 4923|Rectangular|4.5|70":6.02,"IS 4923|Rectangular|2.5|75":3.6,"IS 4923|Rectangular|2.8|75":3.99,"IS 4923|Rectangular|3|75":4.25,"IS 4923|Rectangular|3.2|75":4.5,"IS 4923|Rectangular|3.6|75":4.98,"IS 4923|Rectangular|4|75":5.45,"IS 4923|Rectangular|4.3|75":5.8,"IS 4923|Rectangular|4.5|75":6.02,"IS 4923|Rectangular|2.5|80":4.39,"IS 4923|Rectangular|2.8|80":4.87,"IS 4923|Rectangular|3|80":5.19,"IS 4923|Rectangular|3.2|80":5.5,"IS 4923|Rectangular|3.6|80":6.11,"IS 4923|Rectangular|4|80":6.71,"IS 4923|Rectangular|4.3|80":7.15,"IS 4923|Rectangular|4.5|80":7.43,"IS 4923|Rectangular|2.5|96":5.357,"IS 4923|Rectangular|2.8|96":5.944,"IS 4923|Rectangular|3|96":6.329,"IS 4923|Rectangular|3.2|96":6.71,"IS 4923|Rectangular|3.6|96":7.47,"IS 4923|Rectangular|4|96":8.22,"IS 4923|Rectangular|4.3|96":8.77,"IS 4923|Rectangular|4.5|96":9.13,"IS 4923|Rectangular|2.5|100":5.598,"IS 4923|Rectangular|2.8|100":6.213,"IS 4923|Rectangular|3|100":6.617,"IS 4923|Rectangular|3.2|100":7.016,"IS 4923|Rectangular|3.5|100":7.61,"IS 4923|Rectangular|3.6|100":7.81,"IS 4923|Rectangular|4|100":8.59,"IS 4923|Rectangular|4.3|100":9.17,"IS 4923|Rectangular|4.5|100":9.55,"IS 4923|Rectangular|2.5|122":6.92,"IS 4923|Rectangular|2.8|122":7.695,"IS 4923|Rectangular|3|122":8.205,"IS 4923|Rectangular|3.2|122":8.709,"IS 4923|Rectangular|3.5|122":9.42,"IS 4923|Rectangular|3.6|122":9.67,"IS 4923|Rectangular|4|122":10.67,"IS 4923|Rectangular|4.3|122":11.4,"IS 4923|Rectangular|4.5|122":11.88,"IS 4923|Rectangular|5|122":13.07,"IS 4923|Rectangular|3.5|145":11.84,"IS 4923|Rectangular|3.6|145":12.16,"IS 4923|Rectangular|4|145":13.43,"IS 4923|Rectangular|4.3|145":14.37,"IS 4923|Rectangular|4.5|145":14.99,"IS 4923|Rectangular|5|145":16.53,"IS 4923|Rectangular|2|150":7.751,"IS 4923|Rectangular|2.3|150":8.868,"IS 4923|Rectangular|2.5|150":9.606,"IS 4923|Rectangular|2.8|150":10.703,"IS 4923|Rectangular|3|150":11.428,"IS 4923|Rectangular|3.2|150":12.147,"IS 4923|Rectangular|3.5|150":13.216,"IS 4923|Rectangular|3.6|150":13.57,"IS 4923|Rectangular|4|150":14.971,"IS 4923|Rectangular|4.3|150":16.008,"IS 4923|Rectangular|4.5|150":16.693,"IS 4923|Rectangular|5|150":18.381,"IS 4923|Rectangular|6|150":21.659,"IS 4923|Rectangular|2|172":8.2,"IS 4923|Rectangular|2.3|172":9.385,"IS 4923|Rectangular|2.5|172":10.167,"IS 4923|Rectangular|2.8|172":11.332,"IS 4923|Rectangular|3|172":12.101,"IS 4923|Rectangular|3.2|172":12.865,"IS 4923|Rectangular|6|172":23.006,"IS 4923|Rectangular|3.5|172":13.87,"IS 4923|Rectangular|3.6|172":14.25,"IS 4923|Rectangular|4|172":15.75,"IS 4923|Rectangular|4.3|172":16.87,"IS 4923|Rectangular|4.5|172":17.61,"IS 4923|Rectangular|5|172":19.43,"IS 4923|Rectangular|2|200":9.355,"IS 4923|Rectangular|2.3|200":10.712,"IS 4923|Rectangular|2.5|200":11.61,"IS 4923|Rectangular|2.8|200":12.948,"IS 4923|Rectangular|3|200":13.833,"IS 4923|Rectangular|3.2|200":14.712,"IS 4923|Rectangular|3.5|200":16.022,"IS 4923|Rectangular|3.6|200":16.456,"IS 4923|Rectangular|4|200":18.178,"IS 4923|Rectangular|4.3|200":19.455,"IS 4923|Rectangular|4.5|200":20.301,"IS 4923|Rectangular|5|200":22.39,"IS 4923|Rectangular|6|200":26.469,"IS 4923|Rectangular|2|240":11.279,"IS 4923|Rectangular|2.3|240":12.925,"IS 4923|Rectangular|2.5|240":14.016,"IS 4923|Rectangular|2.8|240":15.642,"IS 4923|Rectangular|3|240":16.719,"IS 4923|Rectangular|3.2|240":17.791,"IS 4923|Rectangular|3.5|240":19.389,"IS 4923|Rectangular|3.6|240":19.919,"IS 4923|Rectangular|4|240":22.026,"IS 4923|Rectangular|4.3|240":23.592,"IS 4923|Rectangular|4.5|240":24.63,"IS 4923|Rectangular|5|240":27.2,"IS 4923|Rectangular|6|240":32.242,"IS 9295|Default|3.65|63.5":5.39,"IS 9295|Default|4.5|63.5":6.55,"IS 9295|Default|3.65|76.1":6.52,"IS 9295|Default|4.5|76.1":7.95,"IS 9295|Default|4.05|88.9":8.47,"IS 9295|Default|4.85|88.9":10.05,"IS 9295|Default|6.3|88.9":12.83,"IS 9295|Default|4.05|101.6":9.74,"IS 9295|Default|4.85|101.6":11.57,"IS 9295|Default|6.3|101.6":14.81,"IS 9295|Default|4.05|108":10.38,"IS 9295|Default|4.85|108":12.34,"IS 9295|Default|6.3|108":15.80,"IS 9295|Default|4.5|114.3":12.19,"IS 9295|Default|5.4|114.3":14.5,"IS 9295|Default|6.3|114.3":16.78,"IS 9295|Default|4.5|120":12.82,"IS 9295|Default|5.4|120":15.26,"IS 9295|Default|6.3|120":17.66,"IS 9295|Default|4.5|127":13.6,"IS 9295|Default|4.85|127":14.61,"IS 9295|Default|5.4|127":16.19,"IS 9295|Default|6.3|127":18.75,"IS 9295|Default|4.5|133":14.26,"IS 9295|Default|4.85|133":15.33,"IS 9295|Default|5.4|133":16.99,"IS 9295|Default|6.3|133":19.68,"IS 9295|Default|4.5|139.7":15,"IS 9295|Default|4.85|139.7":16.13,"IS 9295|Default|5.4|139.7":17.89,"IS 9295|Default|6.3|139.7":20.73,"IS 9295|Default|4.5|152.4":16.41,"IS 9295|Default|4.85|152.4":17.65,"IS 9295|Default|5.4|152.4":19.58,"IS 9295|Default|6.3|152.4":22.7,"IS 9295|Default|4.5|159":17.15,"IS 9295|Default|4.85|159":18.44,"IS 9295|Default|5.4|159":20.46,"IS 9295|Default|6.3|159":23.72,"IS 9295|Default|4.5|165.1":17.82,"IS 9295|Default|4.85|165.1":19.17,"IS 9295|Default|5.4|165.1":21.27,"IS 9295|Default|6.3|165.1":24.67,"IS 9295|Default|4.5|168.3":18.18,"IS 9295|Default|4.85|168.3":19.55,"IS 9295|Default|5.4|168.3":21.69,"IS 9295|Default|6.3|168.3":25.17,"IS 9295|Default|5.4|193.7":25.08,"IS 9295|Default|6.3|193.7":29.12,"IS 9295|Default|7.1|193.7":32.67,"IS 9295|Default|5.4|219.1":28.46,"IS 9295|Default|6.3|219.1":33.06,"IS 9295|Default|7.1|219.1":37.12,"IS 10577|Light|2|15mm":0.952,"IS 10577|Light|2.35|20mm":1.41,"IS 10577|Light|2.65|25mm":2.01,"IS 10577|Medium|2.65|15mm":1.22,"IS 10577|Medium|2.65|20mm":1.58,"IS 10577|Medium|3.25|25mm":2.44,"IS 10577|Heavy|3.25|15mm":1.45,"IS 10577|Heavy|3.25|20mm":1.9,"IS 10577|Heavy|4.05|25mm":2.97,"ASTMA|SCH-40|2.77|15mm":1.27,"ASTMA|SCH-40|2.87|20mm":1.69,"ASTMA|SCH-40|3.38|25mm":2.5,"ASTMA|SCH-40|3.56|32mm":3.39,"ASTMA|SCH-40|3.68|40mm":4.05,"ASTMA|SCH-40|3.91|50mm":5.44,"ASTMA|SCH-40|5.16|65mm":8.63,"ASTMA|SCH-40|5.49|80mm":11.29,"ASTMA|SCH-40|5.74|90mm":13.57,"ASTMA|SCH-40|6.02|100mm":16.07,"ASTMA|SCH-40|6.55|125mm":21.77,"ASTMA|SCH-40|7.11|150mm":28.26,"ASTMA|SCH-20|6.35|200mm":33.31,"ASTMA|SCH-30|7.04|200mm":36.81,"ASTMA|SCH-40|8.18|200mm":42.55,"ASTMA|SCH-60|10.31|200mm":53.08,"ASTMA|SCH-20|6.35|250mm":41.75,"ASTMA|SCH-30|7.80|250mm":51.01,"ASTMA|SCH-40|9.27|250mm":60.29,"ASTMA|SCH-20|6.35|300mm":49.73,"ASTMA|SCH-30|8.38|300mm":65.20,"ASTMA|SCH-10|6.35|350mm":54.69,"ASTMA|SCH-20|7.92|350mm":67.90,"ASTMA|SCH-30|9.52|350mm":81.25,"ASTMA|SCH-10|6.35|400mm":62.72,"ASTMA|SCH-20|7.92|400mm":77.92,"ASTMA|SCH-30|9.52|400mm":93.29,"ASTMA-B|SCH-40|2.77|15mm":1.27,"ASTMA-B|SCH-40|2.87|20mm":1.69,"ASTMA-B|SCH-40|3.38|25mm":2.5,"ASTMA-B|SCH-40|3.56|32mm":3.39,"ASTMA-B|SCH-40|3.68|40mm":4.05,"ASTMA-B|SCH-40|3.91|50mm":5.44,"ASTMA-B|SCH-40|5.16|65mm":8.63,"ASTMA-B|SCH-40|5.49|80mm":11.29,"ASTMA-B|SCH-40|5.74|90mm":13.57,"ASTMA-B|SCH-40|6.02|100mm":16.07,"ASTMA-B|SCH-40|6.55|125mm":21.77,"ASTMA-B|SCH-40|7.11|150mm":28.26,"ASTMA-B|SCH-10|3.76|200mm":20.17,"ASTMA-B|SCH-20|6.35|200mm":33.31,"ASTMA-B|SCH-30|7.04|200mm":36.81,"ASTMA-B|SCH-40|8.18|200mm":42.55,"ASTMA-B|SCH-60|10.31|200mm":53.08,"ASTMA-B|SCH-10|4.19|250mm":27.85,"ASTMA-B|SCH-20|6.35|250mm":41.75,"ASTMA-B|SCH-30|7.80|250mm":51.01,"ASTMA-B|SCH-40|9.27|250mm":60.29,"ASTMA-B|SCH-10|4.57|300mm":36.22,"ASTMA-B|SCH-20|6.35|300mm":49.73,"ASTMA-B|SCH-30|8.38|300mm":65.20,"ASTMA-B|SCH-40|10.31|300mm":79.74,"ASTMA-B|SCH-10|6.35|350mm":54.69,"ASTMA-B|SCH-20|7.92|350mm":67.90,"ASTMA-B|SCH-30|9.52|350mm":81.25,"ASTMA-B|SCH-10|6.35|400mm":62.72,"ASTMA-B|SCH-20|7.92|400mm":77.92,"ASTMA-B|SCH-30|9.52|400mm":93.29},"SHAPE_DEPENDENT_MAP":{"IS 1239":["Light","Medium","Heavy"],"IS 4923":["Square","Rectangular"],"IS 10577":["Light","Medium","Heavy"],"IS 4270":["Default"],"ASTMA":["SCH-10","SCH-20","SCH-30","SCH-40","SCH-60"],"ASTMA-B":["SCH-10","SCH-20","SCH-30","SCH-40","SCH-60"]},"CLASS_DEPENDENT_MAP":{"IS 1239|Light":["2","2.3","2.6","2.9","3.2","3.6"],"IS 1239|Medium":["2.6","3.2","3.6","4","4.5","4.8"],"IS 1239|Heavy":["3.2","4","4.5","4.8","5.4"],"IS 1161|Default":["2","2.5","2.9","3","3.2","3.6","4","5","6","6.3","8"],"IS 3589|Default":["4","4.5","4.85","5","5.4","5.5","6","6.35","7","7.5","8","9","9.5","10","10.5"],"IS 4270|Default":["5","5.4","6","6.4","7.1","8","9","10","12","14"],"IS 4923|Square":["1.8","2","2.3","2.5","2.6","2.8","2.9","3","3.2","3.6","4","4.3","4.5","4.8","5","6"],"IS 4923|Rectangular":["1.8","2","2.3","2.5","2.8","3","3.2","3.5","3.6","4","4.3","4.5","5","6"],"IS 9295|Default":["3.65","4.05","4.5","4.85","5.4","6.3","7.1"],"IS 10577|Light":["2","2.35","2.65"],"IS 10577|Medium":["2.65","3.25"],"IS 10577|Heavy":["3.25","4.05"],"ASTMA|SCH-10":["6.35"],"ASTMA|SCH-20":["6.35","7.92"],"ASTMA|SCH-30":["7.04","7.80","8.38","9.52"],"ASTMA|SCH-40":["2.77","2.87","3.38","3.56","3.68","3.91","5.16","5.49","5.74","6.02","6.55","7.11","8.18","9.27"],"ASTMA|SCH-60":["10.31"],"ASTMA-B|SCH-10":["3.76","4.19","4.57","6.35"],"ASTMA-B|SCH-20":["6.35","7.92"],"ASTMA-B|SCH-30":["7.04","7.80","8.38","9.52"],"ASTMA-B|SCH-40":["2.77","2.87","3.38","3.56","3.68","3.91","5.16","5.49","5.74","6.02","6.55","7.11","8.18","9.27","10.31"],"ASTMA-B|SCH-60":["10.31"]},"BASE_RATES":{"Black Steel":62.5,"Galvanized Iron (GI)":70,"Stainless Steel":150}};
 
 export default class SteelPipeDomesticConfig extends LightningElement {
     get gstColumnHeader() {
@@ -134,12 +134,24 @@ export default class SteelPipeDomesticConfig extends LightningElement {
         return `GST @${gst}%`;
     }
     
+    get steelTypeOptions() {
+        return STEEL_TYPE_OPTIONS;
+    }
+
+    get standardOptions() {
+        return STANDARD_OPTIONS;
+    }
+
     get uomOptions() {
         return UOM_OPTIONS;
     }
 
     get corePipeOptions() {
         return Object.keys(CORE_PIPE_DATA).map(key => ({ label: key, value: key }));
+    }
+
+    get zincOptions() {
+        return ZINC_OPTIONS;
     }
 
     get quoteScopeOptions() {
@@ -166,16 +178,18 @@ export default class SteelPipeDomesticConfig extends LightningElement {
 
     get tableWidthStyle() {
         return this.showCalculations 
-            ? 'min-width: 4400px; width: 4400px;' 
-            : 'min-width: 4050px; width: 4050px;';
+            ? 'min-width: 4540px; width: 4540px;' 
+            : 'min-width: 4190px; width: 4190px;';
     }
 
     @track quoteScope = 'both';
     @track globalOutOfEasternZone = false;
     @track lumpSumValue = 0; // 👉 ADDED: State tracking for Lump Sum
+    @track commissionInspection = 0; // 👉 ADDED: State tracking for Commission/Inspection %
     @track pipeCount = 1;
     @track pipes = [];
     @track manualItems = [];
+    @track activeCoreDropdown = null;
     @track showCalculations = true;
     @track dynamicBaseRates = {};
     @track dynamicGst = 18;
@@ -198,6 +212,60 @@ export default class SteelPipeDomesticConfig extends LightningElement {
         // Initialize at least one empty row for manual input table if not loaded
         if (this.manualItems.length === 0) {
             this.manualItems = [this.createManualItem(0)];
+        }
+    }
+
+    renderedCallback() {
+        const selects = this.template.querySelectorAll('select[data-field="steelType"]');
+        if (selects && selects.length > 0) {
+            selects.forEach(sel => {
+                const idx = parseInt(sel.dataset.index, 10);
+                if (!isNaN(idx) && this.pipes[idx] && this.pipes[idx].steelType) {
+                    if (sel.value !== this.pipes[idx].steelType) {
+                        sel.value = this.pipes[idx].steelType;
+                    }
+                }
+            });
+        }
+
+        if (!this._scrollListenerAttached) {
+            const modalContent = this.template.querySelector('.slds-modal__content');
+            if (modalContent) {
+                modalContent.addEventListener('scroll', () => this.closeActiveDropdowns(), { passive: true });
+                this._scrollListenerAttached = true;
+            }
+        }
+
+        // Track which lightning-combobox is currently focused so we can blur it on scroll.
+        // focusin/focusout bubble through shadow DOM, giving us the host element reference.
+        if (!this._comboboxFocusListenerAttached) {
+            const attachFocusTracker = (containerSelector) => {
+                const container = this.template.querySelector(containerSelector);
+                if (container) {
+                    container.addEventListener('focusin', (e) => {
+                        if (e.target && e.target.tagName === 'LIGHTNING-COMBOBOX') {
+                            this._focusedCombobox = e.target;
+                        }
+                    }, true);
+                    container.addEventListener('focusout', (e) => {
+                        if (e.target && e.target.tagName === 'LIGHTNING-COMBOBOX') {
+                            // Small delay — focusout fires before the next focusin
+                            setTimeout(() => {
+                                if (this._focusedCombobox === e.target) {
+                                    this._focusedCombobox = null;
+                                }
+                            }, 50);
+                        }
+                    }, true);
+                    return true;
+                }
+                return false;
+            };
+            const reg = attachFocusTracker('.regular-pipes-box .table-scroll');
+            const core = attachFocusTracker('.core-pipes-box .table-scroll');
+            if (reg || core) {
+                this._comboboxFocusListenerAttached = true;
+            }
         }
     }
 
@@ -245,6 +313,14 @@ export default class SteelPipeDomesticConfig extends LightningElement {
             .then(result => {
                 if (result && result.GST__c != null) {
                     this.dynamicGst = parseFloat(result.GST__c);
+                    if (this.manualItems && this.manualItems.length > 0) {
+                        this.manualItems = this.manualItems.map(item => {
+                            if (item.gstRate === undefined || item.gstRate === null || item.gstRate === 18) {
+                                item.gstRate = this.dynamicGst;
+                            }
+                            return item;
+                        });
+                    }
                 }
             })
             .catch(error => {
@@ -297,11 +373,14 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                     if (this.manualItems && this.manualItems.length > 0) {
                         this.manualItems = this.manualItems.map(item => {
                             if (item.description && CORE_PIPE_DATA[item.description]) {
-                                item.minRate = CORE_PIPE_DATA[item.description].minRate;
-                                if (!item.rate || item.rate < item.minRate) {
-                                    item.rate = item.minRate;
-                                    item.cost = Number((item.quantity * item.rate).toFixed(2));
+                                item.baseMinRate = CORE_PIPE_DATA[item.description].minRate;
+                                let zAdder = this.getCorePipeZincAdder(item);
+                                item.minRate = Number((item.baseMinRate + zAdder).toFixed(2));
+                                if (!item.baseRate || item.baseRate < item.baseMinRate) {
+                                    item.baseRate = item.baseMinRate;
                                 }
+                                item.rate = Number((item.baseRate + zAdder).toFixed(2));
+                                this.calculateCorePipe(item);
                             }
                             return item;
                         });
@@ -366,6 +445,27 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                 this.lumpSumValue = 0;
             }
 
+            // 👉 INITIALIZE COMMISSION / INSPECTION %
+            let commSaved = this.savedPipes.find(sp => 
+                (sp.commission_percent !== undefined && sp.commission_percent !== null) || 
+                (sp.commissionPercent !== undefined && sp.commissionPercent !== null) ||
+                (sp.commissionInspection !== undefined && sp.commissionInspection !== null) ||
+                (sp.commission_inspection !== undefined && sp.commission_inspection !== null) ||
+                (sp.Commission_Percent__c !== undefined && sp.Commission_Percent__c !== null)
+            );
+            if (commSaved) {
+                this.commissionInspection = parseFloat(
+                    commSaved.commission_percent ?? 
+                    commSaved.commissionPercent ?? 
+                    commSaved.commissionInspection ?? 
+                    commSaved.commission_inspection ?? 
+                    commSaved.Commission_Percent__c ?? 
+                    0
+                ) || 0;
+            } else {
+                this.commissionInspection = 0;
+            }
+
             // Separate Core Pipes from Standard Pipes based on description match
             const isCore = (sp) => {
                 let desc = sp.special_description || sp.Special_Description__c || sp.pipe_designation || sp.Designation__c || '';
@@ -394,6 +494,8 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                 this.pipes = standardSaved.map((savedPipe, index) => {
                     let pipe = this.createEmptyPipe(index);
                     pipe.steelType = savedPipe.steel_type || 'Black Steel';
+                    pipe.isBlackSteel = pipe.steelType === 'Black Steel';
+                    pipe.isGalvanized = pipe.steelType === 'Galvanized Iron (GI)';
                     pipe.designation = savedPipe.pipe_designation || 'MS ERW';
                     pipe.standardSpecGrade = savedPipe.standard_spec_grade || savedPipe.standard || 'IS 1239';
                     pipe.shapeType = savedPipe.shape;
@@ -463,8 +565,9 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                     pipe.rateRsMtr = savedPipe.rate || savedPipe.rateRsMtr || 0;
                     pipe.costPrice = savedPipe.costPrice || 0;
                     pipe.cutoffPrice = savedPipe.cutoffPrice || 0;
-                    pipe.quotedPrice = savedPipe.quotedPrice || pipe.cutoffPrice;
-                    pipe.hasCustomQuotedPrice = !!savedPipe.quotedPrice;
+                    pipe.quotedPrice = savedPipe.baseQuotedPrice || savedPipe.base_quoted_price || savedPipe.quotedPrice || pipe.cutoffPrice;
+                    pipe.hasCustomQuotedPrice = !!(savedPipe.baseQuotedPrice || savedPipe.quotedPrice);
+                    pipe.commissionAmount = savedPipe.commissionAmount || savedPipe.commission_amount || 0;
                     pipe.gst = savedPipe.gst || 0;
                     pipe.finalOfferPrice = savedPipe.finalOfferPrice || savedPipe.final_offer_price || 0;
                     pipe.pricePerUom = savedPipe.price_per_uom || savedPipe.pricePerUom || 0;
@@ -509,7 +612,7 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                 this.manualItems = coreSaved.map((sp, index) => {
                     let desc = sp.special_description || sp.Special_Description__c || sp.pipe_designation || sp.Designation__c || '';
                     let qty = sp.quantity || sp.Quantity__c || 1;
-                    let rate = sp.quotedPrice || sp.Cutoff_Price__c || sp.rateRsMtr || 0;
+                    let rate = sp.quotedPrice || sp.Cutoff_Price__c || sp.rateRsMtr || sp.rate || 0;
                     
                     let minR = 0;
                     let uom = 'Pieces';
@@ -517,21 +620,94 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                         minR = CORE_PIPE_DATA[desc].minRate;
                         uom = CORE_PIPE_DATA[desc].uom;
                     }
+
+                    let zincCoating = sp.zinc_coating || sp.zincCoating || sp.Zinc_Coating__c || '360 GSM';
+                    let zincRate = 0;
+                    if (sp.zinc_rate !== undefined && sp.zinc_rate !== null && sp.zinc_rate !== '') {
+                        zincRate = parseFloat(sp.zinc_rate) || 0;
+                    } else if (sp.Zinc_Rate__c !== undefined && sp.Zinc_Rate__c !== null && sp.Zinc_Rate__c !== '') {
+                        zincRate = parseFloat(sp.Zinc_Rate__c) || 0;
+                    } else if (sp.zincRate !== undefined && sp.zincRate !== null && sp.zincRate !== '') {
+                        zincRate = parseFloat(sp.zincRate) || 0;
+                    } else if (ZINC_RATE_MAP[zincCoating] !== undefined) {
+                        zincRate = ZINC_RATE_MAP[zincCoating];
+                    }
+                    let isZincRateDisabled = (zincCoating !== 'ANY SPECIAL');
+
+                    let rawLength = sp.pipe_length !== undefined ? sp.pipe_length : (sp.pipeLength !== undefined ? sp.pipeLength : (sp.Length__c !== undefined ? sp.Length__c : ''));
+                    let pipeLength = (rawLength !== 'NA' && rawLength !== null && rawLength !== undefined) ? String(rawLength) : '';
+                    if (!pipeLength && desc && desc.includes('5.6MTR')) {
+                        pipeLength = '5.6';
+                    }
+
+                    let kgMtr = 0;
+                    if (sp.kg_per_meter !== undefined && sp.kg_per_meter !== null && sp.kg_per_meter !== '') {
+                        kgMtr = parseFloat(sp.kg_per_meter) || 0;
+                    } else if (sp.kgPerMeter !== undefined && sp.kgPerMeter !== null && sp.kgPerMeter !== '') {
+                        kgMtr = parseFloat(sp.kgPerMeter) || 0;
+                    } else if (CORE_PIPE_DATA[desc] && CORE_PIPE_DATA[desc].kgPerMeter) {
+                        kgMtr = CORE_PIPE_DATA[desc].kgPerMeter;
+                    }
+
+                    let baseMinRate = minR;
+                    let tempItem = { zincRate, kgPerMeter: kgMtr, uom, pipeLength };
+                    let zAdder = this.getCorePipeZincAdder(tempItem);
+                    let minRateWithZinc = Number((baseMinRate + zAdder).toFixed(2));
+                    let savedBase = sp.baseRate !== undefined ? sp.baseRate : (sp.base_rate !== undefined ? sp.base_rate : (sp.Base_Rate__c !== undefined ? sp.Base_Rate__c : null));
+                    let baseRate = baseMinRate;
+                    if (savedBase !== null && savedBase !== '' && !isNaN(savedBase) && parseFloat(savedBase) > 0) {
+                        baseRate = parseFloat(savedBase);
+                    } else if (rate >= minRateWithZinc) {
+                        baseRate = Number((rate - zAdder).toFixed(2));
+                    }
+                    if (baseRate < baseMinRate) {
+                        baseRate = baseMinRate;
+                    }
+                    rate = Number((baseRate + zAdder).toFixed(2));
                     
                     // Fallback to calculate valid cost
                     let cost = sp.totalPrice || sp.total_price || sp.Total_Price__c || (qty * rate);
 
-                    return {
+                    let defaultGst = (this.dynamicGst !== undefined && this.dynamicGst !== null) ? this.dynamicGst : 18;
+                    let commRate = parseFloat(this.commissionInspection) || 0;
+                    let commAmt = sp.commissionAmount || sp.commission_amount || sp.Commission_Amount__c || Number((rate * (commRate / 100)).toFixed(2));
+
+                    let itemGstRate = defaultGst;
+                    if (sp.gstRate !== undefined && sp.gstRate !== null && !isNaN(sp.gstRate)) {
+                        itemGstRate = parseFloat(sp.gstRate);
+                    } else if (sp.gst_rate !== undefined && sp.gst_rate !== null && !isNaN(sp.gst_rate)) {
+                        itemGstRate = parseFloat(sp.gst_rate);
+                    } else if (sp.gst !== undefined && sp.gst !== null && (rate + commAmt) > 0) {
+                        itemGstRate = Number(((parseFloat(sp.gst) / (rate + commAmt)) * 100).toFixed(2));
+                    }
+
+                    let item = {
                         id: index,
                         slNo: index + 1,
                         key: `manual_${index}_${Date.now()}`,
                         description: desc,
+                        isDropdownOpen: false,
+                        dropdownStyle: '',
+                        cellClass: '',
                         uom: uom,
                         quantity: qty,
+                        kgPerMeter: kgMtr,
+                        baseRate: baseRate,
+                        baseMinRate: baseMinRate,
+                        zincAdder: zAdder,
                         rate: rate,
-                        minRate: minR,
+                        minRate: minRateWithZinc,
+                        zincCoating: zincCoating,
+                        zincRate: zincRate,
+                        isZincRateDisabled: isZincRateDisabled,
+                        zincOptions: ZINC_OPTIONS,
+                        pipeLength: pipeLength,
+                        commissionAmount: commAmt,
+                        gstRate: itemGstRate,
                         cost: cost
                     };
+                    this.calculateCorePipe(item);
+                    return item;
                 });
             } else {
                 this.manualItems = [this.createManualItem(0)];
@@ -572,8 +748,10 @@ export default class SteelPipeDomesticConfig extends LightningElement {
 
         return {
             id: index,
-            key: `pipe_${index}_${Date.now()}`,
+            key: `pipe_${index}_${Date.now()}_${Math.random()}`,
             steelType: 'Black Steel',
+            isBlackSteel: true,
+            isGalvanized: false,
             designation: 'MS ERW',
             standardSpecGrade: std,
             shapeType: initShape,
@@ -640,6 +818,7 @@ export default class SteelPipeDomesticConfig extends LightningElement {
             cutoffPrice: 0,
             quotedPrice: 0,
             hasCustomQuotedPrice: false,
+            commissionAmount: 0,
             gst: 0,
             finalOfferPrice: 0,
             pricePerUom: 0,
@@ -661,12 +840,34 @@ export default class SteelPipeDomesticConfig extends LightningElement {
             slNo: index + 1,
             key: `manual_${index}_${Date.now()}`,
             description: '',
+            isDropdownOpen: false,
+            dropdownStyle: '',
+            cellClass: '',
             uom: '',
             quantity: 1,
+            kgPerMeter: 0,
+            baseRate: 0,
+            baseMinRate: 0,
+            zincAdder: 0,
             rate: 0,
             minRate: 0,
+            zincCoating: '360 GSM',
+            zincRate: 0,
+            isZincRateDisabled: true,
+            zincOptions: ZINC_OPTIONS,
+            pipeLength: '',
+            commissionAmount: 0,
+            gstRate: (this.dynamicGst !== undefined && this.dynamicGst !== null) ? this.dynamicGst : 18,
             cost: 0
         };
+    }
+
+    getCorePipeZincAdder(item) {
+        if (!item) return 0;
+        let zRate = parseFloat(item.zincRate) || 0;
+        let kgMtr = parseFloat(item.kgPerMeter) || 0;
+        let lengthFactor = (item.uom === 'Pieces' && parseFloat(item.pipeLength) > 0) ? parseFloat(item.pipeLength) : 1;
+        return Number((zRate * kgMtr * lengthFactor).toFixed(2));
     }
 
     getStdKey(standard) {
@@ -831,6 +1032,34 @@ export default class SteelPipeDomesticConfig extends LightningElement {
         this.lumpSumValue = parseFloat(event.target.value) || 0;
     }
 
+    handleCommissionInspectionChange(event) {
+        if (this.isReadOnly) { return; }
+        const rawVal = event.target.value;
+        if (rawVal === '' || rawVal === null || rawVal === undefined) {
+            this.commissionInspection = '';
+        } else {
+            const parsed = parseFloat(rawVal);
+            this.commissionInspection = (!isNaN(parsed) && parsed >= 0) ? parsed : 0;
+        }
+        this.pipes.forEach(pipe => {
+            this.calculatePipe(pipe);
+        });
+        this.pipes = [...this.pipes];
+        this.recalculateCorePipes();
+    }
+
+    handleCommissionInspectionBlur(event) {
+        if (this.isReadOnly) { return; }
+        if (this.commissionInspection === '' || isNaN(this.commissionInspection)) {
+            this.commissionInspection = 0;
+            this.pipes.forEach(pipe => {
+                this.calculatePipe(pipe);
+            });
+            this.pipes = [...this.pipes];
+            this.recalculateCorePipes();
+        }
+    }
+
     handleQuoteScopeChange(event) {
         if (this.isReadOnly) { return; }
         this.quoteScope = event.detail.value;
@@ -898,10 +1127,17 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                     rateRsMtr: pipe.rateRsMtr,
                     costPrice: pipe.costPrice,
                     cutoffPrice: pipe.cutoffPrice,
-                    quotedPrice: pipe.quotedPrice,
+                    quotedPrice: (pipe.commissionAmount > 0) ? Number(((pipe.quotedPrice || 0) + (pipe.commissionAmount || 0)).toFixed(2)) : pipe.quotedPrice,
+                    pricePerUom: (pipe.commissionAmount > 0) ? Number(((pipe.pricePerUom || 0) + (pipe.commissionAmount || 0)).toFixed(2)) : pipe.pricePerUom,
+                    baseQuotedPrice: pipe.quotedPrice,
+                    commission_percent: parseFloat(this.commissionInspection) || 0,
+                    commission_amount: pipe.commissionAmount || 0,
+                    commissionPercent: parseFloat(this.commissionInspection) || 0,
+                    commissionAmount: pipe.commissionAmount || 0,
+                    Commission_Percent__c: parseFloat(this.commissionInspection) || 0,
+                    Commission_Amount__c: pipe.commissionAmount || 0,
                     gst: pipe.gst,
                     finalOfferPrice: pipe.finalOfferPrice,
-                    pricePerUom: pipe.pricePerUom,
                     totalPrice: pipe.totalPrice,
                     freight: pipe.freight,
                     freightCost: pipe.freightCost,
@@ -915,21 +1151,31 @@ export default class SteelPipeDomesticConfig extends LightningElement {
         }
 
         // Map Core Pipes seamlessly into the array to trick the backend into saving them as line items
-        let gstRate = (this.dynamicGst !== undefined && this.dynamicGst !== null) ? this.dynamicGst : 18;
+        let defaultGstRate = (this.dynamicGst !== undefined && this.dynamicGst !== null) ? this.dynamicGst : 18;
+        let commRate = parseFloat(this.commissionInspection) || 0;
         let configuredCorePipes = [];
         if (!this.isRegularOnly) {
             configuredCorePipes = this.manualItems
                 .filter(item => item.description) // only send rows that have a description selected
                 .map(item => {
-                    let gstVal = item.rate * (gstRate / 100);
-                    let finalOffer = item.rate + gstVal;
-                    let totalP = finalOffer * item.quantity;
+                    let itemGstRate = (item.gstRate !== undefined && item.gstRate !== null && item.gstRate !== '' && !isNaN(item.gstRate)) 
+                        ? parseFloat(item.gstRate) 
+                        : defaultGstRate;
+                    let commAmt = Number((item.rate * (commRate / 100)).toFixed(2));
+                    let combinedPrice = Number((item.rate + commAmt).toFixed(2));
+                    let gstVal = Number((combinedPrice * (itemGstRate / 100)).toFixed(2));
+                    let finalOffer = Number((combinedPrice + gstVal).toFixed(2));
+                    let totalP = Number((finalOffer * item.quantity).toFixed(2));
                     let sName = CORE_PIPE_DATA[item.description] ? CORE_PIPE_DATA[item.description].shortName : 'Core Pipe';
+                    let sSpec = CORE_PIPE_DATA[item.description] ? CORE_PIPE_DATA[item.description].spec : 'ETI/OHE/11';
                     
+                    let rawLen = (item.pipeLength !== undefined && item.pipeLength !== null) ? String(item.pipeLength).trim() : '';
+                    let lenVal = (rawLen !== '' && rawLen !== 'NA') ? rawLen : 'NA';
+
                     return {
                         steel_type: 'Galvanized Iron (GI)',
-                        pipe_designation: 'GI ERW',
-                        standard: 'IS 1239',
+                        pipe_designation: 'Core Pipe',
+                        standard: sSpec,
                         shape: 'Default',
                         pipe_class: 'Core', // Fixed naming gap
                         size_nb: sName,        // Fixed naming gap
@@ -939,8 +1185,9 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                         end_finish: 'Plain End',
                         grade_type: 'YST 210/240',
                         grade_rate: 0,
-                        pipe_length: 'NA',
-                        special_description_header: 'NA',
+                        pipe_length: lenVal,
+                        pipeLength: lenVal,
+                        special_description_header: lenVal,
                         special_description: item.description,
                         custom_od: '',
                         custom_thickness: 0,
@@ -949,17 +1196,34 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                         discount: 0,
                         paint_type: 'N/A',
                         paint_rate: 0,
-                        zinc_coating: 'N/A',
-                        zinc_rate: 0,
-                        singlePipeWeight: 0,
-                        totalWeight: 0,
+                        zinc_coating: item.zincCoating || '360 GSM',
+                        zincCoating: item.zincCoating || '360 GSM',
+                        zinc_rate: parseFloat(item.zincRate) || 0,
+                        zincRate: parseFloat(item.zincRate) || 0,
+                        singlePipeWeight: item.singlePipeWeight || item.kgPerMeter || 0,
+                        totalWeight: item.totalWeight || 0,
+                        kg_per_meter: item.kgPerMeter || 0,
+                        kgPerMeter: item.kgPerMeter || 0,
                         rateRsMtr: item.rate,
+                        rate: item.rate,
+                        baseRate: item.baseRate !== undefined && item.baseRate !== null && !isNaN(item.baseRate) ? item.baseRate : (item.baseMinRate || 0),
+                        base_rate: item.baseRate !== undefined && item.baseRate !== null && !isNaN(item.baseRate) ? item.baseRate : (item.baseMinRate || 0),
+                        Base_Rate__c: item.baseRate !== undefined && item.baseRate !== null && !isNaN(item.baseRate) ? item.baseRate : (item.baseMinRate || 0),
                         costPrice: item.rate,
-                        cutoffPrice: item.rate,
-                        quotedPrice: item.rate,
+                        cutoffPrice: combinedPrice,
+                        quotedPrice: combinedPrice,
+                        pricePerUom: combinedPrice,
+                        baseQuotedPrice: item.rate,
+                        commission_percent: commRate,
+                        commissionPercent: commRate,
+                        Commission_Percent__c: commRate,
+                        commission_amount: commAmt,
+                        commissionAmount: commAmt,
+                        Commission_Amount__c: commAmt,
+                        gstRate: itemGstRate,
+                        gst_rate: itemGstRate,
                         gst: Number(gstVal.toFixed(2)),
                         finalOfferPrice: Number(finalOffer.toFixed(2)),
-                        pricePerUom: item.rate,
                         totalPrice: Number(totalP.toFixed(2)),
                         freight: 0,
                         freightCost: 0,
@@ -1032,6 +1296,7 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                 manualItems: this.manualItems,
                 showRateInDoc: this.showRateInDoc,
                 lumpSumValue: this.lumpSumValue,
+                commissionInspection: parseFloat(this.commissionInspection) || 0,
                 quoteScope: this.quoteScope,
                 isCoreOnly: this.isCoreOnly
             }
@@ -1070,6 +1335,7 @@ export default class SteelPipeDomesticConfig extends LightningElement {
                 this.calculatePipe(newPipe);
                 this.pipes.push(newPipe);
             }
+            this.pipes = [...this.pipes];
         } else if (this.pipes.length > this.pipeCount) {
             this.pipes = this.pipes.slice(0, this.pipeCount);
         }
@@ -1081,10 +1347,15 @@ export default class SteelPipeDomesticConfig extends LightningElement {
 
     _activeScroller = null;
     _scrollTimeout = null;
+    _activeCoreScroller = null;
+    _coreScrollTimeout = null;
 
     disconnectedCallback() {
         if (this._scrollTimeout) {
             clearTimeout(this._scrollTimeout);
+        }
+        if (this._coreScrollTimeout) {
+            clearTimeout(this._coreScrollTimeout);
         }
     }
 
@@ -1098,7 +1369,41 @@ export default class SteelPipeDomesticConfig extends LightningElement {
         }, 150);
     }
 
+    handleModalScroll() {
+        this.closeActiveDropdowns();
+    }
+
+    handleModalWheel() {
+        // Allow wheel events to pass through so dropdown lists can be scrolled with mouse wheel
+    }
+
+    _focusedCombobox = null;
+    _comboboxFocusListenerAttached = false;
+
+    closeActiveDropdowns() {
+        // Blur the currently focused lightning-combobox (tracked via focusin listener).
+        // Calling blur() on the host element propagates into the shadow DOM and closes
+        // the internal dropdown — this is the only reliable way without shadowRoot access.
+        try {
+            if (this._focusedCombobox && typeof this._focusedCombobox.blur === 'function') {
+                this._focusedCombobox.blur();
+                this._focusedCombobox = null;
+            }
+        } catch (e) {
+            // benign
+        }
+        // Close any core pipe custom dropdowns
+        try {
+            if (typeof this.handleCloseCoreDropdowns === 'function') {
+                this.handleCloseCoreDropdowns();
+            }
+        } catch (e) {
+            // benign
+        }
+    }
+
     handleTopPointerDown() {
+        this.closeActiveDropdowns();
         this._setScroller('top');
     }
 
@@ -1111,29 +1416,32 @@ export default class SteelPipeDomesticConfig extends LightningElement {
     }
 
     handleTopScroll(event) {
+        this.closeActiveDropdowns();
         if (this._activeScroller === 'table') {
             return;
         }
         this._setScroller('top');
-        const table = this.template.querySelector('.table-scroll');
+        const table = this.template.querySelector('.regular-pipes-box .table-scroll');
         if (table && table.scrollLeft !== event.target.scrollLeft) {
             table.scrollLeft = event.target.scrollLeft;
         }
     }
 
     handleTableScroll(event) {
+        this.closeActiveDropdowns();
         if (this._activeScroller === 'top') {
             return;
         }
         this._setScroller('table');
-        const topTrack = this.template.querySelector('.top-scrollbar-track');
+        const topTrack = this.template.querySelector('.regular-pipes-box .top-scrollbar-track');
         if (topTrack && topTrack.scrollLeft !== event.target.scrollLeft) {
             topTrack.scrollLeft = event.target.scrollLeft;
         }
     }
 
     handleScrollLeft() {
-        const table = this.template.querySelector('.table-scroll');
+        this.closeActiveDropdowns();
+        const table = this.template.querySelector('.regular-pipes-box .table-scroll');
         if (table) {
             this._setScroller('table');
             table.scrollBy({ left: -600, top: 0, behavior: 'smooth' });
@@ -1141,9 +1449,73 @@ export default class SteelPipeDomesticConfig extends LightningElement {
     }
 
     handleScrollRight() {
-        const table = this.template.querySelector('.table-scroll');
+        this.closeActiveDropdowns();
+        const table = this.template.querySelector('.regular-pipes-box .table-scroll');
         if (table) {
             this._setScroller('table');
+            table.scrollBy({ left: 600, top: 0, behavior: 'smooth' });
+        }
+    }
+
+    _setCoreScroller(scroller) {
+        this._activeCoreScroller = scroller;
+        if (this._coreScrollTimeout) {
+            clearTimeout(this._coreScrollTimeout);
+        }
+        this._coreScrollTimeout = setTimeout(() => {
+            this._activeCoreScroller = null;
+        }, 150);
+    }
+
+    handleCoreTopPointerDown() {
+        this.closeActiveDropdowns();
+        this._setCoreScroller('top');
+    }
+
+    handleCoreTablePointerDown() {
+        this._setCoreScroller('table');
+    }
+
+    handleCoreTableWheel() {
+        this._setCoreScroller('table');
+    }
+
+    handleCoreTopScroll(event) {
+        this.closeActiveDropdowns();
+        if (this._activeCoreScroller === 'table') {
+            return;
+        }
+        this._setCoreScroller('top');
+        const table = this.template.querySelector('.core-table-scroll');
+        if (table && table.scrollLeft !== event.target.scrollLeft) {
+            table.scrollLeft = event.target.scrollLeft;
+        }
+    }
+
+    handleCoreTableScroll(event) {
+        this.closeActiveDropdowns();
+        if (this._activeCoreScroller === 'top') {
+            return;
+        }
+        this._setCoreScroller('table');
+        const topTrack = this.template.querySelector('.core-top-scrollbar-track');
+        if (topTrack && topTrack.scrollLeft !== event.target.scrollLeft) {
+            topTrack.scrollLeft = event.target.scrollLeft;
+        }
+    }
+
+    handleCoreScrollLeft() {
+        const table = this.template.querySelector('.core-table-scroll');
+        if (table) {
+            this._setCoreScroller('table');
+            table.scrollBy({ left: -600, top: 0, behavior: 'smooth' });
+        }
+    }
+
+    handleCoreScrollRight() {
+        const table = this.template.querySelector('.core-table-scroll');
+        if (table) {
+            this._setCoreScroller('table');
             table.scrollBy({ left: 600, top: 0, behavior: 'smooth' });
         }
     }
@@ -1233,7 +1605,137 @@ export default class SteelPipeDomesticConfig extends LightningElement {
             if (this.manualItems.length === 0) {
                 this.manualItems = [this.createManualItem(0)];
             }
+            this.activeCoreDropdown = null;
         }
+    }
+
+    handleToggleCoreDropdown(event) {
+        if (this.isReadOnly) return;
+        event.stopPropagation();
+        const btn = event.currentTarget;
+        const indexStr = btn.dataset.index;
+        const index = parseInt(indexStr, 10);
+        if (isNaN(index)) return;
+
+        if (this.activeCoreDropdown && this.activeCoreDropdown.index === index) {
+            this.activeCoreDropdown = null;
+            return;
+        }
+
+        const rect = btn.getBoundingClientRect();
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const menuHeight = 200;
+
+        let top;
+        // Prioritize opening downwards so it never covers the previous table or scrollbars.
+        // Only open upward if space below is critically restricted (<150px) AND space above is ample (>220px)
+        if (spaceBelow < 150 && rect.top > menuHeight + 20) {
+            top = Math.max(10, Math.round(rect.top - menuHeight - 4));
+        } else {
+            top = Math.round(rect.bottom + 2);
+        }
+
+        const width = Math.max(380, Math.round(rect.width));
+        const left = Math.max(10, Math.min(Math.round(rect.left), window.innerWidth - width - 10));
+        const maxHeight = Math.min(260, Math.max(140, Math.round(window.innerHeight - top - 16)));
+
+        const style = `position: fixed !important; top: ${top}px !important; left: ${left}px !important; width: ${width}px !important; max-height: ${maxHeight}px !important; z-index: 100000 !important;`;
+
+        this.activeCoreDropdown = {
+            index: index,
+            style: style
+        };
+    }
+
+    handleCloseCoreDropdowns() {
+        this.activeCoreDropdown = null;
+    }
+
+    handleDropdownMenuWheel(event) {
+        event.stopPropagation();
+    }
+
+    handleSelectCoreDescription(event) {
+        if (this.isReadOnly) return;
+        event.stopPropagation();
+        const index = parseInt(event.currentTarget.dataset.index, 10);
+        const value = event.currentTarget.dataset.value;
+
+        let item = this.manualItems[index];
+        if (!item) return;
+
+        item.description = value;
+        this.activeCoreDropdown = null;
+
+        let data = CORE_PIPE_DATA[value];
+        if (data) {
+            item.uom = data.uom;
+            item.kgPerMeter = data.kgPerMeter || 0;
+            item.baseMinRate = data.minRate;
+            item.baseRate = data.minRate;
+            if (value && value.includes('5.6MTR') && (!item.pipeLength || item.pipeLength === '')) {
+                item.pipeLength = '5.6';
+            }
+            let zAdder = this.getCorePipeZincAdder(item);
+            item.zincAdder = zAdder;
+            item.minRate = Number((item.baseMinRate + zAdder).toFixed(2));
+            item.rate = Number((item.baseRate + zAdder).toFixed(2));
+        }
+        this.calculateCorePipe(item);
+        this.manualItems = [...this.manualItems];
+    }
+
+    calculateCorePipe(item) {
+        let zAdder = this.getCorePipeZincAdder(item);
+        item.zincAdder = zAdder;
+
+        let baseMin = item.baseMinRate || 0;
+        item.minRate = Number((baseMin + zAdder).toFixed(2));
+
+        let rate = 0;
+        if (item.rate !== '' && item.rate !== null && item.rate !== undefined && !isNaN(item.rate)) {
+            rate = parseFloat(item.rate);
+        } else if (item.baseRate !== '' && item.baseRate !== null && item.baseRate !== undefined && !isNaN(item.baseRate)) {
+            rate = Number((parseFloat(item.baseRate) + zAdder).toFixed(2));
+            item.rate = rate;
+        }
+
+        let commRate = parseFloat(this.commissionInspection) || 0;
+        item.commissionAmount = Number((rate * (commRate / 100)).toFixed(2));
+        let combinedPrice = Number((rate + item.commissionAmount).toFixed(2));
+
+        let defaultGst = (this.dynamicGst !== undefined && this.dynamicGst !== null) ? this.dynamicGst : 18;
+        let gstRate = (item.gstRate !== undefined && item.gstRate !== null && item.gstRate !== '' && !isNaN(item.gstRate))
+            ? parseFloat(item.gstRate)
+            : defaultGst;
+
+        item.gstAmount = Number((combinedPrice * (gstRate / 100)).toFixed(2));
+        item.gst = item.gstAmount;
+        item.finalOfferPrice = Number((combinedPrice + item.gstAmount).toFixed(2));
+
+        let qty = parseFloat(item.quantity) || 0;
+        item.cost = Number((qty * item.finalOfferPrice).toFixed(2));
+
+        let kgMtr = parseFloat(item.kgPerMeter) || 0;
+        item.singlePipeWeight = kgMtr;
+        let pipeLen = parseFloat(item.pipeLength) || 1;
+        if (item.uom === 'Meters') {
+            item.totalWeight = Number((qty * kgMtr).toFixed(3));
+        } else if (item.uom === 'Pieces') {
+            item.totalWeight = Number((qty * kgMtr * pipeLen).toFixed(3));
+        } else if (item.uom === 'MT') {
+            item.totalWeight = Number((qty * 1000).toFixed(3));
+        } else {
+            item.totalWeight = Number((qty * kgMtr).toFixed(3));
+        }
+    }
+
+    recalculateCorePipes() {
+        if (!this.manualItems || this.manualItems.length === 0) return;
+        this.manualItems = this.manualItems.map(item => {
+            this.calculateCorePipe(item);
+            return item;
+        });
     }
 
     handleManualFieldChange(event) {
@@ -1243,22 +1745,103 @@ export default class SteelPipeDomesticConfig extends LightningElement {
         const value = event.target.value;
 
         let item = this.manualItems[index];
+        if (!item) return;
 
         if (fieldName === 'description') {
             item.description = value;
             let data = CORE_PIPE_DATA[value];
             if (data) {
                 item.uom = data.uom;
-                item.minRate = data.minRate;
-                if (item.rate < data.minRate) {
-                    item.rate = data.minRate;
+                item.kgPerMeter = data.kgPerMeter || 0;
+                item.baseMinRate = data.minRate;
+                item.baseRate = data.minRate;
+                if (value.includes('5.6MTR') && (!item.pipeLength || item.pipeLength === '')) {
+                    item.pipeLength = '5.6';
                 }
+                let zAdder = this.getCorePipeZincAdder(item);
+                item.zincAdder = zAdder;
+                item.minRate = Number((item.baseMinRate + zAdder).toFixed(2));
+                item.rate = Number((item.baseRate + zAdder).toFixed(2));
             }
-            item.cost = Number((item.quantity * item.rate).toFixed(2));
-        } else if (fieldName === 'quantity' || fieldName === 'rate') {
+            this.calculateCorePipe(item);
+        } else if (fieldName === 'zincCoating') {
+            item.zincCoating = value;
+            if (value === 'ANY SPECIAL') {
+                item.isZincRateDisabled = false;
+            } else {
+                item.zincRate = ZINC_RATE_MAP[value] !== undefined ? ZINC_RATE_MAP[value] : 0;
+                item.isZincRateDisabled = true;
+            }
+            let zAdder = this.getCorePipeZincAdder(item);
+            item.zincAdder = zAdder;
+            let baseMin = item.baseMinRate || 0;
+            item.minRate = Number((baseMin + zAdder).toFixed(2));
+            let baseR = (item.baseRate !== undefined && item.baseRate !== null && item.baseRate !== '') ? parseFloat(item.baseRate) : baseMin;
+            if (isNaN(baseR) || baseR < baseMin) {
+                baseR = baseMin;
+            }
+            item.baseRate = baseR;
+            item.rate = Number((baseR + zAdder).toFixed(2));
+            this.calculateCorePipe(item);
+        } else if (fieldName === 'zincRate') {
+            let zRate = parseFloat(value) || 0;
+            item.zincRate = zRate;
+            let zAdder = this.getCorePipeZincAdder(item);
+            item.zincAdder = zAdder;
+            let baseMin = item.baseMinRate || 0;
+            item.minRate = Number((baseMin + zAdder).toFixed(2));
+            let baseR = (item.baseRate !== undefined && item.baseRate !== null && item.baseRate !== '') ? parseFloat(item.baseRate) : baseMin;
+            if (isNaN(baseR) || baseR < baseMin) {
+                baseR = baseMin;
+            }
+            item.baseRate = baseR;
+            item.rate = Number((baseR + zAdder).toFixed(2));
+            this.calculateCorePipe(item);
+        } else if (fieldName === 'pipeLength') {
+            item.pipeLength = value;
+            if (item.uom === 'Pieces') {
+                let zAdder = this.getCorePipeZincAdder(item);
+                item.zincAdder = zAdder;
+                let baseMin = item.baseMinRate || 0;
+                item.minRate = Number((baseMin + zAdder).toFixed(2));
+                let baseR = (item.baseRate !== undefined && item.baseRate !== null && item.baseRate !== '') ? parseFloat(item.baseRate) : baseMin;
+                if (isNaN(baseR) || baseR < baseMin) {
+                    baseR = baseMin;
+                }
+                item.baseRate = baseR;
+                item.rate = Number((baseR + zAdder).toFixed(2));
+            }
+            this.calculateCorePipe(item);
+        } else if (fieldName === 'baseRate') {
             let numVal = parseFloat(value);
-            item[fieldName] = isNaN(numVal) ? '' : numVal;
-            item.cost = isNaN(numVal) ? 0 : Number((item.quantity * item.rate).toFixed(2));
+            item.baseRate = isNaN(numVal) ? '' : numVal;
+            let zAdder = this.getCorePipeZincAdder(item);
+            item.zincAdder = zAdder;
+            if (!isNaN(numVal)) {
+                item.rate = Number((numVal + zAdder).toFixed(2));
+            } else {
+                item.rate = '';
+            }
+            this.calculateCorePipe(item);
+        } else if (fieldName === 'rate') {
+            let numVal = parseFloat(value);
+            item.rate = isNaN(numVal) ? '' : numVal;
+            let zAdder = this.getCorePipeZincAdder(item);
+            item.zincAdder = zAdder;
+            if (!isNaN(numVal)) {
+                item.baseRate = Number((numVal - zAdder).toFixed(2));
+            } else {
+                item.baseRate = '';
+            }
+            this.calculateCorePipe(item);
+        } else if (fieldName === 'quantity') {
+            let numVal = parseFloat(value);
+            item.quantity = isNaN(numVal) ? '' : numVal;
+            this.calculateCorePipe(item);
+        } else if (fieldName === 'gstRate') {
+            let numVal = parseFloat(value);
+            item.gstRate = isNaN(numVal) ? '' : numVal;
+            this.calculateCorePipe(item);
         } else {
             item[fieldName] = value;
         }
@@ -1266,14 +1849,59 @@ export default class SteelPipeDomesticConfig extends LightningElement {
         this.manualItems = [...this.manualItems];
     }
 
+    handleManualBaseRateBlur(event) {
+        if (this.isReadOnly) return;
+        const index = parseInt(event.target.dataset.index, 10);
+        let item = this.manualItems[index];
+        if (!item) return;
+
+        let zAdder = this.getCorePipeZincAdder(item);
+        item.zincAdder = zAdder;
+        let baseMin = item.baseMinRate || 0;
+        item.minRate = Number((baseMin + zAdder).toFixed(2));
+
+        let curBase = parseFloat(item.baseRate);
+        if (isNaN(curBase) || curBase < baseMin || item.baseRate === '' || item.baseRate === null) {
+            item.baseRate = baseMin;
+            item.rate = Number((baseMin + zAdder).toFixed(2));
+        } else {
+            item.rate = Number((curBase + zAdder).toFixed(2));
+        }
+        this.calculateCorePipe(item);
+        this.manualItems = [...this.manualItems];
+    }
+
     handleManualRateBlur(event) {
         if (this.isReadOnly) return;
         const index = parseInt(event.target.dataset.index, 10);
         let item = this.manualItems[index];
+        if (!item) return;
         
-        if (item.rate < item.minRate || isNaN(item.rate)) {
+        let zAdder = this.getCorePipeZincAdder(item);
+        item.zincAdder = zAdder;
+        let baseMin = item.baseMinRate || 0;
+        item.minRate = Number((baseMin + zAdder).toFixed(2));
+
+        let curRate = parseFloat(item.rate);
+        if (isNaN(curRate) || curRate < item.minRate || item.rate === '' || item.rate === null) {
             item.rate = item.minRate;
-            item.cost = Number((item.quantity * item.rate).toFixed(2));
+            item.baseRate = baseMin;
+        } else {
+            item.baseRate = Number((curRate - zAdder).toFixed(2));
+        }
+        this.calculateCorePipe(item);
+        this.manualItems = [...this.manualItems];
+    }
+
+    handleManualGstBlur(event) {
+        if (this.isReadOnly) return;
+        const index = parseInt(event.target.dataset.index, 10);
+        let item = this.manualItems[index];
+        if (item) {
+            if (item.gstRate === '' || isNaN(item.gstRate) || item.gstRate === undefined || item.gstRate === null) {
+                item.gstRate = (this.dynamicGst !== undefined && this.dynamicGst !== null) ? this.dynamicGst : 18;
+            }
+            this.calculateCorePipe(item);
             this.manualItems = [...this.manualItems];
         }
     }
@@ -1295,15 +1923,22 @@ export default class SteelPipeDomesticConfig extends LightningElement {
 
     handleFieldChange(event) {
         if (this.isReadOnly) { return; } 
-        const fieldName = event.target.dataset.field;
-        const index = parseInt(event.target.dataset.index, 10);
-        const value = (event.target.type === 'toggle' || event.target.type === 'checkbox') ? event.target.checked : event.target.value;
+        const fieldName = event.currentTarget?.dataset?.field || event.target?.dataset?.field;
+        const indexStr = event.currentTarget?.dataset?.index ?? event.target?.dataset?.index;
+        const index = parseInt(indexStr, 10);
+        const rawVal = event.detail?.value !== undefined ? event.detail.value : event.target.value;
+        const value = (event.target.type === 'toggle' || event.target.type === 'checkbox') ? event.target.checked : rawVal;
 
+        if (isNaN(index) || index < 0 || index >= this.pipes.length) { return; }
         let pipe = this.pipes[index];
+        if (!pipe) { return; }
+
         pipe[fieldName] = value;
 
         // Dependency logic
         if (fieldName === 'steelType') {
+            pipe.isBlackSteel = (value === 'Black Steel');
+            pipe.isGalvanized = (value === 'Galvanized Iron (GI)');
             pipe.designationOptions = this.getDesignationOptions(value);
             if (!pipe.designationOptions.find(opt => opt.value === pipe.designation)) {
                 pipe.designation = pipe.designationOptions.length > 0 ? pipe.designationOptions[0].value : '';
@@ -1754,9 +2389,14 @@ export default class SteelPipeDomesticConfig extends LightningElement {
             pipe.quotedPrice = pipe.cutoffPrice;
         }
         
+        // 👉 Commission / Inspection calculation applied on Quoted Price
+        let commRate = parseFloat(this.commissionInspection) || 0;
+        pipe.commissionAmount = Number((pipe.quotedPrice * (commRate / 100)).toFixed(2));
+        let combinedPrice = Number((pipe.quotedPrice + pipe.commissionAmount).toFixed(2));
+
         let gstRate = (this.dynamicGst !== undefined && this.dynamicGst !== null) ? this.dynamicGst : 18;
-        pipe.gst = Number((pipe.quotedPrice * (gstRate / 100)).toFixed(2));
-        pipe.finalOfferPrice = Number((pipe.quotedPrice + pipe.gst).toFixed(2));
+        pipe.gst = Number((combinedPrice * (gstRate / 100)).toFixed(2));
+        pipe.finalOfferPrice = Number((combinedPrice + pipe.gst).toFixed(2));
         
         if (pipe.costPrice > 0) {
             pipe.discount = Number((((pipe.costPrice - pipe.quotedPrice) / pipe.costPrice) * 100).toFixed(2));
@@ -1784,7 +2424,9 @@ export default class SteelPipeDomesticConfig extends LightningElement {
             UOM__c: p.uom,
             Discount__c: p.discount,
             Tolerance__c: p.tolerance,
-            Cutoff_Price__c: p.cutoffPrice,
+            Cutoff_Price__c: (p.commissionAmount > 0) ? Number(((p.quotedPrice || 0) + (p.commissionAmount || 0)).toFixed(2)) : p.cutoffPrice,
+            Commission_Percent__c: parseFloat(this.commissionInspection) || 0,
+            Commission_Amount__c: p.commissionAmount || 0,
             Freight__c: p.freight,
             Reflect_In_Offer_Doc__c: p.reflectInOfferDocToggle ? 'Yes' : 'No',
             Out_of_Eastern_Zone__c: this.globalOutOfEasternZone ? 'Yes' : 'No',
@@ -1792,34 +2434,49 @@ export default class SteelPipeDomesticConfig extends LightningElement {
             Total_Price__c: p.totalPrice
         })) : [];
 
-        let gstRate = (this.dynamicGst !== undefined && this.dynamicGst !== null) ? this.dynamicGst : 18;
+        let defaultGstRate = (this.dynamicGst !== undefined && this.dynamicGst !== null) ? this.dynamicGst : 18;
+        let commRate = parseFloat(this.commissionInspection) || 0;
         const corePipes = (!this.isRegularOnly) ? this.manualItems.filter(item => item.description).map(item => {
-            let gstVal = item.rate * (gstRate / 100);
-            let finalOffer = item.rate + gstVal;
-            let totalP = finalOffer * item.quantity;
+            let itemGstRate = (item.gstRate !== undefined && item.gstRate !== null && item.gstRate !== '' && !isNaN(item.gstRate)) 
+                ? parseFloat(item.gstRate) 
+                : defaultGstRate;
+            let commAmt = Number((item.rate * (commRate / 100)).toFixed(2));
+            let combinedPrice = Number((item.rate + commAmt).toFixed(2));
+            let gstVal = Number((combinedPrice * (itemGstRate / 100)).toFixed(2));
+            let finalOffer = Number((combinedPrice + gstVal).toFixed(2));
+            let totalP = Number((finalOffer * item.quantity).toFixed(2));
             let sName = CORE_PIPE_DATA[item.description] ? CORE_PIPE_DATA[item.description].shortName : 'Core Pipe';
+            let sSpec = CORE_PIPE_DATA[item.description] ? CORE_PIPE_DATA[item.description].spec : 'ETI/OHE/11';
             
+            let rawLen = (item.pipeLength !== undefined && item.pipeLength !== null) ? String(item.pipeLength).trim() : '';
+
             return {
                 Steel_Type__c: 'Galvanized Iron (GI)',
-                Designation__c: 'GI ERW',
-                Standard__c: 'IS 1239',
+                Designation__c: 'Core Pipe',
+                Standard__c: sSpec,
                 Shape__c: 'Default',
                 Pipe_Class__c: 'Core', // Fixed naming gap
                 Size__c: sName,        // Fixed naming gap
                 End_Finish__c: 'Plain End',
                 Grade__c: 'YST 210/240',
-                Length__c: '',
+                Length__c: rawLen,
                 Quantity__c: item.quantity,
                 UOM__c: item.uom,
                 Discount__c: 0,
                 Tolerance__c: 0,
-                Cutoff_Price__c: item.rate,
+                Cutoff_Price__c: combinedPrice,
+                Base_Rate__c: item.baseRate !== undefined && item.baseRate !== null && !isNaN(item.baseRate) ? item.baseRate : (item.baseMinRate || 0),
+                Commission_Percent__c: commRate,
+                Commission_Amount__c: commAmt,
                 Freight__c: 0,
                 Reflect_In_Offer_Doc__c: 'Yes',
                 Out_of_Eastern_Zone__c: this.globalOutOfEasternZone ? 'Yes' : 'No',
-                Total_Weight__c: 0,
+                Total_Weight__c: item.totalWeight || 0,
+                Weight_Per_Meter__c: item.kgPerMeter || 0,
                 Total_Price__c: Number(totalP.toFixed(2)),
-                Special_Description__c: item.description 
+                Special_Description__c: item.description,
+                Zinc_Coating__c: item.zincCoating || '360 GSM',
+                Zinc_Rate__c: parseFloat(item.zincRate) || 0
             };
         }) : [];
 

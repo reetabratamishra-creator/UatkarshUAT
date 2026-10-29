@@ -11,6 +11,9 @@ export default class CaseDepartmentAssign extends LightningElement {
     _recordId;
     _requested = false;
 
+    searchTerm = '';
+    isDropdownOpen = false;
+    selectedUserLabel = '';
     context;
     users = [];
     selectedDepartment;
@@ -97,12 +100,37 @@ export default class CaseDepartmentAssign extends LightningElement {
     get saveDisabled() {
         return this.isSaving || !this.selectedDepartment || !this.selectedUserId;
     }
+    get filteredUsers() {
+        const term = (this.searchTerm || '').trim().toLowerCase();
+        if (!term) {
+            return this.users;
+        }
+        return this.users.filter((u) => u.label.toLowerCase().includes(term));
+    }
+
+    get noSearchResults() {
+        return this.filteredUsers.length === 0;
+    }
+
+    get comboboxClass() {
+        return (
+            'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click' +
+            (this.isDropdownOpen ? ' slds-is-open' : '')
+        );
+    }
+
+    get searchDisplayValue() {
+        // While typing/open show the search text; otherwise show the selected user's name
+        return this.isDropdownOpen ? this.searchTerm : this.selectedUserLabel;
+    }
 
     /* ---------------- handlers ---------------- */
 
     async handleDepartmentChange(event) {
         this.selectedDepartment = event.detail.value;
         this.selectedUserId = undefined;
+        this.selectedUserLabel = '';
+        this.searchTerm = '';
         this.users = [];
         this.usersLoaded = false;
         this.errorMessage = undefined;
@@ -120,6 +148,30 @@ export default class CaseDepartmentAssign extends LightningElement {
 
     handleUserChange(event) {
         this.selectedUserId = event.detail.value;
+    }
+    handleSearchFocus() {
+        this.isDropdownOpen = true;
+        this.searchTerm = '';
+    }
+
+    handleSearchInput(event) {
+        this.searchTerm = event.target.value;
+        this.isDropdownOpen = true;
+    }
+
+    handleSearchBlur() {
+        this.isDropdownOpen = false;
+        this.searchTerm = '';
+    }
+
+    handleUserSelect(event) {
+        // mousedown fires before blur, so the selection is captured before the list closes
+        const value = event.currentTarget.dataset.value;
+        const label = event.currentTarget.dataset.label;
+        this.selectedUserId = value;
+        this.selectedUserLabel = label;
+        this.searchTerm = '';
+        this.isDropdownOpen = false;
     }
 
     handleClose() {
@@ -164,5 +216,9 @@ export default class CaseDepartmentAssign extends LightningElement {
             error?.message ||
             'Something went wrong. Contact your administrator.'
         );
+    }
+    preventBlur(event) {
+        // keeps the input focused when clicking the list scrollbar
+        event.preventDefault();
     }
 }

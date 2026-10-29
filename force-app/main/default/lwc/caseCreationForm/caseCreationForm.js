@@ -75,6 +75,12 @@ export default class CaseCreationForm extends NavigationMixin(LightningElement) 
      * by record type, which silently empties fields whose values are not assigned
      * to the default record type.
      */
+
+
+    connectedCallback() {
+    this.resetForm();
+    }
+
     @wire(getFormPicklists)
     wiredPicklists({ data, error }) {
         if (data) {
@@ -411,11 +417,18 @@ export default class CaseCreationForm extends NavigationMixin(LightningElement) 
                 }
             });
             // Nothing left to discard - the files now belong to the case.
-            this.stagedFiles = [];
+            /*this.stagedFiles = [];
 
             this.reportOutcome(result);
 
+            this.dispatchEvent(new CustomEvent('close'));*/
+            this.reportOutcome(result);
+
+            // Files now belong to the case, so just clear everything.
+            this.resetForm();
+
             this.dispatchEvent(new CustomEvent('close'));
+
             this[NavigationMixin.Navigate]({
                 type: 'standard__recordPage',
                 attributes: {
@@ -456,7 +469,8 @@ export default class CaseCreationForm extends NavigationMixin(LightningElement) 
                 // Nothing useful to tell the user on the way out.
             });
         });
-        this.stagedFiles = [];
+        //this.stagedFiles = [];
+        this.resetForm();
 
         // Still fires for anyone embedding this inside a modal wrapper.
         this.dispatchEvent(new CustomEvent('close'));
@@ -514,4 +528,36 @@ export default class CaseCreationForm extends NavigationMixin(LightningElement) 
         }
         return error?.body?.message || error?.message || 'Something went wrong. Try again.';
     }
+    resetForm() {
+    this.form = {
+        department: '',
+        subDepartment: '',
+        origin: '',
+        caseType: '',
+        subCategory: '',
+        priority: '',
+        subject: '',
+        description: '',
+        comments: '',
+        assignedToId: ''
+    };
+    this.relatedTo = 'Account';
+    this.accountId = undefined;
+    this.opportunityId = undefined;
+    this.resolvedAccountName = undefined;
+
+    this.contacts = [];
+    this.selectedContactIds = [];
+    this.isLoadingContacts = false;
+
+    this.userOptions = [];
+    this.isSaving = false;
+    this.errorMessage = undefined;
+
+    this.showNewContact = false;
+    this.isSavingContact = false;
+    this.newContact = { firstName: '', lastName: '', phone: '', email: '' };
+
+    this.stagedFiles = [];
+}
 }

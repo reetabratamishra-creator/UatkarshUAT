@@ -26,6 +26,16 @@
     </classAccesses>
     <description>Access to fetch Blue Waves campaign stats from Campaign list and view Campaign Report records.</description>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Campaign.Scheduled_Date_Time__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Campaign.Sent_Date_Time__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Campaign_Report__c.Campaign__c</field>
         <readable>true</readable>

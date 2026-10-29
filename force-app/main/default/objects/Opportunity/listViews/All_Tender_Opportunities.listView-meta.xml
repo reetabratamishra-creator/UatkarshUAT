@@ -4,6 +4,7 @@
     <columns>OPPORTUNITY.NAME</columns>
     <columns>ACCOUNT.NAME</columns>
     <columns>Department_NameFormula__c</columns>
+    <columns>OPPORTUNITY.CREATED_DATE</columns>
     <columns>OPPORTUNITY.STAGE_NAME</columns>
     <columns>OPPORTUNITY.CLOSE_DATE</columns>
     <columns>OPPORTUNITY.AMOUNT</columns>

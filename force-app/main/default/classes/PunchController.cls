@@ -1065,15 +1065,39 @@ public class PunchController {
             LIMIT 1
         ];
 
-        List<User> recipients = [
+        Set<String> recipientIds = new Set<String>();
+
+        // Utkarsh HOD: same Department as the user
+        for (User u : [
             SELECT Id
             FROM User
             WHERE Department = :currentUser.Department
-            AND Profile.Name IN ('CRM Head', 'Utkarsh HOD')
+            AND Profile.Name = 'Utkarsh HOD'
             AND IsActive = true
-        ];
+        ]) {
+            recipientIds.add(u.Id);
+        }
 
-        if (recipients.isEmpty()) {
+        // CRM Head: user's Department belongs to one of the CRM Head's Departments__c
+        if (String.isNotBlank(currentUser.Department)) {
+            String userDept = currentUser.Department.trim().toUpperCase();
+            for (User u : [
+                SELECT Id, Departments__c
+                FROM User
+                WHERE Profile.Name = 'CRM Head'
+                AND IsActive = true
+                AND Departments__c != null
+            ]) {
+                for (String deptName : getCrmHeadDepartmentNames(u.Departments__c)) {
+                    if (deptName.toUpperCase() == userDept) {
+                        recipientIds.add(u.Id);
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (recipientIds.isEmpty()) {
             return;
         }
 
@@ -1083,12 +1107,6 @@ public class PunchController {
             WHERE DeveloperName = 'WFH_WFO_Notification'
             LIMIT 1
         ];
-
-        Set<String> recipientIds = new Set<String>();
-
-        for (User u : recipients) {
-            recipientIds.add(u.Id);
-        }
 
         Messaging.CustomNotification notification =
             new Messaging.CustomNotification();
@@ -1101,5 +1119,41 @@ public class PunchController {
         notification.setTargetId(userId);
 
         notification.send(recipientIds);
+    }
+
+    // Department name (User.Department, uppercased) -> User.Departments__c picklist value
+    private static final Map<String, String> DEPARTMENT_NORMALIZATION_MAP = new Map<String, String>{
+        'HIGH MAST & POLYGONAL'             => 'High_Mast_Department',
+        'CRASH BARRIER'                     => 'Crash_Barrier_Department',
+        'HDPE'                              => 'HDPE_Pipe_Department',
+        'STEEL TUBULAR POLES'               => 'Steel_Tubular_Pole_Department',
+        'POLYMER'                           => 'PVC',
+        'TRANSMISSION & TELECOM TOWER'      => 'Transmission_Tower_Department',
+        'PRE ENGINEERING BUILDING'          => 'PEB',
+        'SOLAR STRUCTURE'                   => 'Solar_Structure_Department',
+        'RAILWAY ELECTRIFICATION STRUCTURE' => 'Core_Department',
+        'STEEL PIPES'                       => 'Steel_Pipes_Department'
+    };
+
+    /**
+     * Department values covered by a CRM Head: each of the CRM Head's Departments__c values
+     * plus that department's name (e.g. 'Crash_Barrier_Department' and 'CRASH BARRIER').
+     */
+    private static Set<String> getCrmHeadDepartmentNames(String departmentsValue) {
+        Set<String> deptNames = new Set<String>();
+        if (String.isBlank(departmentsValue)) {
+            return deptNames;
+        }
+        for (String rawDept : departmentsValue.split(';')) {
+            if (String.isNotBlank(rawDept)) {
+                deptNames.add(rawDept.trim());
+            }
+        }
+        for (String deptName : DEPARTMENT_NORMALIZATION_MAP.keySet()) {
+            if (deptNames.contains(DEPARTMENT_NORMALIZATION_MAP.get(deptName))) {
+                deptNames.add(deptName);
+            }
+        }
+        return deptNames;
     }
 }

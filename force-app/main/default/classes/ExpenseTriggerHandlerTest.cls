@@ -375,4 +375,109 @@ private class ExpenseTriggerHandlerTest {
     }
     Test.stopTest();
   }
+
+  @IsTest
+  static void testBeforeUpdate_NormalUserReEditRejectedInLwcContext() {
+    Expense__c expHOD = new Expense__c(Status__c = 'Rejected by HOD', Employee__c = UserInfo.getUserId(), Subject__c = 'Original');
+    insert as system expHOD;
+
+    ExpenseTriggerHandler.isLwcContext = true;
+    expHOD.Subject__c = 'Updated by Normal User';
+    expHOD.Status__c = 'Pending HOD Approval';
+
+    Test.startTest();
+    try {
+      update expHOD;
+    } finally {
+      ExpenseTriggerHandler.isLwcContext = false;
+    }
+    Test.stopTest();
+
+    Expense__c res = [SELECT Subject__c, Status__c FROM Expense__c WHERE Id = :expHOD.Id];
+    System.assertEquals('Updated by Normal User', res.Subject__c);
+    System.assertEquals('Pending HOD Approval', res.Status__c);
+  }
+
+  @IsTest
+  static void testBeforeUpdate_NormalUserReEditRejectedOutsideLwcBlocked() {
+    Expense__c expHOD = new Expense__c(Status__c = 'Rejected by HOD', Employee__c = UserInfo.getUserId(), Subject__c = 'Original');
+    insert as system expHOD;
+
+    ExpenseTriggerHandler.isLwcContext = false;
+    expHOD.Subject__c = 'Updated Outside LWC';
+
+    Test.startTest();
+    try {
+      update expHOD;
+      System.assert(false, 'Expected DmlException when normal user edits rejected expense outside LWC context');
+    } catch (DmlException e) {
+      System.assert(
+        e.getMessage().contains(ExpenseTriggerHandler.EDIT_RESTRICTED_MSG),
+        'Expected edit restricted message but received: ' + e.getMessage()
+      );
+    }
+    Test.stopTest();
+  }
+
+  @IsTest
+  static void testBeforeUpdate_HodUserReEditRejectedScenarios() {
+    Expense__c expHR = new Expense__c(Status__c = 'Rejected by HR', Employee__c = UserInfo.getUserId(), Subject__c = 'Original');
+    Expense__c expHOD = new Expense__c(Status__c = 'Rejected by HOD', Employee__c = UserInfo.getUserId(), Subject__c = 'Original');
+    insert as system new List<Expense__c>{ expHR, expHOD };
+
+    ExpenseTriggerHandler.currentUserProfileNameOverride = 'Utkarsh HOD';
+    ExpenseTriggerHandler.isLwcContext = true;
+
+    Test.startTest();
+    try {
+      // Allowed: HOD can re-edit when Rejected by HR
+      expHR.Subject__c = 'HOD Resubmitted';
+      expHR.Status__c = 'Pending HR Approval';
+      update expHR;
+
+      // Blocked: HOD cannot re-edit when Rejected by HOD
+      expHOD.Subject__c = 'HOD Attempted';
+      try {
+        update expHOD;
+        System.assert(false, 'Expected DmlException when HOD tries to re-edit Rejected by HOD expense');
+      } catch (DmlException e) {
+        System.assert(e.getMessage().contains(ExpenseTriggerHandler.EDIT_RESTRICTED_MSG));
+      }
+    } finally {
+      ExpenseTriggerHandler.currentUserProfileNameOverride = null;
+      ExpenseTriggerHandler.isLwcContext = false;
+    }
+    Test.stopTest();
+  }
+
+  @IsTest
+  static void testBeforeUpdate_HrAndEdUserReEditRejectedScenarios() {
+    Expense__c expED = new Expense__c(Status__c = 'Rejected by ED', Employee__c = UserInfo.getUserId(), Subject__c = 'Original');
+    Expense__c expHR = new Expense__c(Status__c = 'Rejected by HR', Employee__c = UserInfo.getUserId(), Subject__c = 'Original');
+    insert as system new List<Expense__c>{ expED, expHR };
+
+    ExpenseTriggerHandler.currentUserProfileNameOverride = 'Utkarsh HR';
+    ExpenseTriggerHandler.isLwcContext = true;
+
+    Test.startTest();
+    try {
+      // Allowed: HR can re-edit when Rejected by ED
+      expED.Subject__c = 'HR Resubmitted';
+      expED.Status__c = 'Pending ED Approval';
+      update expED;
+
+      // Blocked: HR cannot re-edit when Rejected by HR
+      expHR.Subject__c = 'HR Attempted';
+      try {
+        update expHR;
+        System.assert(false, 'Expected DmlException when HR tries to re-edit Rejected by HR expense');
+      } catch (DmlException e) {
+        System.assert(e.getMessage().contains(ExpenseTriggerHandler.EDIT_RESTRICTED_MSG));
+      }
+    } finally {
+      ExpenseTriggerHandler.currentUserProfileNameOverride = null;
+      ExpenseTriggerHandler.isLwcContext = false;
+    }
+    Test.stopTest();
+  }
 }

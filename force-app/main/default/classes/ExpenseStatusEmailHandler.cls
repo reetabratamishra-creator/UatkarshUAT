@@ -1,16 +1,20 @@
 /**
  * @description Sends emails to Employee when Expense status changes
- * (Submitted / Approved by HOD / Rejected by HOD / Approved by HR / Rejected by HR)
+ * (Submitted / Approved by HOD / Rejected by HOD / Approved by HR / Rejected by HR /
+ * Approved by ED / Rejected by ED)
  * @author Rani Mate
  * @date 2026-08-14
  */
 public without sharing class ExpenseStatusEmailHandler {
     // ===== Status Values (Adjust these according to your org) =====
-    public static final String STATUS_SUBMITTED = 'Submitted';
-    public static final String STATUS_APPROVED_BY_HOD = 'Approved';
-    public static final String STATUS_REJECTED_BY_HOD = 'Rejected';
-    public static final String STATUS_APPROVED_BY_HR = 'Approved';
-    public static final String STATUS_REJECTED_BY_HR = 'Rejected';
+    // Approval by a stage is represented by the move to the next stage's pending status.
+    public static final String STATUS_SUBMITTED = 'Pending HOD Approval';
+    public static final String STATUS_APPROVED_BY_HOD = 'Pending HR Approval';
+    public static final String STATUS_REJECTED_BY_HOD = 'Rejected by HOD';
+    public static final String STATUS_APPROVED_BY_HR = 'Pending ED Approval';
+    public static final String STATUS_REJECTED_BY_HR = 'Rejected by HR';
+    public static final String STATUS_APPROVED_BY_ED = 'Approved by ED';
+    public static final String STATUS_REJECTED_BY_ED = 'Rejected by ED';
     // ===== Templates =====
     public static final String TEMPLATE_SUBMITTED =
         'Expense_submitted_Your_expense_claim_has_been_submitte_1786634065001';
@@ -22,6 +26,10 @@ public without sharing class ExpenseStatusEmailHandler {
         'Expense_approved_by_HR_Your_expense_claim_has_been_approve_1786634464645';
     public static final String TEMPLATE_REJECTED_HR =
         'Expense_rejected_by_HR_Your_expense_claim_has_been_rejected_1786636244825';
+    public static final String TEMPLATE_APPROVED_ED =
+        'Expense_approved_by_ED_Your_expense_claim_has_been_approved_1791441794563';
+    public static final String TEMPLATE_REJECTED_ED =
+        'Expense_rejected_by_ED_Your_expense_claim_has_been_rejected_1791441954052';
     // ===== ADDED: HOD / HR approver templates =====
     public static final String TEMPLATE_HOD_NEW_SUBMITTED =
         'New_expense_submitted_Expense_claim_submitted_by_Employee_1786636633300';
@@ -91,6 +99,12 @@ public without sharing class ExpenseStatusEmailHandler {
         }
         if (newStatus == STATUS_REJECTED_BY_HR) {
             return TEMPLATE_REJECTED_HR;
+        }
+        if (newStatus == STATUS_APPROVED_BY_ED) {
+            return TEMPLATE_APPROVED_ED;
+        }
+        if (newStatus == STATUS_REJECTED_BY_ED) {
+            return TEMPLATE_REJECTED_ED;
         }
         return null;
     }
@@ -271,6 +285,7 @@ public without sharing class ExpenseStatusEmailHandler {
         WHERE Id IN :expenseIds
         AND Employee__r.Email != null
     ];
+    Id oweaId = getOrgWideEmailAddressId();
     List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
     for (Expense__c exp : expensesWithDetails) {
         Messaging.SingleEmailMessage mail;
@@ -287,7 +302,9 @@ public without sharing class ExpenseStatusEmailHandler {
         mail.setToAddresses(new List<String>{ exp.Employee__r.Email });
         mail.setSaveAsActivity(false);
         mail.setTreatTargetObjectAsRecipient(false);
-        applyOrgWideSender(mail);
+        if (oweaId != null) {
+            mail.setOrgWideEmailAddressId(oweaId);
+        }
         messages.add(mail);
     }
     sendMessageBatch(messages, 'Expense employee');
@@ -326,11 +343,5 @@ public without sharing class ExpenseStatusEmailHandler {
             LIMIT 1
         ];
         return owea.isEmpty() ? null : owea[0].Id;
-    }
-    private static void applyOrgWideSender(Messaging.SingleEmailMessage message) {
-        Id oweaId = getOrgWideEmailAddressId();
-        if (oweaId != null) {
-            message.setOrgWideEmailAddressId(oweaId);
-        }
     }
 }

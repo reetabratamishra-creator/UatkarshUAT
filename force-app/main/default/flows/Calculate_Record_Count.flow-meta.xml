@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>assign</name>
+        <label>assign</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>VisitCount</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>TotalMinutes</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>CurrentDurationMinutes</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_on_task_log</targetReference>
+        </connector>
+    </assignments>
+    <environments>Default</environments>
+    <formulas>
+        <name>CurrentDurationMinutes</name>
+        <dataType>Number</dataType>
+        <expression>VALUE(
+    LEFT(
+        {!Loop_on_task_log.Time_Duration__c},
+        2
+    )
+) * 60
++
+VALUE(
+    RIGHT(
+        {!Loop_on_task_log.Time_Duration__c},
+        2
+    )
+)</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>TotalTimeHHMM</name>
+        <dataType>String</dataType>
+        <expression>LPAD(
+    TEXT(
+        FLOOR({!TotalMinutes} / 60)
+    ),
+    2,
+    &quot;0&quot;
+)
+&amp;
+&quot;:&quot;
+&amp;
+LPAD(
+    TEXT(
+        MOD({!TotalMinutes}, 60)
+    ),
+    2,
+    &quot;0&quot;
+)</expression>
+    </formulas>
+    <interviewLabel>Calculate Record Count {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Calculate Record Count</label>
+    <loops>
+        <name>Loop_on_task_log</name>
+        <label>Loop on task log</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>GetRecord</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>assign</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>UpdateTask</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>GetRecord</name>
+        <label>GetRecord</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Loop_on_task_log</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Punch_Record__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>IsCheckout__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Task_Log__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>UpdateTask</name>
+        <label>UpdateTask</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Total_Time_Spent_at_Client_Location_in__c</field>
+            <value>
+                <elementReference>TotalTimeHHMM</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Visit_Count__c</field>
+            <value>
+                <elementReference>VisitCount</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>GetRecord</targetReference>
+        </connector>
+        <object>Punch_Record__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>TotalMinutes</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <name>VisitCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+</Flow>

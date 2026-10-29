@@ -35,7 +35,9 @@ export default class InternalTicketForm extends NavigationMixin(LightningElement
 
     /** Department comes from the running user when it resolves to exactly one value. */
     isDepartmentLocked = false;
+    
     departmentNote;
+    lockedDepartment;
 
     /**
      * Files upload before the ticket exists, staged against the running user's own
@@ -50,7 +52,12 @@ export default class InternalTicketForm extends NavigationMixin(LightningElement
         return !!this.recordId;
     }
 
+    connectedCallback() {
+        this.resetForm();
+    }
+
     // ---------------- Running user ----------------
+    /*
     @wire(getUserContext)
     wiredUserContext({ data, error }) {
         if (data) {
@@ -63,6 +70,23 @@ export default class InternalTicketForm extends NavigationMixin(LightningElement
             // Leave the field open rather than blocking the form.
             this.isDepartmentLocked = false;
             this.departmentNote = undefined;
+        }
+    }
+    */
+        @wire(getUserContext)
+    wiredUserContext({ data, error }) {
+        if (data) {
+            this.isDepartmentLocked = data.locked === true;
+            this.departmentNote = data.note;
+            if (data.locked && data.department) {
+                this.lockedDepartment = data.department;
+                this.form.department = data.department;
+            }
+        } else if (error) {
+            // Leave the field open rather than blocking the form.
+            this.isDepartmentLocked = false;
+            this.departmentNote = undefined;
+            this.lockedDepartment = undefined;
         }
     }
 
@@ -197,7 +221,7 @@ export default class InternalTicketForm extends NavigationMixin(LightningElement
                 }
             });
             // Nothing left to discard - the files now belong to the ticket.
-            this.stagedFiles = [];
+            //this.stagedFiles = [];
 
             const title = `Ticket ${result.caseNumber} raised`;
             if (result.warning) {
@@ -208,7 +232,8 @@ export default class InternalTicketForm extends NavigationMixin(LightningElement
                     : `Assigned to ${result.ownerName}. No email was sent — check their email address.`;
                 this.toast(title, detail, result.emailSent ? 'success' : 'warning');
             }
-
+            
+            this.resetForm();
             this.close();
             this[NavigationMixin.Navigate]({
                 type: 'standard__recordPage',
@@ -232,7 +257,9 @@ export default class InternalTicketForm extends NavigationMixin(LightningElement
                 // Nothing useful to tell the user on the way out.
             });
         });
-        this.stagedFiles = [];
+
+        this.resetForm();
+        //this.stagedFiles = [];
 
         if (this.isAction) {
             // Inside a modal there is nowhere to navigate to - just dismiss it.
@@ -285,5 +312,21 @@ export default class InternalTicketForm extends NavigationMixin(LightningElement
             return error.body.map((e) => e.message).join(', ');
         }
         return error?.body?.message || error?.message || 'Something went wrong. Try again.';
+    }
+
+        resetForm() {
+        this.form = {
+            moduleId: '',
+            // Locked department comes back from the profile; otherwise start blank.
+            department: this.isDepartmentLocked && this.lockedDepartment
+                ? this.lockedDepartment
+                : '',
+            priority: '',
+            subject: '',
+            description: ''
+        };
+        this.isSaving = false;
+        this.errorMessage = undefined;
+        this.stagedFiles = [];
     }
 }

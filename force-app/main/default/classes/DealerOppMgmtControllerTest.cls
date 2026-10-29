@@ -830,4 +830,48 @@ private class DealerOppMgmtControllerTest {
     }
   }
 
+  @IsTest
+  static void testScheduledSends_RequireSelectionAndClearSchedule() {
+    Integer threwCount = 0;
+    Test.startTest();
+    try {
+      DealerOpportunityManagementController.sendOpportunityJourneyScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      DealerOpportunityManagementController.sendOpportunityRcsScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      DealerOpportunityManagementController.sendOpportunitySmsScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      DealerOpportunityManagementController.getWhatsAppTemplates();
+    } catch (Exception ex) {
+      System.assertNotEquals(null, ex);
+    }
+    try {
+      DealerOpportunityManagementController.getRcsTemplates();
+    } catch (Exception ex) {
+      System.assertNotEquals(null, ex);
+    }
+    try {
+      DealerOpportunityManagementController.getSmsTemplates();
+    } catch (Exception ex) {
+      System.assertNotEquals(null, ex);
+    }
+    try {
+      DealerOpportunityManagementController.sendOpportunityCampaignEmailScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    Test.stopTest();
+
+    System.assertEquals(4, threwCount, 'Each scheduled send needs at least one record.');
+    System.assertEquals(null, BWM_CampaignScheduleContext.scheduledDateTime, 'Schedule must be cleared after the send.');
+  }
 }

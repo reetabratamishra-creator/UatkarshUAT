@@ -12,14 +12,15 @@ import getWhatsAppTemplates from '@salesforce/apex/ContactManagementController.g
 import getRcsTemplates from '@salesforce/apex/ContactManagementController.getRcsTemplates';
 import getSmsTemplates from '@salesforce/apex/ContactManagementController.getSmsTemplates';
 import getBluewaveEmailTemplates from '@salesforce/apex/ContactManagementController.getBluewaveEmailTemplates';
-import sendContactCampaignEmail from '@salesforce/apex/ContactManagementController.sendContactCampaignEmail';
+import sendContactCampaignEmail from '@salesforce/apex/ContactManagementController.sendContactCampaignEmailScheduled';
 import getCampaignJourneys from '@salesforce/apex/ContactManagementController.getCampaignJourneys';
-import sendContactJourney from '@salesforce/apex/ContactManagementController.sendContactJourney';
-import sendContactWhatsApp from '@salesforce/apex/BWM_WaCampCtrlA.sendContactWhatsApp';
-import sendContactRcs from '@salesforce/apex/ContactManagementController.sendContactRcs';
-import sendContactSms from '@salesforce/apex/ContactManagementController.sendContactSms';
-import createCampaignWithMembers from '@salesforce/apex/BWM_CustomCampaignMemberCtrl.createCampaignWithMembers';
+import sendContactJourney from '@salesforce/apex/ContactManagementController.sendContactJourneyScheduled';
+import sendContactWhatsApp from '@salesforce/apex/BWM_WaCampCtrlA.sendContactWhatsAppScheduled';
+import sendContactRcs from '@salesforce/apex/ContactManagementController.sendContactRcsScheduled';
+import sendContactSms from '@salesforce/apex/ContactManagementController.sendContactSmsScheduled';
+import createCampaignWithMembers from '@salesforce/apex/BWM_CustomCampaignMemberCtrl.createScheduledCampaignWithMembers';
 import { SEND_ACTION, MEMBER_TYPE, trackCampaignMembers } from 'c/campaignSendActions';
+import { changedFieldCount, filtersMatch, listChipLabel, optionLabels } from 'c/campaignFilterUi';
 
 const COLUMNS = [
     {
@@ -50,6 +51,7 @@ export default class ContactManagementDatatable extends LightningElement {
     countryOptions = [];
     selectedStates = [];
     stateOptions = [];
+    appliedFilters;
 
     isEmailModalOpen = false;
     isSendingEmail = false;
@@ -90,6 +92,7 @@ export default class ContactManagementDatatable extends LightningElement {
     smsTemplateSearch = '';
 
     isCampaignNameModalOpen = false;
+    collectJourneySchedule = false;
     pendingSendAction = null;
 
     @wire(getContactCountryOptions)
@@ -134,6 +137,7 @@ export default class ContactManagementDatatable extends LightningElement {
      */
     async loadContacts(notifyWhenEmpty) {
         this.isLoading = true;
+        const requestedFilters = this.buildFilterState();
 
         try {
             const data = await searchContacts({
@@ -151,6 +155,7 @@ export default class ContactManagementDatatable extends LightningElement {
                 Phone: row.MobilePhone || row.Phone || '',
                 AccountName: row.Account ? row.Account.Name || '' : ''
             }));
+            this.appliedFilters = requestedFilters;
 
             if (notifyWhenEmpty && this.contacts.length === 0) {
                 this.showToast('Search', 'No contacts match your search criteria.', 'info');
@@ -207,6 +212,46 @@ export default class ContactManagementDatatable extends LightningElement {
     handleSearch() {
         this.selectedRows = [];
         this.loadContacts(true);
+    }
+
+    handleResetFilters() {
+        this.searchTerm = '';
+        this.phoneFilter = '';
+        this.emailFilter = '';
+        this.selectedCountry = '';
+        this.selectedStates = [];
+        this.handleSearch();
+    }
+
+    handleRemoveAppliedChip(event) {
+        const key = event.currentTarget.dataset.key;
+        if (key === 'search') {
+            this.searchTerm = '';
+        } else if (key === 'phone') {
+            this.phoneFilter = '';
+        } else if (key === 'email') {
+            this.emailFilter = '';
+        } else if (key === 'country') {
+            this.selectedCountry = '';
+            this.selectedStates = [];
+        } else if (key === 'states') {
+            this.selectedStates = [];
+        }
+        this.handleSearch();
+    }
+
+    handleClearSelection() {
+        this.selectedRows = [];
+    }
+
+    buildFilterState() {
+        return {
+            searchTerm: this.searchTerm || '',
+            phoneFilter: this.phoneFilter || '',
+            emailFilter: this.emailFilter || '',
+            country: this.selectedCountry || '',
+            states: this.showStateFilter ? this.selectedStates || [] : []
+        };
     }
 
 
@@ -316,14 +361,15 @@ export default class ContactManagementDatatable extends LightningElement {
         this.openCampaignNameModal(SEND_ACTION.BLUEWAVE_EMAIL);
     }
 
-    async executeSendBluewaveEmail(campaignName) {
+    async executeSendBluewaveEmail(campaignName, scheduledDateTime) {
         const contactIds = this.selectedRows.map((row) => row.Id);
         this.isSendingBluewaveEmail = true;
 
         try {
             const result = await sendContactCampaignEmail({
                 contactIds,
-                infobipTemplateId: this.selectedBluewaveTemplateId
+                infobipTemplateId: this.selectedBluewaveTemplateId,
+                scheduledDateTime
             });
 
             let message = `${result.sentCount} campaign email(s) sent successfully.`;
@@ -341,7 +387,7 @@ export default class ContactManagementDatatable extends LightningElement {
             );
 
             if (result.sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isBluewaveEmailModalOpen = false;
                 this.selectedBluewaveTemplateId = null;
             }
@@ -441,14 +487,15 @@ export default class ContactManagementDatatable extends LightningElement {
         this.openCampaignNameModal(SEND_ACTION.JOURNEY);
     }
 
-    async executeSendCampaignJourney(campaignName) {
+    async executeSendCampaignJourney(campaignName, scheduledDateTime) {
         const contactIds = this.selectedRows.map((row) => row.Id);
         this.isSendingCampaignJourney = true;
 
         try {
             const result = await sendContactJourney({
                 contactIds,
-                journeyName: this.selectedCampaignJourneyName
+                journeyName: this.selectedCampaignJourneyName,
+                scheduledDateTime
             });
 
             let message = `${result.sentCount} journey message(s) queued in Bluewave.`;
@@ -469,7 +516,7 @@ export default class ContactManagementDatatable extends LightningElement {
             );
 
             if (result.sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isCampaignJourneyModalOpen = false;
                 this.selectedCampaignJourneyName = null;
             }
@@ -825,7 +872,7 @@ export default class ContactManagementDatatable extends LightningElement {
         this.openCampaignNameModal(SEND_ACTION.MESSAGES);
     }
 
-    async executeSendMessages(campaignName) {
+    async executeSendMessages(campaignName, scheduledDateTime) {
         const contactIds = this.selectedRows.map((row) => row.Id);
         const sendRcs = !!this.selectedRcsTemplateName;
         const sendSms = !!this.selectedSmsTemplateName;
@@ -839,7 +886,8 @@ export default class ContactManagementDatatable extends LightningElement {
             try {
                 whatsAppResult = await sendContactWhatsApp({
                     contactIds,
-                    templateName: this.selectedWhatsAppTemplateName
+                    templateName: this.selectedWhatsAppTemplateName,
+                    scheduledDateTime
                 });
             } catch (whatsAppError) {
                 whatsAppResult = {
@@ -853,7 +901,8 @@ export default class ContactManagementDatatable extends LightningElement {
                 try {
                     rcsResult = await sendContactRcs({
                         contactIds,
-                        templateName: this.selectedRcsTemplateName
+                        templateName: this.selectedRcsTemplateName,
+                        scheduledDateTime
                     });
                 } catch (rcsError) {
                     rcsResult = {
@@ -868,7 +917,8 @@ export default class ContactManagementDatatable extends LightningElement {
                 try {
                     smsResult = await sendContactSms({
                         contactIds,
-                        templateName: this.selectedSmsTemplateName
+                        templateName: this.selectedSmsTemplateName,
+                        scheduledDateTime
                     });
                 } catch (smsError) {
                     smsResult = {
@@ -917,7 +967,7 @@ export default class ContactManagementDatatable extends LightningElement {
             );
 
             if (totalSent > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isJourneyModalOpen = false;
                 this.journeyModalMode = 'campaign';
                 this.journeyModalStep = 'whatsapp';
@@ -940,14 +990,15 @@ export default class ContactManagementDatatable extends LightningElement {
         this.openCampaignNameModal(SEND_ACTION.RCS_ONLY);
     }
 
-    async executeSendRcsOnly(campaignName) {
+    async executeSendRcsOnly(campaignName, scheduledDateTime) {
         const contactIds = this.selectedRows.map((row) => row.Id);
         this.isSendingWhatsApp = true;
 
         try {
             const rcsResult = await sendContactRcs({
                 contactIds,
-                templateName: this.selectedRcsTemplateName
+                templateName: this.selectedRcsTemplateName,
+                scheduledDateTime
             });
 
             const sentCount = rcsResult.sentCount || 0;
@@ -967,7 +1018,7 @@ export default class ContactManagementDatatable extends LightningElement {
             this.showToast('Send RCS', message, sentCount > 0 ? 'success' : 'warning');
 
             if (sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isJourneyModalOpen = false;
                 this.journeyModalMode = 'campaign';
                 this.journeyModalStep = 'whatsapp';
@@ -990,14 +1041,15 @@ export default class ContactManagementDatatable extends LightningElement {
         this.openCampaignNameModal(SEND_ACTION.SMS_ONLY);
     }
 
-    async executeSendSmsOnly(campaignName) {
+    async executeSendSmsOnly(campaignName, scheduledDateTime) {
         const contactIds = this.selectedRows.map((row) => row.Id);
         this.isSendingWhatsApp = true;
 
         try {
             const smsResult = await sendContactSms({
                 contactIds,
-                templateName: this.selectedSmsTemplateName
+                templateName: this.selectedSmsTemplateName,
+                scheduledDateTime
             });
 
             const sentCount = smsResult.sentCount || 0;
@@ -1017,7 +1069,7 @@ export default class ContactManagementDatatable extends LightningElement {
             this.showToast('Send SMS', message, sentCount > 0 ? 'success' : 'warning');
 
             if (sentCount > 0) {
-                await this.trackCampaignMembersForSelection(campaignName);
+                await this.trackCampaignMembersForSelection(campaignName, scheduledDateTime);
                 this.isJourneyModalOpen = false;
                 this.journeyModalMode = 'campaign';
                 this.journeyModalStep = 'whatsapp';
@@ -1035,12 +1087,19 @@ export default class ContactManagementDatatable extends LightningElement {
 
     openCampaignNameModal(action) {
         this.pendingSendAction = action;
+        this.collectJourneySchedule =
+            action === 'bluewaveEmail' ||
+            action === 'journey' ||
+            action === 'messages' ||
+            action === 'rcsOnly' ||
+            action === 'smsOnly';
         this.isCampaignNameModalOpen = true;
     }
 
     closeCampaignNameModal() {
         this.isCampaignNameModalOpen = false;
         this.pendingSendAction = null;
+        this.collectJourneySchedule = false;
         const modal = this.template.querySelector('c-campaign-name-modal');
         if (modal) {
             modal.reset();
@@ -1055,24 +1114,25 @@ export default class ContactManagementDatatable extends LightningElement {
 
     async handleCampaignNameModalConfirm(event) {
         const campaignName = event.detail.campaignName;
+        const scheduledDateTime = event.detail.scheduledDateTime;
         const action = this.pendingSendAction;
 
         try {
             switch (action) {
                 case SEND_ACTION.BLUEWAVE_EMAIL:
-                    await this.executeSendBluewaveEmail(campaignName);
+                    await this.executeSendBluewaveEmail(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.JOURNEY:
-                    await this.executeSendCampaignJourney(campaignName);
+                    await this.executeSendCampaignJourney(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.MESSAGES:
-                    await this.executeSendMessages(campaignName);
+                    await this.executeSendMessages(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.RCS_ONLY:
-                    await this.executeSendRcsOnly(campaignName);
+                    await this.executeSendRcsOnly(campaignName, scheduledDateTime);
                     break;
                 case SEND_ACTION.SMS_ONLY:
-                    await this.executeSendSmsOnly(campaignName);
+                    await this.executeSendSmsOnly(campaignName, scheduledDateTime);
                     break;
                 default:
                     break;
@@ -1084,7 +1144,7 @@ export default class ContactManagementDatatable extends LightningElement {
         }
     }
 
-    async trackCampaignMembersForSelection(campaignName) {
+    async trackCampaignMembersForSelection(campaignName, scheduledDateTime) {
         const recordIds = this.selectedRows.map((row) => row.Id);
         await trackCampaignMembers(
             createCampaignWithMembers,
@@ -1092,7 +1152,8 @@ export default class ContactManagementDatatable extends LightningElement {
             MEMBER_TYPE.CONTACT,
             recordIds,
             (title, message, variant) => this.showToast(title, message, variant),
-            (error) => this.extractError(error)
+            (error) => this.extractError(error),
+            scheduledDateTime
         );
     }
 
@@ -1474,6 +1535,42 @@ export default class ContactManagementDatatable extends LightningElement {
 
     get totalRecordCount() {
         return this.contacts.length;
+    }
+
+    get selectedRowIds() {
+        return (this.selectedRows || []).map((row) => row.Id);
+    }
+
+    get filtersAreStale() {
+        return (
+            !!this.appliedFilters &&
+            !this.isLoading &&
+            !filtersMatch(this.buildFilterState(), this.appliedFilters)
+        );
+    }
+
+    get staleFilterMessage() {
+        const count = changedFieldCount(this.buildFilterState(), this.appliedFilters);
+        return `${count} ${count === 1 ? 'filter' : 'filters'} changed. Results below are out of date.`;
+    }
+
+    get appliedChips() {
+        const applied = this.appliedFilters;
+        if (!applied) {
+            return [];
+        }
+        const chips = [];
+        const pushChip = (key, label) => {
+            if (label) {
+                chips.push({ key, label });
+            }
+        };
+        pushChip('search', applied.searchTerm);
+        pushChip('phone', applied.phoneFilter);
+        pushChip('email', applied.emailFilter);
+        pushChip('country', listChipLabel(optionLabels(applied.country ? [applied.country] : [], this.countryOptions)));
+        pushChip('states', listChipLabel(optionLabels(applied.states, this.stateOptions)));
+        return chips;
     }
 
     get selectedRecordCount() {

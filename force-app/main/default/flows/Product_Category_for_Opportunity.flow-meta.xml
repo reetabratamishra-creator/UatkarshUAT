@@ -59,44 +59,9 @@
             <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
         </value>
     </customProperties>
-    <decisions>
-        <name>Check_Product_category_Avalabiliy</name>
-        <label>Check Product category  Avalabiliy</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Record_Found</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Product_Category.Id</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Record_already_exsist</targetReference>
-            </connector>
-            <label>Record Found</label>
-        </rules>
-        <rules>
-            <name>Record_Not_found</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Product_Category.Id</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assignment_1</targetReference>
-            </connector>
-            <label>Record Not found</label>
-        </rules>
-    </decisions>
-    <description>v3-created from v2--made product category mandatory 
+    <description>created from v5 - removed duplicate Product Category check, same product can now be added multiple times
+created from v4 - removed status from the table
+v3-created from v2--made product category mandatory 
 This flow is designed to create Product Category records related to an Opportunity.</description>
     <dynamicChoiceSets>
         <name>Department</name>
@@ -125,7 +90,7 @@ This flow is designed to create Product Category records related to an Opportuni
         <collectionReference>Product_category_Repeater.AllItems</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
-            <targetReference>Get_Product_Category</targetReference>
+            <targetReference>Assignment_1</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
             <targetReference>Create_Product_category</targetReference>
@@ -212,44 +177,6 @@ This flow is designed to create Product Category records related to an Opportuni
         <object>Opportunity</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <recordLookups>
-        <name>Get_Product_Category</name>
-        <label>Get Product Category</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Check_Product_category_Avalabiliy</targetReference>
-        </connector>
-        <faultConnector>
-            <targetReference>FaultScreen</targetReference>
-        </faultConnector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Opportunity__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Opportunity.Id</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>Status__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Active</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>Product_Category__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Loop_1.DepartmentName.middleValue</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Product_Category__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <recordRollbacks>
         <name>Roll_Back</name>
         <label>Roll Back</label>
@@ -307,13 +234,13 @@ This flow is designed to create Product Category records related to an Opportuni
             <inputParameters>
                 <name>columns</name>
                 <value>
-                    <stringValue>[{&quot;apiName&quot;:&quot;Product_Category__c&quot;,&quot;guid&quot;:&quot;column-2e08&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:0,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Product Category&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;UOM__c&quot;,&quot;guid&quot;:&quot;column-1f5e&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:1,&quot;sortable&quot;:false,&quot;label&quot;:&quot;UOM&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;Quantity__c&quot;,&quot;guid&quot;:&quot;column-5dc0&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:2,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;number&quot;},{&quot;apiName&quot;:&quot;Status__c&quot;,&quot;guid&quot;:&quot;column-dbe4&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:3,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Status&quot;,&quot;type&quot;:&quot;text&quot;}]</stringValue>
+                    <stringValue>[{&quot;apiName&quot;:&quot;Product_Category__c&quot;,&quot;guid&quot;:&quot;column-2e08&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:0,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Product Category&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;UOM__c&quot;,&quot;guid&quot;:&quot;column-1f5e&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:1,&quot;sortable&quot;:false,&quot;label&quot;:&quot;UOM&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;Quantity__c&quot;,&quot;guid&quot;:&quot;column-5dc0&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:2,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;number&quot;}]</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
                 <name>columnReferences</name>
                 <value>
-                    <complexValue>{&quot;dataType&quot;:&quot;SObject&quot;,&quot;objectType&quot;:&quot;Product_Category__c&quot;,&quot;fieldReferences&quot;:[&quot;Product_Category__c&quot;,&quot;UOM__c&quot;,&quot;Quantity__c&quot;,&quot;Status__c&quot;],&quot;elementReference&quot;:&quot;Get_All_Product_Category&quot;}</complexValue>
+                    <complexValue>{&quot;dataType&quot;:&quot;SObject&quot;,&quot;objectType&quot;:&quot;Product_Category__c&quot;,&quot;fieldReferences&quot;:[&quot;Product_Category__c&quot;,&quot;UOM__c&quot;,&quot;Quantity__c&quot;],&quot;elementReference&quot;:&quot;Get_All_Product_Category&quot;}</complexValue>
                     <complexValueType>ComplexObjectFieldDetails</complexValueType>
                 </value>
             </inputParameters>
@@ -486,31 +413,6 @@ This flow is designed to create Product Category records related to an Opportuni
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Record_already_exsist</name>
-        <label>Record already exsist</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Error_Message</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(221, 10, 10);&quot;&gt;Product Category you entered already exist for this Lead. Please verify and try again.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(211, 26, 26);&quot;&gt;{!Get_Product_Category.Product_Category__c}&lt;/span&gt;&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
         <name>Success_Message</name>
         <label>Success Message</label>
         <locationX>0</locationX>
@@ -606,13 +508,13 @@ This flow is designed to create Product Category records related to an Opportuni
             <inputParameters>
                 <name>columns</name>
                 <value>
-                    <stringValue>[{&quot;apiName&quot;:&quot;Product_Category__c&quot;,&quot;guid&quot;:&quot;column-533d&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:0,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Product Category&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;Quantity__c&quot;,&quot;guid&quot;:&quot;column-519f&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:1,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;number&quot;},{&quot;apiName&quot;:&quot;UOM__c&quot;,&quot;guid&quot;:&quot;column-43dd&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:2,&quot;sortable&quot;:false,&quot;label&quot;:&quot;UOM&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;Status__c&quot;,&quot;guid&quot;:&quot;column-786c&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:3,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Status&quot;,&quot;type&quot;:&quot;text&quot;}]</stringValue>
+                    <stringValue>[{&quot;apiName&quot;:&quot;Product_Category__c&quot;,&quot;guid&quot;:&quot;column-533d&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:0,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Product Category&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;Quantity__c&quot;,&quot;guid&quot;:&quot;column-519f&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:1,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;number&quot;},{&quot;apiName&quot;:&quot;UOM__c&quot;,&quot;guid&quot;:&quot;column-43dd&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:2,&quot;sortable&quot;:false,&quot;label&quot;:&quot;UOM&quot;,&quot;type&quot;:&quot;text&quot;}]</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
                 <name>columnReferences</name>
                 <value>
-                    <complexValue>{&quot;dataType&quot;:&quot;SObject&quot;,&quot;objectType&quot;:&quot;Product_Category__c&quot;,&quot;fieldReferences&quot;:[&quot;Product_Category__c&quot;,&quot;Quantity__c&quot;,&quot;UOM__c&quot;,&quot;Status__c&quot;],&quot;elementReference&quot;:&quot;collvar&quot;}</complexValue>
+                    <complexValue>{&quot;dataType&quot;:&quot;SObject&quot;,&quot;objectType&quot;:&quot;Product_Category__c&quot;,&quot;fieldReferences&quot;:[&quot;Product_Category__c&quot;,&quot;Quantity__c&quot;,&quot;UOM__c&quot;],&quot;elementReference&quot;:&quot;collvar&quot;}</complexValue>
                     <complexValueType>ComplexObjectFieldDetails</complexValueType>
                 </value>
             </inputParameters>

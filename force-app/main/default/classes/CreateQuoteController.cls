@@ -75,7 +75,7 @@ happened to be submitted. Deepanjan (12th August 2026) */
             List<Quote> quotes = [
                 SELECT Id, Name, QuoteNumber, Status, approved_by__r.Name, submition_date__c,CreatedBy.Name, GrandTotal,
                 CreatedDate, CreatedById, LastModifiedDate, ExpirationDate, Description ,Quote_Value__c,Pending_Approver__c,
-                Pending_Approver__r.Name, IsSyncing ,Revision_No__c,
+                Pending_Approver__r.Name, IsSyncing ,Finalized_Quote__c,Revision_No__c,
                 Previous_Revision__c, Original_Quote__c,Approval_Submitted_By__c, Approval_Submitted_By__r.Name, 
                 Rejection_Reason__c, Final_Quote_Amount__c ,Approval_Due_Date__c
                 FROM Quote 
@@ -1104,124 +1104,154 @@ return [SELECT MasterLabel, DeveloperName, Standard__c, Shape__c, Pipe_Class__c,
 * and attaches documents defined in Custom Metadata for the Quote's Department.
 */
     @AuraEnabled
-    public static void finalizeQuoteAndAttachDocs(Id opportunityId, Id quoteId) {
-        try {
-            // 1. Fetch Active Quote
-            Quote activeQuote = [SELECT Id, QuoteNumber, Final_Quote_Amount__c, submition_date__c, LastModifiedDate, Name, Quote_Value__c 
-                                 FROM Quote 
-                                 WHERE Id = :quoteId LIMIT 1];
-            
-            // 2. Parse Department Name from Quote_Value__c JSON
-            String targetDepartment = activeQuote.Name;
-            if (String.isNotBlank(activeQuote.Quote_Value__c)) {
-                try {
-                    Map<String, Object> quoteValueMap = (Map<String, Object>) JSON.deserializeUntyped(activeQuote.Quote_Value__c);
-                    if (quoteValueMap.get('_Saved_Template_Name') != null) {
-                        targetDepartment = String.valueOf(quoteValueMap.get('_Saved_Template_Name'));
-                    }
-                } catch (Exception jsonEx) {
-                    // Fallback to activeQuote.Name on parsing failure
-                }
-            }
-            
-            // 3. Query Document Mappings
-            List<Document_Template_Mapping__mdt> mappings = [SELECT Excel_VF_Page__c, PDF_VF_Page__c, Word_VF_Page__c, Template_Type__c, offer_document__c 
-                                                             FROM Document_Template_Mapping__mdt 
-                                                             WHERE Department__c = :targetDepartment];
-            
-            // 4. Prepare Files and Track Offer Templates
-            List<ContentVersion> filesToInsert = new List<ContentVersion>();
-            Set<String> offerDocTitles = new Set<String>();
-            
-            for (Document_Template_Mapping__mdt mapRule : mappings) {
-                String docNameTag = String.isNotBlank(mapRule.Template_Type__c) ? mapRule.Template_Type__c : 'Template';
-                String title = docNameTag + '_' + activeQuote.QuoteNumber;
-                
-                if (mapRule.offer_document__c == true) {
-                    offerDocTitles.add(title);
-                }
-                
-                if (String.isNotBlank(mapRule.Excel_VF_Page__c)) {
-                    filesToInsert.add(createContentVersion(mapRule.Excel_VF_Page__c, activeQuote.Id, title + '.xls'));
-                }
-                if (String.isNotBlank(mapRule.PDF_VF_Page__c)) {
-                    filesToInsert.add(createContentVersion(mapRule.PDF_VF_Page__c, activeQuote.Id, title + '.pdf'));
-                }
-                if (String.isNotBlank(mapRule.Word_VF_Page__c)) {
-                    filesToInsert.add(createContentVersion(mapRule.Word_VF_Page__c, activeQuote.Id, title + '.doc'));
-                }
-            }
-            
-            // 5. Cleanup Previous Quote Files on Opportunity
-            List<ContentDocumentLink> links = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :opportunityId];
-            if (!links.isEmpty()) {
-                Set<Id> docIds = new Set<Id>();
-                for (ContentDocumentLink link : links) {
-                    docIds.add(link.ContentDocumentId);
-                }
-                
-                String titleEndPattern = '%_' + activeQuote.QuoteNumber + '%';
-                List<ContentDocument> oldDocs = [SELECT Id FROM ContentDocument 
-                                                 WHERE Id IN :docIds 
-                                                 AND (Title LIKE :titleEndPattern 
-                                                      OR Title LIKE 'Finalized_%' 
-                                                      OR Description = 'Generated via Quote Finalization')];
-                if (!oldDocs.isEmpty()) {
-                    delete oldDocs;
-                }
-            }
-            
-            // 6. Insert ContentVersions & Create Document Links
-            List<String> offerDocIds = new List<String>();
-            
-            if (!filesToInsert.isEmpty()) {
-                insert filesToInsert;
-                
-                Set<Id> insertedCvIds = new Map<Id, ContentVersion>(filesToInsert).keySet();
-                List<ContentDocumentLink> newLinks = new List<ContentDocumentLink>();
-                
-                // UPDATE: Added FileExtension and PathOnClient to the query
-                for (ContentVersion cv : [SELECT Title, ContentDocumentId, FileExtension, PathOnClient FROM ContentVersion WHERE Id IN :insertedCvIds]) {
-                    newLinks.add(new ContentDocumentLink(
-                        LinkedEntityId = opportunityId,
-                        ContentDocumentId = cv.ContentDocumentId,
-                        ShareType = 'V',
-                        Visibility = 'AllUsers'
-                    ));
-                    
-                    // UPDATE: Check if the generated file is a PDF 
-                    Boolean isPdf = (cv.FileExtension == 'pdf' || 
-                                    (cv.PathOnClient != null && cv.PathOnClient.endsWithIgnoreCase('.pdf')) || 
-                                    cv.Title.endsWithIgnoreCase('.pdf'));
-                    
-                    // Remove the extension from cv.Title (if it exists) to safely match against offerDocTitles
-                    String titleWithoutExtension = cv.Title.substringBeforeLast('.');
+    public static void finalizeQuoteAndAttachDocs(Id opportunityId, Id quoteId, String calledfrom) {
+    try {
+        // 1. Fetch Active Quote
+        Quote activeQuote = [SELECT Id, QuoteNumber, Quote_Reference__c, Revision_No__c,
+                                    Original_Quote__c, Original_Quote__r.QuoteNumber,
+                                    Original_Quote__r.Quote_Reference__c,
+                                    Final_Quote_Amount__c, submition_date__c, LastModifiedDate,
+                                    Name, Quote_Value__c
+                            FROM Quote
+                            WHERE Id = :quoteId LIMIT 1];
 
-                    // Only add to the list if the base title matches AND is a PDF
-                    if ((offerDocTitles.contains(cv.Title) || offerDocTitles.contains(titleWithoutExtension)) && isPdf) {
-                        offerDocIds.add(cv.ContentDocumentId);
-                    }
+        // 2. Parse Department Name from Quote_Value__c JSON
+        String targetDepartment = activeQuote.Name;
+        if (String.isNotBlank(activeQuote.Quote_Value__c)) {
+            try {
+                Map<String, Object> quoteValueMap = (Map<String, Object>) JSON.deserializeUntyped(activeQuote.Quote_Value__c);
+                if (quoteValueMap.get('_Saved_Template_Name') != null) {
+                    targetDepartment = String.valueOf(quoteValueMap.get('_Saved_Template_Name'));
                 }
-                insert newLinks;
+            } catch (Exception jsonEx) {
+                // Fallback to activeQuote.Name on parsing failure
             }
-            
-            // 7. Update Opportunity Details and Offer Document IDs
-            Date updatedCloseDate = (activeQuote.LastModifiedDate != null ? activeQuote.LastModifiedDate.date() : Date.today()).addDays(15);
-            
-            update new Opportunity(
-                Id = opportunityId,
-                SyncedQuoteId = activeQuote.Id,
-                Amount = activeQuote.Final_Quote_Amount__c,
-                StageName = 'Negotiation',
-                CloseDate = updatedCloseDate,
-                Final_Quote_Document_ID__c = !offerDocIds.isEmpty() ? String.join(offerDocIds, ',') : null
-            );
-            
-        } catch (Exception ex) {
-            throw new AuraHandledException('Finalization Error: ' + ex.getMessage());
         }
+
+        // 2b. Build the quote reference for file naming (no DML, safe before getContent())
+        String quoteRef = activeQuote.Quote_Reference__c;
+        if (String.isBlank(quoteRef)) {
+            String dept = deptAbbreviation(targetDepartment);
+            String fy   = currentFinancialYear();
+            Integer rev = (activeQuote.Revision_No__c == null) ? 0 : Integer.valueOf(activeQuote.Revision_No__c);
+
+            if (rev > 0 && activeQuote.Original_Quote__c != null) {
+                String rootRef = activeQuote.Original_Quote__r.Quote_Reference__c;
+                if (String.isNotBlank(rootRef)) {
+                    quoteRef = rootRef.replaceAll('/R\\d+$', '') + '/R' + rev;
+                } else {
+                    quoteRef = 'UIL/' + dept + '/' + fy + '/' + activeQuote.Original_Quote__r.QuoteNumber + '/R' + rev;
+                }
+            } else {
+                quoteRef = 'UIL/' + dept + '/' + fy + '/' + activeQuote.QuoteNumber;
+                if (rev > 0) {
+                    quoteRef += '/R' + rev;
+                }
+            }
+        }
+        String refForFileName = quoteRef; //.replace('/', '-');
+
+        // 3. Query Document Mappings
+        List<Document_Template_Mapping__mdt> mappings = [SELECT Excel_VF_Page__c, PDF_VF_Page__c, Word_VF_Page__c, Template_Type__c, offer_document__c
+                                                        FROM Document_Template_Mapping__mdt
+                                                        WHERE Department__c = :targetDepartment];
+
+        // 4. Prepare Files and Track Offer PDFs
+        List<ContentVersion> filesToInsert = new List<ContentVersion>();
+        List<ContentVersion> offerPdfVersions = new List<ContentVersion>();   // CHANGED: replaces offerDocTitles
+
+        for (Document_Template_Mapping__mdt mapRule : mappings) {
+            String title = refForFileName;
+
+            if (String.isNotBlank(mapRule.Excel_VF_Page__c)) {
+                filesToInsert.add(createContentVersion(mapRule.Excel_VF_Page__c, activeQuote.Id, title + '.xls'));
+            }
+            if (String.isNotBlank(mapRule.PDF_VF_Page__c)) {
+                ContentVersion pdfCv = createContentVersion(mapRule.PDF_VF_Page__c, activeQuote.Id, title + '.pdf');
+                filesToInsert.add(pdfCv);
+                // CHANGED: only PDFs from rules with offer_document__c checked are tracked
+                if (mapRule.offer_document__c == true) {
+                    offerPdfVersions.add(pdfCv);
+                }
+            }
+            if (String.isNotBlank(mapRule.Word_VF_Page__c)) {
+                filesToInsert.add(createContentVersion(mapRule.Word_VF_Page__c, activeQuote.Id, title + '.doc'));
+            }
+        }
+
+        // 5. Cleanup Previous Quote Files on Opportunity
+        List<ContentDocumentLink> links = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :opportunityId];
+        if (!links.isEmpty()) {
+            Set<Id> docIds = new Set<Id>();
+            for (ContentDocumentLink link : links) {
+                docIds.add(link.ContentDocumentId);
+            }
+
+            String titleEndPattern = '%_' + activeQuote.QuoteNumber + '%';
+            List<ContentDocument> oldDocs = [SELECT Id FROM ContentDocument
+                                            WHERE Id IN :docIds
+                                            AND (Title LIKE :titleEndPattern
+                                                OR Title LIKE 'Finalized_%'
+                                                OR Description = 'Generated via Quote Finalization')];
+            if (!oldDocs.isEmpty()) {
+                delete oldDocs;
+            }
+        }
+
+        // 6. Insert ContentVersions & Create Document Links
+        List<String> offerDocIds = new List<String>();
+
+        if (!filesToInsert.isEmpty()) {
+            insert filesToInsert;
+
+            // CHANGED: Ids are populated on the same record instances after insert
+            Set<Id> offerCvIds = new Set<Id>();
+            for (ContentVersion ocv : offerPdfVersions) {
+                offerCvIds.add(ocv.Id);
+            }
+
+            Set<Id> insertedCvIds = new Map<Id, ContentVersion>(filesToInsert).keySet();
+            List<ContentDocumentLink> newLinks = new List<ContentDocumentLink>();
+
+            for (ContentVersion cv : [SELECT Id, ContentDocumentId FROM ContentVersion WHERE Id IN :insertedCvIds]) {
+                newLinks.add(new ContentDocumentLink(
+                    LinkedEntityId = opportunityId,
+                    ContentDocumentId = cv.ContentDocumentId,
+                    ShareType = 'V',
+                    Visibility = 'AllUsers'
+                ));
+
+                // CHANGED: only files generated by offer_document__c = true rules
+                if (offerCvIds.contains(cv.Id)) {
+                    offerDocIds.add(cv.ContentDocumentId);
+                }
+            }
+            insert newLinks;
+        }
+
+        // 7. Update Opportunity Details and Offer Document IDs
+        Date updatedCloseDate = (activeQuote.LastModifiedDate != null ? activeQuote.LastModifiedDate.date() : Date.today()).addDays(15);
+
+        update new Opportunity(
+            Id = opportunityId,
+            SyncedQuoteId = activeQuote.Id,
+            Amount = activeQuote.Final_Quote_Amount__c,
+            StageName = 'Negotiation',
+            CloseDate = updatedCloseDate,
+            Final_Quote_Document_ID__c = !offerDocIds.isEmpty() ? String.join(offerDocIds, ',') : null
+        );
+
+        if (calledfrom == 'finalizeQuoteButton') {
+            update new Quote(
+                Id = activeQuote.Id,
+                Finalized_Quote__c = true
+            );
+        }
+
+    } catch (Exception ex) {
+        throw new AuraHandledException('Finalization Error: ' + ex.getMessage());
     }
-    /**
+}/**
 * Helper to build ContentVersion structures and fetch Visualforce page blobs safely
 */
     private static ContentVersion createContentVersion(String vfPageUrl, Id quoteId, String fileName) {

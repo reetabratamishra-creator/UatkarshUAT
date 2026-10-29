@@ -181,7 +181,7 @@ private class LeadManagementControllerTest {
   }
 
   /**
-   * Scenario: searchLeads and getLeads return non-Qualified leads matching filters.
+   * Scenario: searchLeads and getLeads return leads matching filters, including Qualified.
    */
   @IsTest
   static void testSearchLeadsAndGetLeads_ReturnsMatchingRecords() {
@@ -741,4 +741,33 @@ private class LeadManagementControllerTest {
     }
   }
 
+  @IsTest
+  static void testScheduledSends_RequireSelectionAndClearSchedule() {
+    Integer threwCount = 0;
+    Test.startTest();
+    try {
+      LeadManagementController.sendLeadJourneyScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      LeadManagementController.sendLeadRcsScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      LeadManagementController.sendLeadSmsScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      LeadManagementController.sendLeadCampaignEmailScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    Test.stopTest();
+
+    System.assertEquals(4, threwCount, 'Each scheduled send needs at least one record.');
+    System.assertEquals(null, BWM_CampaignScheduleContext.scheduledDateTime, 'Schedule must be cleared after the send.');
+  }
 }

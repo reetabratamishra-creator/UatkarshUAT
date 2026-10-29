@@ -645,7 +645,7 @@ private class BWM_MessagingServiceTest {
     Lead leadRecord = new Lead(
       LeadSource = 'INBOUND EMAIL',
       Status = 'Prospect',
-      Department_Name__c = 'HDPE'
+      Department_Name__c = 'Steel Pipes'
     );
 
     BWM_TemplateResolver.ResolveResult result = BWM_TemplateResolver.resolveForLeadCreate(
@@ -660,13 +660,157 @@ private class BWM_MessagingServiceTest {
   }
 
   @IsTest
+  static void leadCreatePolymerAndHdpeUsePolymerEnquiryJourney() {
+    for (String departmentName : new List<String>{ 'Polymer', 'HDPE' }) {
+      Lead leadRecord = new Lead(
+        LeadSource = 'INBOUND EMAIL',
+        Status = 'Prospect',
+        Department_Name__c = departmentName
+      );
+      BWM_TemplateResolver.ResolveResult result = BWM_TemplateResolver.resolveForLeadCreate(
+        leadRecord
+      );
+      System.assertEquals(true, result.shouldSend, departmentName);
+      System.assertEquals(
+        'polymer_enq_prospect',
+        result.mapping.Journey_Name__c,
+        departmentName
+      );
+      System.assertEquals(
+        'polymer_enq_prospect',
+        result.mapping.RCS_Template_Name__c,
+        departmentName
+      );
+      System.assertEquals(
+        'DEALER_Enq_dept',
+        result.mapping.SMS_Template_Name__c,
+        departmentName
+      );
+      System.assertEquals(
+        'Department',
+        result.mapping.Brochure_Attachment_Mode__c,
+        departmentName
+      );
+    }
+  }
+
+  @IsTest
+  static void leadDetailsNotReceivedPolymerCrmHeadUsesScopedJourney() {
+    Lead polymerLead = buildLeadForOwnerCrmMatch(
+      'Prospecting',
+      'Polymer',
+      'CRM Head'
+    );
+    Lead otherProductLead = buildLeadForOwnerCrmMatch(
+      'Prospecting',
+      'Steel Pipes',
+      'CRM Head'
+    );
+    Lead polymerOwnerLead = (Lead) JSON.deserialize(
+      '{"Status":"Prospecting","Department_Name__c":"HDPE","CRM_User_Name_Formula__c":"CRM Head","Owner":{"attributes":{"type":"User"},"Name":"Different Owner"}}',
+      Lead.class
+    );
+
+    BWM_TemplateResolver.ResolveResult polymerResult = BWM_TemplateResolver.resolve(
+      BWM_MessagingConstants.TRIGGER_LEAD_DETAILS_NOT_RECEIVED_PROSPECTING,
+      polymerLead
+    );
+    BWM_TemplateResolver.ResolveResult otherResult = BWM_TemplateResolver.resolve(
+      BWM_MessagingConstants.TRIGGER_LEAD_DETAILS_NOT_RECEIVED_PROSPECTING,
+      otherProductLead
+    );
+    BWM_TemplateResolver.ResolveResult ownerResult = BWM_TemplateResolver.resolve(
+      BWM_MessagingConstants.TRIGGER_LEAD_DETAILS_NOT_RECEIVED_PROSPECTING,
+      polymerOwnerLead
+    );
+
+    System.assertEquals(
+      'Prospect_det_nt_received_',
+      polymerResult.mapping.Journey_Name__c
+    );
+    System.assertEquals(
+      'prospecting_details_not_rec_cont_gen',
+      otherResult.mapping.Journey_Name__c
+    );
+    System.assertEquals(
+      'Prosping_details_not_received_cont',
+      ownerResult.mapping.Journey_Name__c
+    );
+
+    Lead prospectCrmLead = buildLeadForOwnerCrmMatch(
+      'Prospect',
+      'Polymer',
+      'CRM Head'
+    );
+    Lead prospectOwnerLead = (Lead) JSON.deserialize(
+      '{"Status":"Prospect","Department_Name__c":"HDPE","CRM_User_Name_Formula__c":"CRM Head","Owner":{"attributes":{"type":"User"},"Name":"Different Owner"}}',
+      Lead.class
+    );
+    System.assertEquals(
+      'Prospect_details_not_received',
+      BWM_TemplateResolver.resolve(
+        BWM_MessagingConstants.TRIGGER_LEAD_DETAILS_NOT_RECEIVED_PROSPECTING,
+        prospectCrmLead
+      ).mapping.Journey_Name__c
+    );
+    System.assertEquals(
+      'Prospecting_details_not_received_cont',
+      BWM_TemplateResolver.resolve(
+        BWM_MessagingConstants.TRIGGER_LEAD_DETAILS_NOT_RECEIVED_PROSPECTING,
+        prospectOwnerLead
+      ).mapping.Journey_Name__c
+    );
+  }
+
+  @IsTest
+  static void polymerAndHdpeOpportunityJourneysStayOffOtherDepartments() {
+    Opportunity polymerOpp = (Opportunity) JSON.deserialize(
+      '{"StageName":"Nurture","Department_Name__c":"Polymer","CRM_User_Name_Formula__c":"CRM Head","Owner":{"attributes":{"type":"User"},"Name":"Different Owner"}}',
+      Opportunity.class
+    );
+    Opportunity pipesOpp = (Opportunity) JSON.deserialize(
+      '{"StageName":"Nurture","Department_Name__c":"Steel Pipes","CRM_User_Name_Formula__c":"CRM Head","Owner":{"attributes":{"type":"User"},"Name":"Different Owner"}}',
+      Opportunity.class
+    );
+
+    BWM_TemplateResolver.ResolveResult polymerQualify = BWM_TemplateResolver.resolve(
+      BWM_MessagingConstants.TRIGGER_OPPORTUNITY_QUALIFY_NURTURE,
+      polymerOpp
+    );
+    BWM_TemplateResolver.ResolveResult pipesQualify = BWM_TemplateResolver.resolve(
+      BWM_MessagingConstants.TRIGGER_OPPORTUNITY_QUALIFY_NURTURE,
+      pipesOpp
+    );
+    BWM_TemplateResolver.ResolveResult polymerDetails = BWM_TemplateResolver.resolve(
+      BWM_MessagingConstants.TRIGGER_OPPORTUNITY_DETAILS_NOT_RECEIVED_NURTURE,
+      polymerOpp
+    );
+    BWM_TemplateResolver.ResolveResult pipesDetails = BWM_TemplateResolver.resolve(
+      BWM_MessagingConstants.TRIGGER_OPPORTUNITY_DETAILS_NOT_RECEIVED_NURTURE,
+      pipesOpp
+    );
+
+    System.assertEquals('poly_assign_team', polymerQualify.mapping.Journey_Name__c);
+    System.assertEquals('nurture_assign_team', pipesQualify.mapping.Journey_Name__c);
+    System.assertEquals(
+      'Nurture_details_not_received_cont_dept',
+      polymerDetails.mapping.Journey_Name__c
+    );
+    System.assertEquals(
+      'nurture_details_not_recieve_cont',
+      pipesDetails.mapping.Journey_Name__c
+    );
+  }
+
+  @IsTest
   static void templateResolverMatchesProspectGenForCorporateBrochureDepartments() {
-    for (String departmentName : new List<String>{
-      'Enquiry',
-      'Transmission & Telecom Tower',
-      'Pre Engineering Building',
-      'Railway Electrification Structure'
-    }) {
+    Map<String, List<String>> expectedByDepartment = new Map<String, List<String>>{
+      'Enquiry' => new List<String>{ 'prospect_enq_gen', 'Corporate' },
+      'Transmission & Telecom Tower' => new List<String>{ 'prospect_enq_dept', 'Department' },
+      'Pre Engineering Building' => new List<String>{ 'prospect_enq_dept', 'Department' },
+      'Railway Electrification Structure' => new List<String>{ 'prospect_enq_dept', 'Department' }
+    };
+    for (String departmentName : expectedByDepartment.keySet()) {
       Lead leadRecord = new Lead(
         LeadSource = 'INBOUND EMAIL',
         Status = 'Prospect',
@@ -682,14 +826,14 @@ private class BWM_MessagingServiceTest {
         'Should send for department: ' + departmentName
       );
       System.assertEquals(
-        'prospect_enq_gen',
+        expectedByDepartment.get(departmentName)[0],
         result.mapping.WhatsApp_Template_Name__c,
-        'Expected gen template for: ' + departmentName
+        'Unexpected template for: ' + departmentName
       );
       System.assertEquals(
-        'Corporate',
+        expectedByDepartment.get(departmentName)[1],
         result.mapping.Brochure_Attachment_Mode__c,
-        'Corporate brochure required for: ' + departmentName
+        'Unexpected brochure mode for: ' + departmentName
       );
     }
   }
@@ -809,7 +953,7 @@ private class BWM_MessagingServiceTest {
 
     System.assertEquals(true, result.sent);
     System.assertEquals(
-      'u_prospecting_det_not_rec',
+      'poly_de_nt_rec_lost_lead',
       result.logs[0].Template_Name__c
     );
   }
@@ -1039,7 +1183,7 @@ private class BWM_MessagingServiceTest {
         AND Trigger_Point__c = :BWM_MessagingConstants.TRIGGER_LEAD_TASK_CALLBACK_PROSPECT
     ];
     System.assertEquals(1, logs.size());
-    System.assertEquals('prospect_not_responding_dept', logs[0].Template_Name__c);
+    System.assertEquals('poly_nt_res_pros_lead', logs[0].Template_Name__c);
   }
 
   @IsTest
@@ -2091,7 +2235,7 @@ private class BWM_MessagingServiceTest {
         AND Trigger_Point__c = :BWM_MessagingConstants.TRIGGER_OPPORTUNITY_TASK_CALLBACK_NURTURE
     ];
     System.assertEquals(1, logs.size());
-    System.assertEquals('Nur_neg_nt_resp_dep', logs[0].Template_Name__c);
+    System.assertEquals('poly_nur_nt_resp_cont', logs[0].Template_Name__c);
   }
 
   @IsTest
@@ -2213,9 +2357,12 @@ private class BWM_MessagingServiceTest {
 
     System.assert(payload.contains('"journeyname":"prospect_not_responding_dept"'));
     System.assert(payload.contains('"templateName":"prospect_not_responding_dept"'));
-    System.assert(payload.contains('"templateName":"Prosp_nt_resp_dept"'));
+    System.assert(payload.contains('"templateName":"Pros_nt_resp_dept"'));
     System.assert(payload.contains('"templateName":"Prospect_not_resp"'));
-    System.assert(payload.contains('"headerFormat":"DOCUMENT"'));
+    System.assert(
+      !payload.contains('"headerFormat":"DOCUMENT"'),
+      'Prospect callback must not attach a brochure.'
+    );
   }
 
   @IsTest
@@ -2387,10 +2534,8 @@ private class BWM_MessagingServiceTest {
 
     System.assertEquals(true, result.shouldSend);
     System.assertEquals('prospect_not_responding_gen', result.mapping.Journey_Name__c);
-    System.assertEquals(
-      'https://portal.bluewavesmedia.in/WhatsAppMedia/Template/Document/Utkarsh/corporate_brochure_2026.pdf',
-      result.mapping.Document_Header_URL__c
-    );
+    System.assertEquals(false, result.mapping.Include_Brochure_Header__c);
+    System.assert(String.isBlank(result.mapping.Document_Header_URL__c));
   }
 
   @IsTest
@@ -2427,7 +2572,7 @@ private class BWM_MessagingServiceTest {
 
     System.assertEquals(true, result.shouldSend);
     System.assertEquals(
-      'prospecting_not_responding_dept',
+      'prospect_not_responding_dept',
       result.mapping.Journey_Name__c
     );
   }
@@ -2448,7 +2593,7 @@ private class BWM_MessagingServiceTest {
 
     System.assertEquals(true, result.shouldSend);
     System.assertEquals(
-      'prospecting_not_responding_dept',
+      'prospect_not_responding_dept',
       result.mapping.Journey_Name__c
     );
   }
@@ -2504,7 +2649,7 @@ private class BWM_MessagingServiceTest {
     );
 
     System.assertEquals(
-      'prospecting_not_responding_lost_dept',
+      'Prospecting_not_respond_lost_dept',
       deptResolved.mapping.Journey_Name__c
     );
     System.assertEquals(
@@ -2782,9 +2927,9 @@ private class BWM_MessagingServiceTest {
       );
     } else {
       System.assertEquals(
-        '',
+        ' ',
         var1,
-        'SMS call slot stays blank when Owner Mobile/Phone are empty, not Owner.Name.'
+        'SMS call slot stays empty when Owner Mobile/Phone are empty, not Owner.Name.'
       );
     }
     if (String.isNotBlank(ownerName)) {
@@ -2879,9 +3024,9 @@ private class BWM_MessagingServiceTest {
       );
     } else {
       System.assertEquals(
-        '',
+        ' ',
         var1,
-        'When Owner Mobile and Phone are blank, SMS phone slot must stay blank.'
+        'When Owner Mobile and Phone are blank, SMS phone slot must stay empty.'
       );
     }
     System.assert(
@@ -3012,7 +3157,12 @@ private class BWM_MessagingServiceTest {
   }
 
   @IsTest
-  static void leadCreateProductDepartmentsExcludeTowers() {
+  static void leadCreateTowerAndProductDepartmentsUseDeptJourney() {
+    Lead enquiryLead = new Lead(
+      LeadSource = 'INBOUND EMAIL',
+      Status = 'Prospect',
+      Department_Name__c = 'Enquiry'
+    );
     Lead towerLead = new Lead(
       LeadSource = 'INBOUND EMAIL',
       Status = 'Prospect',
@@ -3026,6 +3176,10 @@ private class BWM_MessagingServiceTest {
 
     System.assertEquals(
       'prospect_enq_gen',
+      BWM_TemplateResolver.resolveForLeadCreate(enquiryLead).mapping.Journey_Name__c
+    );
+    System.assertEquals(
+      'prospect_enq_dept',
       BWM_TemplateResolver.resolveForLeadCreate(towerLead).mapping.Journey_Name__c
     );
     System.assertEquals(

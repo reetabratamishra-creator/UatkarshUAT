@@ -58,25 +58,45 @@ public without sharing class BWM_SmsDirectPayloadBuilder {
       );
     }
 
-    String journeyName = BWM_JourneyDefinitionService.findJourneyNameBySmsTemplateName(
-      normalizedTemplateName
-    );
     BWM_Template_Mapping__mdt mapping =
-      BWM_JourneyDefinitionService.findMappingBySmsTemplateName(
+      BWM_JourneyDefinitionService.findMappingByChannelTemplate(
+        'SMS',
+        normalizedTemplateName,
+        record
+      );
+    Map<String, Object> autoMappings = BWM_MessagePayloadBuilder.smsMappingsForCampaign(
+      mapping,
+      record
+    );
+    Map<String, Object> variableMappings;
+    if (autoMappings.isEmpty()) {
+      String journeyName = BWM_JourneyDefinitionService.findJourneyNameBySmsTemplateName(
         normalizedTemplateName
       );
-    Map<String, Object> journeyMappings = resolveJourneyVariableMappings(
-      settings,
-      record,
-      mapping,
-      journeyName
-    );
-    Map<String, Object> variableMappings = finalizeVariableMappings(
-      settings,
-      record,
-      templateMap,
-      journeyMappings
-    );
+      Map<String, Object> journeyMappings = resolveJourneyVariableMappings(
+        settings,
+        record,
+        mapping,
+        journeyName
+      );
+      variableMappings = finalizeVariableMappings(
+        settings,
+        record,
+        templateMap,
+        journeyMappings
+      );
+    } else {
+      variableMappings = new Map<String, Object>();
+      for (String key : autoMappings.keySet()) {
+        variableMappings.put(
+          key,
+          normalizeSmsVariableValue(
+            autoMappings.get(key) == null ? '' : String.valueOf(autoMappings.get(key)),
+            settings
+          )
+        );
+      }
+    }
 
     String senderId = String.isNotBlank(settings == null ? null : settings.SMS_From__c)
       ? settings.SMS_From__c.trim()
@@ -97,7 +117,10 @@ public without sharing class BWM_SmsDirectPayloadBuilder {
       }
     };
 
-    return JSON.serialize(payload);
+    return BWM_JourneyDefinitionService.applyScheduledDateTime(
+      JSON.serialize(payload),
+      BWM_CampaignScheduleContext.scheduledDateTime
+    );
   }
 
   private static Map<String, Object> toVarParams(
@@ -296,7 +319,7 @@ public without sharing class BWM_SmsDirectPayloadBuilder {
       // Preserve intentional blanks (owner phone empty). Do not coerce digit
       // slots that were cleared from corporate fallback back into NA.
       if (String.isBlank(value)) {
-        normalizedMappings.put(key, '');
+        normalizedMappings.put(key, ' ');
       } else {
         normalizedMappings.put(key, value);
       }
@@ -415,13 +438,18 @@ public without sharing class BWM_SmsDirectPayloadBuilder {
   }
 
   /**
-   * @description Phone slots stay blank when empty; other slots use NA.
+   * @description Phone slots use a space when empty so the handset stays empty.
+   *              Other empty slots use NA.
    */
   private static String valueOrEmptySlot(String value, Boolean phoneSlot) {
-    if (String.isNotBlank(value)) {
-      return value.trim();
+    String cleared = BWM_MessagePayloadBuilder.blankChannelSlot(value);
+    if (cleared != ' ') {
+      return cleared;
     }
-    return phoneSlot == true ? '' : 'NA';
+    if (String.isNotBlank(value)) {
+      return ' ';
+    }
+    return phoneSlot == true ? ' ' : 'NA';
   }
 
   private static Boolean looksLikePhoneDigits(String value) {

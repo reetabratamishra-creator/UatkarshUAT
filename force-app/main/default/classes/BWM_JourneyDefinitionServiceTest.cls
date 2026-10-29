@@ -21,12 +21,12 @@ private class BWM_JourneyDefinitionServiceTest {
     BWM_JourneyDefinitionService.clearCache();
     BWM_Messaging_Settings__mdt settings = BWM_SettingsService.getSettings();
     Lead leadRecord = new Lead(
-      LastName = 'Journey Test',
-      Company = 'Test Co',
-      Phone = '9876543210',
+      LastName = 'Journey Test ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Status = 'Prospect'
     );
-    insert leadRecord;
+    insert as system leadRecord;
     leadRecord = [
       SELECT Id, Name, Phone, Company, Department_Name__c, Owner.Name, Owner.Phone, Owner.Email
       FROM Lead
@@ -51,10 +51,10 @@ private class BWM_JourneyDefinitionServiceTest {
     BWM_JourneyDefinitionService.clearCache();
     BWM_Messaging_Settings__mdt settings = BWM_SettingsService.getSettings();
     Contact contactRecord = new Contact(
-      LastName = 'Campaign Test',
-      Phone = '9876543210'
+      LastName = 'Campaign Test ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert contactRecord;
+    insert as system contactRecord;
     contactRecord = [
       SELECT Id, Name, Phone, Email, Owner.Name, Owner.Phone, Owner.Email
       FROM Contact
@@ -128,13 +128,13 @@ private class BWM_JourneyDefinitionServiceTest {
     BWM_JourneyDefinitionService.clearCache();
     BWM_Messaging_Settings__mdt settings = BWM_SettingsService.getSettings();
     Lead leadRecord = new Lead(
-      LastName = 'Campaign Var Test',
-      Company = 'Test Co',
-      Phone = '9876543210',
+      LastName = 'Campaign Var Test ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Status = 'Prospect',
       Department_Name__c = 'Crash Barrier'
     );
-    insert leadRecord;
+    insert as system leadRecord;
     leadRecord = [
       SELECT
         Id,
@@ -176,7 +176,10 @@ private class BWM_JourneyDefinitionServiceTest {
     );
     Test.stopTest();
 
-    System.assertEquals('dealer_Enq_dept', journeyName);
+    BWM_Template_Mapping__mdt mapping =
+      BWM_JourneyDefinitionService.findMappingByJourneyName(journeyName);
+    System.assertNotEquals(null, mapping, 'Journey should resolve to an active mapping.');
+    System.assertEquals('DEALER_Enq_dept', mapping.SMS_Template_Name__c);
   }
 
   @IsTest

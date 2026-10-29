@@ -234,7 +234,10 @@ public without sharing class MarkActivityCompleteController {
             new List<BWM_SendTaskEmailInvocable.Request>{ emailRequest }
         );
 
-        if (stageName == BWM_EmailConstants.STAGE_NURTURE) {
+        if (
+            stageName == BWM_EmailConstants.STAGE_NURTURE ||
+            stageName == BWM_EmailConstants.STAGE_NEGOTIATION
+        ) {
             BWM_SendTaskMessageInvocable.Request messageRequest = new BWM_SendTaskMessageInvocable.Request();
             messageRequest.recordId = parentId;
             messageRequest.taskAction = TASK_ACTION_CALLBACK;

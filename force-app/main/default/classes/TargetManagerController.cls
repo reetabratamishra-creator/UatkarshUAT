@@ -92,7 +92,49 @@ public class TargetManagerController {
         @AuraEnabled public String currentCycle;
         @AuraEnabled public List<TrendData> trendLines;
     }
-    
+
+    // ==========================================
+    // CRM Head department access
+    // ==========================================
+    private static final String CRM_HEAD_PROFILE_NAME = 'CRM Head';
+
+    // Department name (User.Department, uppercased) -> User.Departments__c picklist value
+    private static final Map<String, String> DEPARTMENT_NORMALIZATION_MAP = new Map<String, String>{
+        'HIGH MAST & POLYGONAL'             => 'High_Mast_Department',
+        'CRASH BARRIER'                     => 'Crash_Barrier_Department',
+        'HDPE'                              => 'HDPE_Pipe_Department',
+        'STEEL TUBULAR POLES'               => 'Steel_Tubular_Pole_Department',
+        'POLYMER'                           => 'PVC',
+        'TRANSMISSION & TELECOM TOWER'      => 'Transmission_Tower_Department',
+        'PRE ENGINEERING BUILDING'          => 'PEB',
+        'SOLAR STRUCTURE'                   => 'Solar_Structure_Department',
+        'RAILWAY ELECTRIFICATION STRUCTURE' => 'Core_Department',
+        'STEEL PIPES'                       => 'Steel_Pipes_Department'
+    };
+
+    /**
+     * Department values to match against User.Department for a CRM Head: each of the
+     * CRM Head's Departments__c values plus that department's name
+     * (e.g. 'Crash_Barrier_Department' and 'CRASH BARRIER').
+     */
+    private static Set<String> getCrmHeadDepartmentNames(String departmentsValue) {
+        Set<String> deptNames = new Set<String>();
+        if (String.isBlank(departmentsValue)) {
+            return deptNames;
+        }
+        for (String rawDept : departmentsValue.split(';')) {
+            if (String.isNotBlank(rawDept)) {
+                deptNames.add(rawDept.trim());
+            }
+        }
+        for (String deptName : DEPARTMENT_NORMALIZATION_MAP.keySet()) {
+            if (deptNames.contains(DEPARTMENT_NORMALIZATION_MAP.get(deptName))) {
+                deptNames.add(deptName);
+            }
+        }
+        return deptNames;
+    }
+
     // ==========================================
     // NEW: Robust Group "Exploder" (Handles Roles & Nested Groups)
     // ==========================================
@@ -228,9 +270,9 @@ public class TargetManagerController {
                 entities.add(wrap);
             }*/
 
-            // Get the current user's Department and Profile
+            // Get the current user's Department, Departments and Profile
             User currentUser = [
-                SELECT Department, Profile.Name
+                SELECT Department, Departments__c, Profile.Name
                 FROM User
                 WHERE Id = :UserInfo.getUserId()
                 LIMIT 1
@@ -243,9 +285,13 @@ public class TargetManagerController {
                 'Utkarsh HR'
             };
 
+            // CRM Head department access comes from Departments__c, not Department
+            Boolean isCrmHead = currentUser.Profile.Name == CRM_HEAD_PROFILE_NAME;
+
             // If the user has no Department and is not an unrestricted profile,
             // return no users
             if (!unrestrictedProfiles.contains(currentUser.Profile.Name)
+                && !isCrmHead
                 && String.isBlank(currentUser.Department)) {
                 return entities;
             }
@@ -258,6 +304,19 @@ public class TargetManagerController {
                     SELECT Id, Name, Department
                     FROM User
                     WHERE IsActive = true
+                    ORDER BY Name
+                    LIMIT 100
+                ];
+            } else if (isCrmHead) {
+                // CRM Head can see themselves and active users
+                // belonging to any of their departments
+                Id currentUserId = UserInfo.getUserId();
+                Set<String> crmHeadDeptNames = getCrmHeadDepartmentNames(currentUser.Departments__c);
+                users = [
+                    SELECT Id, Name, Department
+                    FROM User
+                    WHERE IsActive = true
+                    AND (Department IN :crmHeadDeptNames OR Id = :currentUserId)
                     ORDER BY Name
                     LIMIT 100
                 ];
@@ -482,13 +541,20 @@ public class TargetManagerController {
         TargetListWrapper result = new TargetListWrapper();
         Id currentUserId = UserInfo.getUserId();
 
-        // Get current user's manager status, department and profile
+        // Get current user's manager status, department(s) and profile
         User currentUser = [
-            SELECT Target_Manager__c, Department, Profile.Name
+            SELECT Target_Manager__c, Department, Departments__c, Profile.Name
             FROM User
             WHERE Id = :currentUserId
             LIMIT 1
         ];
+
+        // CRM Head: themselves + active users belonging to any of their departments
+        // (declared at method level so the dynamic query below can bind it)
+        Set<Id> crmHeadUserIds = new Set<Id>{ currentUserId };
+
+        // HOD: active users from the HOD's department
+        Set<Id> departmentUserIds = new Set<Id>();
 
         // Target_Manager__c controls whether the Targets tab is visible
         result.isManager = currentUser.Target_Manager__c;
@@ -517,8 +583,6 @@ public class TargetManagerController {
             if (String.isNotBlank(currentUser.Department)) {
 
                 // First get active users from the HOD's department
-                Set<Id> departmentUserIds = new Set<Id>();
-
                 for (User u : [
                     SELECT Id
                     FROM User
@@ -547,6 +611,31 @@ public class TargetManagerController {
                 // HOD without a department → no targets
                 query += 'WHERE Id = null ';
             }
+
+        // ---------------------------------------------------------
+        // CRM Head → See own targets + targets assigned to users
+        // in any of their departments (from Departments__c)
+        // ---------------------------------------------------------
+        } else if (currentUser.Profile.Name == CRM_HEAD_PROFILE_NAME) {
+
+            Set<String> crmHeadDeptNames = getCrmHeadDepartmentNames(currentUser.Departments__c);
+            if (!crmHeadDeptNames.isEmpty()) {
+                for (User u : [
+                    SELECT Id
+                    FROM User
+                    WHERE IsActive = true
+                    AND Department IN :crmHeadDeptNames
+                ]) {
+                    crmHeadUserIds.add(u.Id);
+                }
+            }
+
+            query +=
+                'WHERE Id IN (' +
+                    'SELECT Target__c ' +
+                    'FROM Target_Assignment__c ' +
+                    'WHERE User__c IN :crmHeadUserIds' +
+                ') ';
 
         // ---------------------------------------------------------
         // 3. All other profiles → See only their own targets

@@ -378,7 +378,7 @@
             <assignToReference>CRMHeadUserList</assignToReference>
             <operator>Add</operator>
             <value>
-                <elementReference>get_CRM_Head_user.Id</elementReference>
+                <elementReference>resolvedCRMHeadId</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -394,7 +394,7 @@
             <assignToReference>HodUserList</assignToReference>
             <operator>Add</operator>
             <value>
-                <elementReference>get_HOD_user.Id</elementReference>
+                <elementReference>resolvedHODId</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -431,6 +431,70 @@
         </assignmentItems>
         <connector>
             <targetReference>get_Project_Record_Type</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Resolved_CRM_Head_From_Fallback</name>
+        <label>Assign Resolved CRM Head From Fallback</label>
+        <locationX>2164</locationX>
+        <locationY>1470</locationY>
+        <assignmentItems>
+            <assignToReference>resolvedCRMHeadId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>get_CRM_Head_user_fallback.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>assign_CRM_Head_User_List</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Resolved_CRM_Head_From_Role</name>
+        <label>Assign Resolved CRM Head From Role</label>
+        <locationX>2050</locationX>
+        <locationY>1200</locationY>
+        <assignmentItems>
+            <assignToReference>resolvedCRMHeadId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>get_CRM_Head_user.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>assign_CRM_Head_User_List</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Resolved_HOD_From_Fallback</name>
+        <label>Assign Resolved HOD From Fallback</label>
+        <locationX>1477</locationX>
+        <locationY>1350</locationY>
+        <assignmentItems>
+            <assignToReference>resolvedHODId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>get_HOD_user_fallback.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>assign_HOD_User_List</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Resolved_HOD_From_Role</name>
+        <label>Assign Resolved HOD From Role</label>
+        <locationX>1594</locationX>
+        <locationY>1013</locationY>
+        <assignmentItems>
+            <assignToReference>resolvedHODId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>get_HOD_user.Id</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>assign_HOD_User_List</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -516,6 +580,56 @@
             <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
         </value>
     </customProperties>
+    <decisions>
+        <name>Check_CRM_Head_Found</name>
+        <label>Check CRM Head Found</label>
+        <locationX>2100</locationX>
+        <locationY>1260</locationY>
+        <defaultConnector>
+            <targetReference>get_CRM_Head_Profile</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Found</defaultConnectorLabel>
+        <rules>
+            <name>CRM_Head_Found</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>get_CRM_Head_user</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Resolved_CRM_Head_From_Role</targetReference>
+            </connector>
+            <label>Found</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_HOD_Found</name>
+        <label>Check HOD Found</label>
+        <locationX>1594</locationX>
+        <locationY>1123</locationY>
+        <defaultConnector>
+            <targetReference>get_HOD_Profile</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not Found</defaultConnectorLabel>
+        <rules>
+            <name>HOD_Found</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>get_HOD_user</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Resolved_HOD_From_Role</targetReference>
+            </connector>
+            <label>Found</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>check_if_the_project_is_tender_lost</name>
         <label>check if the project is tender lost</label>
@@ -739,6 +853,11 @@ Approved path updated: AddressBook step removed; after creating the parent Proje
         <dataType>String</dataType>
         <expression>TEXT({!get_Project.Department_Name__c})&amp;&quot; HOD&quot;</expression>
     </formulas>
+    <formulas>
+        <name>ProjectDepartmentOnly</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!get_Project.Department_Name__c})</expression>
+    </formulas>
     <interviewLabel>Accept / Reject [Project] Record {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Accept / Reject [Project] Record</label>
     <loops>
@@ -898,6 +1017,30 @@ Approved path updated: AddressBook step removed; after creating the parent Proje
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
+        <name>get_CRM_Head_Profile</name>
+        <label>get CRM Head Profile</label>
+        <locationX>2164</locationX>
+        <locationY>1320</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>get_CRM_Head_user_fallback</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Error_Screen</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>CRM Head</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Profile</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>get_CRM_HEAD_role</name>
         <label>get CRM HEAD role</label>
         <locationX>1968</locationX>
@@ -928,7 +1071,7 @@ Approved path updated: AddressBook step removed; after creating the parent Proje
         <locationY>1181</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>assign_CRM_Head_User_List</targetReference>
+            <targetReference>Check_CRM_Head_Found</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Error_Screen</targetReference>
@@ -939,6 +1082,44 @@ Approved path updated: AddressBook step removed; after creating the parent Proje
             <operator>EqualTo</operator>
             <value>
                 <elementReference>get_CRM_HEAD_role.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>IsActive</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>get_CRM_Head_user_fallback</name>
+        <label>get CRM Head user fallback</label>
+        <locationX>2164</locationX>
+        <locationY>1400</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assign_Resolved_CRM_Head_From_Fallback</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Error_Screen</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Department</field>
+            <operator>Contains</operator>
+            <value>
+                <elementReference>ProjectDepartmentOnly</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>ProfileId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>get_CRM_Head_Profile.Id</elementReference>
             </value>
         </filters>
         <filters>
@@ -998,6 +1179,30 @@ Approved path updated: AddressBook step removed; after creating the parent Proje
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
+        <name>get_HOD_Profile</name>
+        <label>get HOD Profile</label>
+        <locationX>1477</locationX>
+        <locationY>1260</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>get_HOD_user_fallback</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Error_Screen</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Utkarsh HOD</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Profile</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>get_HOD_role</name>
         <label>get HOD role</label>
         <locationX>1477</locationX>
@@ -1028,7 +1233,7 @@ Approved path updated: AddressBook step removed; after creating the parent Proje
         <locationY>1013</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>assign_HOD_User_List</targetReference>
+            <targetReference>Check_HOD_Found</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Error_Screen</targetReference>
@@ -1039,6 +1244,44 @@ Approved path updated: AddressBook step removed; after creating the parent Proje
             <operator>EqualTo</operator>
             <value>
                 <elementReference>get_HOD_role.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>IsActive</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>get_HOD_user_fallback</name>
+        <label>get HOD user fallback</label>
+        <locationX>1477</locationX>
+        <locationY>1390</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Assign_Resolved_HOD_From_Fallback</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Error_Screen</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Department</field>
+            <operator>Contains</operator>
+            <value>
+                <elementReference>ProjectDepartmentOnly</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>ProfileId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>get_HOD_Profile.Id</elementReference>
             </value>
         </filters>
         <filters>
@@ -1394,7 +1637,7 @@ Approved path updated: AddressBook step removed; after creating the parent Proje
             <targetReference>get_custom_notification</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>BidderOpportunityCollectionVar</name>
         <dataType>SObject</dataType>
@@ -1454,6 +1697,20 @@ Approved path updated: AddressBook step removed; after creating the parent Proje
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>resolvedCRMHeadId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>resolvedHODId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>

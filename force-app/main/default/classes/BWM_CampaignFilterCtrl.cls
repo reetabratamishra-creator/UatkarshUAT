@@ -104,7 +104,7 @@ public with sharing class BWM_CampaignFilterCtrl {
 
         String soql =
             'SELECT Id, Name, Status, Email, Phone, Department_Name__c, Lost_Reason__c, Campaign_Name__c, CreatedDate' +
-            ' FROM Lead WHERE Id != null AND Status != \'Qualified\'';
+            ' FROM Lead WHERE Id != null';
 
         if (namePattern != null) {
             soql += ' AND Name LIKE :namePattern';

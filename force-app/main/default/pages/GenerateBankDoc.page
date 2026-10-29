@@ -122,6 +122,95 @@
             .qrf-table th { background-color: #f0f0f0; color: #222; font-weight: bold; border: 1px solid #ccc; padding: 4px; }
             .qrf-table td { border: 1px solid #ccc; padding: 3px 4px; font-size: 9.5px; }
             .qrf-table tr { page-break-inside: avoid; }
+
+            /* PEB Engineering Specification Document Styles (100% Fidelity) */
+            .peb-spec-chapter {
+                font-size: 11.5px !important;
+                font-weight: bold !important;
+                color: #000000 !important;
+                margin-top: 14px !important;
+                margin-bottom: 5px !important;
+                background: none !important;
+                border: none !important;
+                padding: 0 !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            .peb-spec-subheading {
+                font-size: 10.5px !important;
+                font-weight: bold !important;
+                color: #000000 !important;
+                margin-top: 10px !important;
+                margin-bottom: 4px !important;
+                background: none !important;
+                border: none !important;
+                padding: 0 !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            .peb-spec-subtitle {
+                font-size: 9.5px !important;
+                color: #555555 !important;
+                margin-top: 2px !important;
+                margin-bottom: 4px !important;
+                font-style: normal !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+            .peb-spec-text {
+                font-size: 9.5px !important;
+                color: #333333 !important;
+                margin-top: 2px !important;
+                margin-bottom: 3px !important;
+                line-height: 1.35 !important;
+            }
+            table.peb-spec-table {
+                width: 100%;
+                max-width: 180mm;
+                border-collapse: collapse;
+                border-spacing: 0;
+                empty-cells: show;
+                margin-top: 4px;
+                margin-bottom: 8px;
+                page-break-inside: auto;
+                table-layout: fixed;
+            }
+            table.peb-spec-table th,
+            table.peb-spec-table td {
+                border: 1px solid #000000;
+                padding: 3px 5px;
+                font-size: 9.5px;
+                vertical-align: top;
+                word-wrap: break-word;
+                line-height: 1.25;
+                /* Reetabrata (8th October 2026): the V2 building-description
+                   parser keeps "a) ... / b) ..." items on their own lines
+                   inside a cell as \n; pre-wrap prints those breaks. Older
+                   quotes carry no \n in their cells, so they are unchanged. */
+                white-space: pre-wrap;
+            }
+            table.peb-spec-table th {
+                font-weight: bold !important;
+                background-color: #f0f0f0 !important;
+                color: #000000 !important;
+            }
+            table.peb-spec-table tr.subhead-row td {
+                font-weight: bold !important;
+                background-color: #f5f5f5 !important;
+                color: #000000 !important;
+            }
+            table.peb-spec-table td {
+                color: #333333;
+                background-color: #ffffff;
+            }
+            table.peb-spec-table td b,
+            table.peb-spec-table td strong {
+                color: #000000 !important;
+                font-weight: bold !important;
+            }
+            table.peb-spec-table tr {
+                page-break-inside: avoid;
+            }
         </style>
     </head>
 
@@ -164,22 +253,62 @@
                 <tr>
                     <td style="width: 60%;">
                         <b>Ref:</b> {!termsRef}<br/><br/>
-                        <b>To:</b><br/><b>M/s. Shree Siddhi Vinayak Tatva Pvt. Ltd.</b><br/>Amta, West Bengal
+                        <b>To:</b><br/><b>{!effectiveBuyerName}</b><apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(effectiveProjectLocation))}"><br/>{!effectiveProjectLocation}</apex:outputPanel>
                     </td>
                     <td style="width: 40%;" class="text-right">
                         <b>Date:</b> {!termsDate}
                     </td>
                 </tr>
             </table>
-            <p class="bold">Sub: Offer for design, manufacture and supply of Pre-Engineered Steel Building at Amta, dist. Howrah, West Bengal.</p>
+            <p class="bold">{!pebSubjectLine}</p>
             <p>Dear Sir/Madam,</p>
             <p>Your enquiry for supplying of the product as mentioned in the captioned subject has given us this opportunity to connect and introduce our company and the "Utkarsh" brand...</p>
             <p>We take pride to mention that you have approached one of the leading brands in the country engaged in the manufacturing of the product as described herein...</p>
 
             
-            <!-- ═══ BUILDING DESCRIPTION (PARSED FROM SPECIFICATION / QRF) ═══ -->
-            <apex:outputPanel rendered="{!paramTableRows.size > 0}">
-                <b style="font-size: 12px;">Building Description</b>
+            <!-- ═══ DYNAMIC BUILDING DESCRIPTION SECTIONS (FROM (A) DESIGN CRITERIA TO END) ═══ -->
+            <apex:outputPanel rendered="{!docSections.size > 0}">
+                <apex:repeat value="{!docSections}" var="sec">
+                    <!-- Chapter Header -->
+                    <apex:outputPanel layout="none" rendered="{!sec.isChapter}">
+                        <p class="peb-spec-chapter"><b><apex:outputText value="{!sec.title}"/></b></p>
+                        <apex:repeat value="{!sec.notes}" var="note">
+                            <p class="peb-spec-text"><apex:outputText value="{!note}"/></p>
+                        </apex:repeat>
+                    </apex:outputPanel>
+
+                    <!-- Section with Table -->
+                    <apex:outputPanel layout="none" rendered="{!sec.isTable}">
+                        <div style="{!IF(sec.isSmallTable, 'page-break-inside: avoid;', '')}">
+                            <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(sec.title))}">
+                                <p class="peb-spec-subheading"><b><apex:outputText value="{!sec.title}"/></b></p>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="none" rendered="{!sec.hasSubtitle}">
+                                <p class="peb-spec-subtitle"><apex:outputText value="{!sec.subtitle}"/></p>
+                            </apex:outputPanel>
+                            <apex:outputText value="{!sec.tableHtml}" escape="false"/>
+                            <apex:outputPanel layout="none" rendered="{!sec.hasNotes}">
+                                <apex:repeat value="{!sec.notes}" var="note">
+                                    <p class="peb-spec-text"><apex:outputText value="{!note}"/></p>
+                                </apex:repeat>
+                            </apex:outputPanel>
+                        </div>
+                    </apex:outputPanel>
+
+                    <!-- Section with List (e.g. Technical Notes, Material Specifications) -->
+                    <apex:outputPanel layout="none" rendered="{!sec.isList}">
+                        <p class="peb-spec-subheading"><b><apex:outputText value="{!sec.title}"/></b></p>
+                        <div style="margin-top: 2px; margin-bottom: 6px;">
+                            <apex:repeat value="{!sec.listItems}" var="li">
+                                <p class="peb-spec-text" style="padding-left: 8px; margin: 2px 0;"><apex:outputText value="{!li}"/></p>
+                            </apex:repeat>
+                        </div>
+                    </apex:outputPanel>
+                </apex:repeat>
+            </apex:outputPanel>
+
+            <!-- ═══ FALLBACK: QRF TABULAR FORMAT (IF docSections IS EMPTY) ═══ -->
+            <apex:outputPanel rendered="{!docSections.size == 0 && paramTableRows.size > 0}">
                 <table class="qrf-table" style="font-size: 10px; border-collapse: collapse; width: 100%; margin-top: 6px; margin-bottom: 14px; page-break-inside: auto;">
                     <thead>
                         <tr>
@@ -215,85 +344,6 @@
                         </apex:repeat>
                     </tbody>
                 </table>
-                
-                <!-- Accessories Table -->
-                <apex:outputPanel rendered="{!pebAccessories.size > 0}">
-                    <br/><b>Accessories</b>
-                    <table style="page-break-inside: auto;" class="qrf-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 8%;">Sr. No.</th>
-                                <th style="width: 35%;">Description</th>
-                                <th style="width: 20%;">Size</th>
-                                <th style="width: 12%;">Quantity</th>
-                                <th>Remark</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <apex:variable var="rowNumQ" value="{!1}"/>
-                            <apex:repeat value="{!pebAccessories}" var="acc">
-                                <tr>
-                                    <td><apex:outputText value="{!rowNumQ}"/></td>
-                                    <td>{!acc.description}</td>
-                                    <td>{!acc.size}</td>
-                                    <td>{!acc.quantity}</td>
-                                    <td>{!acc.remark}</td>
-                                </tr>
-                                <apex:variable var="rowNumQ" value="{!rowNumQ + 1}"/>
-                            </apex:repeat>
-                        </tbody>
-                    </table>
-                </apex:outputPanel>
-
-                <!-- Buyout Items Table -->
-                <apex:outputPanel rendered="{!buyoutItems.size > 0}">
-                    <br/><b>Buyout Items</b>
-                    <table style="page-break-inside: auto;" class="qrf-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 8%;">Sr. No.</th>
-                                <th style="width: 35%;">Description</th>
-                                <th style="width: 20%;">Size</th>
-                                <th style="width: 12%;">Quantity</th>
-                                <th>Remark</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <apex:variable var="rowNumQB" value="{!1}"/>
-                            <apex:repeat value="{!buyoutItems}" var="buyout">
-                                <tr>
-                                    <td><apex:outputText value="{!rowNumQB}"/></td>
-                                    <td>{!buyout.description}</td>
-                                    <td>{!buyout.size}</td>
-                                    <td>{!buyout.quantity}</td>
-                                    <td>{!buyout.remark}</td>
-                                </tr>
-                                <apex:variable var="rowNumQB" value="{!rowNumQB + 1}"/>
-                            </apex:repeat>
-                        </tbody>
-                    </table>
-                </apex:outputPanel>
-
-                <!-- Material Specifications -->
-                <apex:outputPanel rendered="{!buildingMaterialSpecs.size > 0}">
-                    <br/><b>Material Specifications</b>
-                    <ol style="margin-top: 5px; margin-bottom: 15px; padding-left: 15px;">
-                        <apex:repeat value="{!buildingMaterialSpecs}" var="spec">
-                            <li style="margin-bottom: 4px;">{!spec}</li>
-                        </apex:repeat>
-                    </ol>
-                </apex:outputPanel>
-
-                <!-- Technical Notes -->
-                <apex:outputPanel rendered="{!buildingTechNotes.size > 0}">
-                    <br/><b>Technical Notes</b>
-                    <ol style="margin-top: 5px; margin-bottom: 15px; padding-left: 15px;">
-                        <apex:repeat value="{!buildingTechNotes}" var="note">
-                            <li style="margin-bottom: 4px;">{!note}</li>
-                        </apex:repeat>
-                    </ol>
-                </apex:outputPanel>
-                
             </apex:outputPanel>
 
             <div class="page-break"></div>
@@ -532,7 +582,7 @@
             <h3 style="text-align: center; background: none; border: none; text-decoration: underline;">TERMS &amp; CONDITIONS OF THE CONTRACT</h3>
 
             <div class="legal-clause">
-                <b>1. Buyer:</b> Buyer shall mean M/s Shree Siddhi Vinayak Tatva Pvt. Ltd.
+                <b>1. Buyer:</b> Buyer shall mean {!IF(NOT(ISBLANK(effectiveBuyerName)), effectiveBuyerName, '___________________________')}
             </div>
             <div class="legal-clause">
                 <b>2. Supplier:</b> Supplier shall mean Utkarsh India Limited having its office at 95A, Elliot Road, Arrjavv Square, Kolkata 700016.

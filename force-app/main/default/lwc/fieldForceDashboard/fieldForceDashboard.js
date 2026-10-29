@@ -48,6 +48,14 @@ export default class FieldForceDashboard extends LightningElement {
     @track showImageModal = false;
     @track modalImageUrl = '';
 
+    // WFH/WFO Day Activity Log Modal Properties
+    @track showActivityModal = false;
+    @track activityDetails = {};
+    scrollActivityModalIntoView = false;
+    activityModalTrigger = null;
+    @track showActivityOverlay = false;
+    @track activityOverlayStyle = '';
+
     @track selfWfhRequests = [];
     @track teamWfhRequests = [];
     @track canApproveWfhRequests = false;
@@ -192,23 +200,18 @@ export default class FieldForceDashboard extends LightningElement {
     }
 
     handleOverviewTabActive() {
-        // Tabset fires Overview on mount/remount. Ignore that while a user
-        // detail is open or data is loading so Back stays on Tracking.
-        if (this.isSingleView || this.isLoading) {
-            return;
-        }
         this.activeTab = 'overview';
+        this.isSingleView = false;
     }
 
     handleTrackingTabActive() {
-        if (this.isSingleView || this.isLoading) {
-            return;
-        }
         this.activeTab = 'tracking';
+        this.isSingleView = false;
     }
 
     handleWfhTabActive() {
         this.activeTab = 'requests';
+        this.isSingleView = false;
         this.loadTeamWfhRequests();
     }
 
@@ -225,14 +228,67 @@ export default class FieldForceDashboard extends LightningElement {
             });
     }
 
-    handleUserClickInTable(event) {
-        const uid = event.currentTarget.dataset.id;
-        if (uid) {
-            this.isLoading = true;
-            this.isMapInitialized = false;
-            this.selectedEmployeeId = uid;
-            this.isSingleView = true;
-            this.processListSummaryData();
+    get activityModalTitle() {
+        return `Day Activity Log - ${this.activityDetails.userName || ''}`;
+    }
+
+    buildActivityDetails(reqId) {
+        const req = (this.teamWfhRequests || []).find(r => r.requestId === reqId);
+        if (!req) {
+            return null;
+        }
+        const display = (val) => (val === null || val === undefined ? '—' : val);
+        const openNotes = (req.openNotes || '').trim();
+        return {
+            userName: req.userName,
+            type: req.type,
+            typeBadgeClass: req.typeBadgeClass,
+            formattedDate: req.formattedDate,
+            emailsDisplay: display(req.noOfEmails),
+            meetingsDisplay: display(req.noOfMeetings),
+            offersDisplay: display(req.noOfOffersSent),
+            callsDisplay: display(req.noOfPhoneCalls),
+            openNotes,
+            hasOpenNotes: openNotes.length > 0
+        };
+    }
+
+    handleViewActivityDetails(event) {
+        const details = this.buildActivityDetails(event.currentTarget.dataset.id);
+        if (!details) {
+            return;
+        }
+        this.activityDetails = details;
+        this.activityModalTrigger = event.currentTarget;
+        this.showActivityModal = true;
+        this.scrollActivityModalIntoView = true;
+    }
+
+    // Mobile cards: open the Day Activity Log over the tapped card instead of a page-level modal
+    handleViewActivityDetailsMobile(event) {
+        const details = this.buildActivityDetails(event.currentTarget.dataset.id);
+        if (!details) {
+            return;
+        }
+        const card = event.currentTarget.closest('.mobile-data-card');
+        const top = card ? card.offsetTop : 0;
+        this.activityDetails = details;
+        this.activityOverlayStyle = `top: ${top}px;`;
+        this.showActivityOverlay = true;
+    }
+
+    closeActivityOverlay() {
+        this.showActivityOverlay = false;
+        this.activityDetails = {};
+    }
+
+    closeActivityDetails() {
+        this.showActivityModal = false;
+        this.activityDetails = {};
+        // Return the user to the row they opened the modal from (mobile scrolls up to show the modal)
+        if (this.activityModalTrigger) {
+            this.activityModalTrigger.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            this.activityModalTrigger = null;
         }
     }
 
@@ -396,6 +452,7 @@ export default class FieldForceDashboard extends LightningElement {
 
             return {
                 ...usr,
+                totalHours: this.formatHoursLabel(usr.totalHours),
                 sidebarClass: sidebarClass,
                 dotClass: `sidebar-status-dot ${isShortHours ? 'short-hours' : (isActive ? 'online' : 'offline')}`,
                 accentClass: accentClass,
@@ -499,6 +556,16 @@ export default class FieldForceDashboard extends LightningElement {
 
     renderedCallback() {
         this.applyTabOverflowStyles();
+
+        // In the Salesforce mobile app, position:fixed is anchored to the page container rather than
+        // the viewport, so a modal opened far down the list renders off-screen. Bring it into view.
+        if (this.scrollActivityModalIntoView) {
+            const modal = this.template.querySelector('.activity-modal-content');
+            if (modal) {
+                this.scrollActivityModalIntoView = false;
+                modal.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
 
         if (!this.isSingleView) {
             this.isMapInitialized = false;
@@ -764,7 +831,29 @@ export default class FieldForceDashboard extends LightningElement {
     }
 
     get workingHoursLabel() {
-        return this.summary && this.summary.totalHours ? this.summary.totalHours : 'N/A';
+        // Use the team summary (getMultipleUsersDailySummary) hours for the selected employee so the
+        // detail view matches the list/cards; fall back to the daily dashboard value if not available
+        const listEntry = (this.listSummaryData || []).find(usr => usr.userId === this.selectedEmployeeId);
+        if (listEntry && listEntry.totalHours) {
+            return listEntry.totalHours;
+        }
+        return this.summary && this.summary.totalHours ? this.formatHoursLabel(this.summary.totalHours) : 'N/A';
+    }
+
+    // Converts decimal hours (e.g. 7.5) to "07h 30m"
+    formatHoursMinutes(decimalHours) {
+        const totalMinutes = Math.round((Number(decimalHours) || 0) * 60);
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`;
+    }
+
+    // Converts Apex hour labels (e.g. "7.50 hrs (Active)") to "07h 30m (Active)"; other text (e.g. "N/A") is kept as is
+    formatHoursLabel(label) {
+        if (!label) {
+            return label;
+        }
+        return String(label).replace(/(\d+(?:\.\d+)?)\s*hrs/, (match, hrs) => this.formatHoursMinutes(hrs));
     }
 
     get totalDistanceLabel() {
@@ -824,11 +913,19 @@ export default class FieldForceDashboard extends LightningElement {
     handleUserCardClick(event) {
         const uid = event.currentTarget.dataset.id;
         if (uid) {
-            this.isLoading = true;
-            this.isMapInitialized = false;
-            this.selectedEmployeeId = uid;
             this.isSingleView = true;
-            this.processListSummaryData();
+            if (this.selectedEmployeeId === uid) {
+                this.isLoading = false;
+                this.processListSummaryData();
+                if (this.wiredDashboardResult) {
+                    refreshApex(this.wiredDashboardResult);
+                }
+            } else {
+                this.isLoading = true;
+                this.isMapInitialized = false;
+                this.selectedEmployeeId = uid;
+                this.processListSummaryData();
+            }
         }
     }
 
@@ -836,11 +933,19 @@ export default class FieldForceDashboard extends LightningElement {
         event.stopPropagation(); // Prevent card bubble click
         const uid = event.currentTarget.dataset.id;
         if (uid) {
-            this.isLoading = true;
-            this.isMapInitialized = false;
-            this.selectedEmployeeId = uid;
             this.isSingleView = true;
-            this.processListSummaryData();
+            if (this.selectedEmployeeId === uid) {
+                this.isLoading = false;
+                this.processListSummaryData();
+                if (this.wiredDashboardResult) {
+                    refreshApex(this.wiredDashboardResult);
+                }
+            } else {
+                this.isLoading = true;
+                this.isMapInitialized = false;
+                this.selectedEmployeeId = uid;
+                this.processListSummaryData();
+            }
         }
     }
 
@@ -1015,6 +1120,7 @@ export default class FieldForceDashboard extends LightningElement {
 
     handleAnalyticsTabActive() {
         this.activeTab = 'analytics';
+        this.isSingleView = false;
         if (!this.analyticsStartDate || !this.analyticsEndDate) {
             this.calculateDateRange();
         }
@@ -1103,8 +1209,8 @@ export default class FieldForceDashboard extends LightningElement {
                 return {
                     ...row,
                     outcomeFormatted: outcomeList.join(', ') || 'None',
-                    avgHoursFormatted: row.avgHoursPerDay != null ? `${row.avgHoursPerDay.toFixed(2)} hrs` : '0 hrs',
-                    totalWorkingHoursFormatted: row.totalWorkingHours != null ? `${row.totalWorkingHours.toFixed(2)} hrs` : '0 hrs',
+                    avgHoursFormatted: this.formatHoursMinutes(row.avgHoursPerDay),
+                    totalWorkingHoursFormatted: this.formatHoursMinutes(row.totalWorkingHours),
                     totalDistanceFormatted: row.totalDistanceKm != null ? `${row.totalDistanceKm.toFixed(2)} km` : '0 km',
                     avgVisitsFormatted: row.avgVisitsPerDay != null ? row.avgVisitsPerDay.toFixed(1) : '0'
                 };
@@ -1139,7 +1245,7 @@ export default class FieldForceDashboard extends LightningElement {
     }
 
     get analyticsTotalHours() {
-        return this.analyticsData.reduce((sum, row) => sum + (row.totalWorkingHours || 0), 0).toFixed(2);
+        return this.formatHoursMinutes(this.analyticsData.reduce((sum, row) => sum + (row.totalWorkingHours || 0), 0));
     }
 
     get analyticsTotalDistance() {

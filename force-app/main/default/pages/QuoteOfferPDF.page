@@ -365,15 +365,16 @@
                 <table class="item-table">
                     <thead>
                         <tr style="background-color: #FFFF00;">
-                            <th class="text-center" style="width: 5%;">SL No</th>
-                            <th class="text-center" style="width: 40%;">Pipe Description</th>
-                            <th class="text-center" style="width: 10%;">UOM</th>
+                            <th class="text-center" style="width: 4%;">SL No</th>
+                            <th class="text-center" style="width: 44%;">Pipe Description</th>
+                            <th class="text-center" style="width: 10%;">Length (M)</th>
+                            <th class="text-center" style="width: 8%;">UOM</th>
                             <th class="text-center" style="width: 10%;">Quantity</th>
-                            <th class="text-center" style="width: 10%;">Rate</th>
+                            <th class="text-center" style="width: 9%;">Rate</th>
                             <apex:outputPanel layout="none" rendered="{!showUsanceColumn}">
-                                <th class="text-center" style="width: 10%;">Usance Interest</th>
+                                <th class="text-center" style="width: 7%;">Usance Interest</th>
                             </apex:outputPanel>
-                            <th class="text-center" style="width: 15%;">Total</th>
+                            <th class="text-center" style="width: {!IF(showUsanceColumn, '8%', '15%')};">Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -381,6 +382,7 @@
                             <tr style="{!IF(AND(OR(cRow['uom'] == 'EA', cRow['uom'] == 'Lot'), NOT(CONTAINS(cRow['name'], 'Transit Insurance')), NOT(CONTAINS(cRow['name'], 'Lump Sum'))), 'display: none;', '')}">
                                 <td class="text-center"><b>{!cRow['SlNo']}</b></td>
                                 <td><b>{!cRow['special_description']}</b></td>
+                                <td class="text-center"><b>{!IF(ISBLANK(cRow['pipeLengthDisplay']), '-', cRow['pipeLengthDisplay'])}</b></td>
                                 <td class="text-center"><b>{!cRow['uom']}</b></td>
                                 <td class="text-center">
                                     <b><apex:outputText value="{0, number, #,##0}"><apex:param value="{!cRow['quantity']}"/></apex:outputText></b>
@@ -403,20 +405,20 @@
                     <!-- 👉 FIXED CORE PIPES COLSPAN: Aligns the Totals flush with the main table! -->
                     <tbody style="page-break-inside: avoid;">
                         <tr>
-                            <td colspan="{!5 + IF(showUsanceColumn, 1, 0)}" class="text-right" style="font-weight: bold; background-color: #FFFF00;">Sub Total:</td>
-                            <td class="text-right" style="width: 15%; font-weight: bold; background-color: #FFFF00;">
+                            <td colspan="{!6 + IF(showUsanceColumn, 1, 0)}" class="text-right" style="font-weight: bold; background-color: #FFFF00;">Sub Total:</td>
+                            <td class="text-right" style="width: {!IF(showUsanceColumn, '8%', '15%')}; font-weight: bold; background-color: #FFFF00;">
                                 <b><apex:outputText value="{0, number, #,##0.00}"><apex:param value="{!coreTotalAmount}"/></apex:outputText></b>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="{!5 + IF(showUsanceColumn, 1, 0)}" class="text-right" style="font-weight: bold;">GST @18%:</td>
-                            <td class="text-right" style="width: 15%; font-weight: bold;">
+                            <td colspan="{!6 + IF(showUsanceColumn, 1, 0)}" class="text-right" style="font-weight: bold;">GST @18%:</td>
+                            <td class="text-right" style="width: {!IF(showUsanceColumn, '8%', '15%')}; font-weight: bold;">
                                 <b><apex:outputText value="{0, number, #,##0.00}"><apex:param value="{!coreTotalGst}"/></apex:outputText></b>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="{!5 + IF(showUsanceColumn, 1, 0)}" class="text-right" style="font-weight: bold; background-color: #FFFF00;">Grand Total:</td>
-                            <td class="text-right" style="width: 15%; font-weight: bold; background-color: #FFFF00;">
+                            <td colspan="{!6 + IF(showUsanceColumn, 1, 0)}" class="text-right" style="font-weight: bold; background-color: #FFFF00;">Grand Total:</td>
+                            <td class="text-right" style="width: {!IF(showUsanceColumn, '8%', '15%')}; font-weight: bold; background-color: #FFFF00;">
                                 <b><apex:outputText value="{0, number, #,##0.00}"><apex:param value="{!coreTotalFinal}"/></apex:outputText></b>
                             </td>
                         </tr>
@@ -454,7 +456,7 @@
                     <tbody>
                         <apex:repeat value="{!standardLineItems}" var="row">
                             <!-- Ensure visibility condition matches LWC Export JSON structure -->
-                            <tr style="{!IF(AND(OR(row['uom'] == 'EA', row['uom'] == 'Lot', ISBLANK(row['uom'])), NOT(CONTAINS(row['itemName'], 'Transit Insurance')), NOT(CONTAINS(row['itemName'], 'Lump Sum'))), '', 'display: none;')}">
+                            <tr style="{!IF(OR(CONTAINS(row['itemName'], 'Transit Insurance'), CONTAINS(row['itemName'], 'Lump Sum'), CONTAINS(row['name'], 'Transit Insurance'), CONTAINS(row['name'], 'Lump Sum')), 'display: none;', '')}">
                                 <td class="text-center"><b>{!row['designation']}</b></td>
                                 
                                 <!-- UPDATED: Correctly appending Schedule to Standard and Grade dynamically -->

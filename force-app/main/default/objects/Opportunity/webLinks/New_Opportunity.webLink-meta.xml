@@ -10,5 +10,5 @@
     <openType>sidebar</openType>
     <protected>false</protected>
     <requireRowSelection>false</requireRowSelection>
-    <url>/flow/Create_Opportunity_Custom_Flow?retURL=%2Flightning%2Fo%2FOpportunity%2Flist</url>
+    <url>/flow/Create_Opportunity_Custom_Flow?retURL=/006/o</url>
 </WebLink>

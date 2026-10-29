@@ -92,6 +92,47 @@ public with sharing class ExpenseLineTriggerHandler {
     }
 
     /**
+     * @description Checks if the running user is allowed to re-edit/re-submit a rejected expense via newExpenseForm LWC.
+     *              - Normal user: 'Rejected by HOD', 'Rejected by HR', 'Rejected by ED'
+     *              - Utkarsh HOD: 'Rejected by HR', 'Rejected by ED'
+     *              - Utkarsh HR: 'Rejected by ED'
+     *              - System Admin with role 'Utkarsh ED': 'Rejected by ED'
+     *              - Standard System Admin / Utkarsh Admin: 'Rejected by HOD', 'Rejected by HR', 'Rejected by ED'
+     * @param oldStatus The Status__c of the parent Expense__c record.
+     * @return Boolean True if eligible for re-edit, false otherwise.
+     */
+    public static Boolean isAllowedToReEditRejectedExpense(String oldStatus) {
+        if (String.isBlank(oldStatus)) {
+            return false;
+        }
+        String profileName = getCurrentUserProfile();
+        String roleName = getCurrentUserRole();
+
+        // 1. System Admin with role 'Utkarsh ED'
+        if (String.isNotBlank(roleName) && roleName.equalsIgnoreCase(CLIENT_ADMIN_ROLE)) {
+            return oldStatus == 'Rejected by ED';
+        }
+
+        // 2. HR User
+        if (String.isNotBlank(profileName) && profileName.equalsIgnoreCase(HR_PROFILE_NAME)) {
+            return oldStatus == 'Rejected by ED';
+        }
+
+        // 3. HOD User
+        if (String.isNotBlank(profileName) && profileName.equalsIgnoreCase(HOD_PROFILE_NAME)) {
+            return oldStatus == 'Rejected by HR' || oldStatus == 'Rejected by ED';
+        }
+
+        // 4. Standard System Admin / Utkarsh Admin (without Utkarsh ED role)
+        if (String.isNotBlank(profileName) && (profileName.equalsIgnoreCase('System Administrator') || profileName.equalsIgnoreCase('Utkarsh Admin'))) {
+            return oldStatus == 'Rejected by HOD' || oldStatus == 'Rejected by HR' || oldStatus == 'Rejected by ED';
+        }
+
+        // 5. Normal User (All other users/profiles)
+        return oldStatus == 'Rejected by HOD' || oldStatus == 'Rejected by HR' || oldStatus == 'Rejected by ED';
+    }
+
+    /**
      * @description Checks if the current user has the HR profile.
      * @return Boolean True if HR, false otherwise.
      */
@@ -101,19 +142,21 @@ public with sharing class ExpenseLineTriggerHandler {
 
     /**
      * @description Handles before delete operations on Expense_Line__c.
-     *              Prevents deletion of Expense_Line__c records for all users.
+     *              Prevents deletion of Expense_Line__c records unless initiated from newExpenseForm LWC.
      * @param oldLines List of Expense_Line__c records to be deleted (Trigger.old)
      */
     public static void beforeDelete(List<Expense_Line__c> oldLines) {
-        for (Expense_Line__c line : oldLines) {
-            line.addError(DELETE_ERROR_MSG);
+        if (!isLwcContext) {
+            for (Expense_Line__c line : oldLines) {
+                line.addError(DELETE_ERROR_MSG);
+            }
         }
     }
 
     /**
      * @description Handles before update operations on Expense_Line__c.
      *              Restricts updates unless:
-     *              1. Called from newExpenseForm LWC context (reparenting Expense__c).
+     *              1. Called from newExpenseForm LWC context (reparenting Expense__c or resubmitting rejected expenses).
      *              2. User is Utkarsh HR editing Approved_Amount__c/Justification__c when parent status is Pending HR Approval.
      *              3. User is Utkarsh HOD editing Approved_Amount__c/Justification__c when parent status is Pending HOD Approval.
      *              4. User is System Admin with role 'Utkarsh ED' editing Approved_Amount__c/Justification__c when parent status is Pending ED Approval.
@@ -150,8 +193,17 @@ public with sharing class ExpenseLineTriggerHandler {
                 continue;
             }
 
-            // Case 1: Handled via newExpenseForm LWC context (reparenting Expense__c and initializing Approved_Amount__c)
+            Expense__c parentExp = (newLine.Expense__c != null) ? parentExpenses.get(newLine.Expense__c) : null;
+            String parentStatus = (parentExp != null) ? parentExp.Status__c : null;
+
+            // Case 1: Handled via newExpenseForm LWC context
             if (isLwcContext) {
+                // If the parent expense is in an allowed rejected status, allow full line re-edit
+                if (isAllowedToReEditRejectedExpense(parentStatus)) {
+                    continue;
+                }
+
+                // If reparenting private vehicle lines / initializing approved amount from LWC
                 Boolean onlyLwcAllowed = true;
                 for (String fieldName : changedFields) {
                     if (!fieldName.equalsIgnoreCase('Expense__c') && !fieldName.equalsIgnoreCase('Approved_Amount__c')) {
@@ -181,9 +233,6 @@ public with sharing class ExpenseLineTriggerHandler {
             }
 
             if (onlyAllowedFieldsChanged) {
-                Expense__c parentExp = (newLine.Expense__c != null) ? parentExpenses.get(newLine.Expense__c) : null;
-                String parentStatus = (parentExp != null) ? parentExp.Status__c : null;
-
                 // Case 2: HR user editing Approved_Amount__c / Justification__c
                 if (String.isNotBlank(profileName) && profileName.equalsIgnoreCase(HR_PROFILE_NAME)) {
                     if (parentStatus == STATUS_PENDING_HR) {

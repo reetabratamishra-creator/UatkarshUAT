@@ -9,12 +9,7 @@
                         <valueListItems>
                             <value>Case.Change_Case_Owner</value>
                             <visibilityRule>
-                                <booleanFilter>(1 OR 2 OR 3 )AND 4</booleanFilter>
-                                <criteria>
-                                    <leftValue>{!$User.Profile.Name}</leftValue>
-                                    <operator>EQUAL</operator>
-                                    <rightValue>Utkarsh Admin</rightValue>
-                                </criteria>
+                                <booleanFilter>(1 OR 2 OR 4 OR 5) AND 3</booleanFilter>
                                 <criteria>
                                     <leftValue>{!$User.Profile.Name}</leftValue>
                                     <operator>EQUAL</operator>
@@ -27,15 +22,25 @@
                                 </criteria>
                                 <criteria>
                                     <leftValue>{!Record.Status}</leftValue>
-                                    <operator>EQUAL</operator>
+                                    <operator>NE</operator>
                                     <rightValue>Resolved</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!$User.Profile.Name}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>CRM Head</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!$User.Profile.Name}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Utkarsh HOD</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
                         <valueListItems>
                             <value>Case.Resolve_Case</value>
                             <visibilityRule>
-                                <booleanFilter>1 AND ( 2 OR 3 OR 4)</booleanFilter>
+                                <booleanFilter>1 AND (2 OR 3 OR 4 OR 5)</booleanFilter>
                                 <criteria>
                                     <leftValue>{!Record.Status}</leftValue>
                                     <operator>NE</operator>
@@ -44,12 +49,17 @@
                                 <criteria>
                                     <leftValue>{!$User.Profile.Name}</leftValue>
                                     <operator>EQUAL</operator>
-                                    <rightValue>Utkarsh Admin</rightValue>
+                                    <rightValue>System Administrator</rightValue>
                                 </criteria>
                                 <criteria>
                                     <leftValue>{!$User.Profile.Name}</leftValue>
                                     <operator>EQUAL</operator>
-                                    <rightValue>System Administrator</rightValue>
+                                    <rightValue>CRM Head</rightValue>
+                                </criteria>
+                                <criteria>
+                                    <leftValue>{!$User.Profile.Name}</leftValue>
+                                    <operator>EQUAL</operator>
+                                    <rightValue>Utkarsh HOD</rightValue>
                                 </criteria>
                                 <criteria>
                                     <leftValue>{!Record.isCaseOwner__c}</leftValue>
@@ -102,16 +112,6 @@
                                     <leftValue>{!$User.Profile.Name}</leftValue>
                                     <operator>CONTAINS</operator>
                                     <rightValue>Utkarsh Admin</rightValue>
-                                </criteria>
-                            </visibilityRule>
-                        </valueListItems>
-                        <valueListItems>
-                            <value>Share</value>
-                            <visibilityRule>
-                                <criteria>
-                                    <leftValue>{!$User.Profile.Name}</leftValue>
-                                    <operator>CONTAINS</operator>
-                                    <rightValue>System Administrator</rightValue>
                                 </criteria>
                             </visibilityRule>
                         </valueListItems>
@@ -346,8 +346,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Reason</fieldItem>
-                <identifier>RecordReasonField</identifier>
+                <fieldItem>Record.First_Reponse_Date_Time_formula__c</fieldItem>
+                <identifier>RecordFirst_Reponse_Date_Time_formula_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-ea03357f-2aef-48af-b745-c6daaffd8a34</name>
@@ -362,16 +362,6 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.First_Response_formula__c</fieldItem>
                 <identifier>RecordFirst_Reponse_formula_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.First_Reponse_Date_Time_formula__c</fieldItem>
-                <identifier>RecordFirst_Reponse_Date_Time_formula_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -738,28 +728,8 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentInstanceProperties>
-                    <name>parentFieldApiName</name>
-                    <value>Case.Id</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>relatedListApiName</name>
-                    <value>Case_Contacts__r</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>relatedListComponentOverride</name>
-                    <value>NONE</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>rowsToDisplay</name>
-                    <value>10</value>
-                </componentInstanceProperties>
-                <componentInstanceProperties>
-                    <name>showActionBar</name>
-                    <value>true</value>
-                </componentInstanceProperties>
-                <componentName>force:relatedListSingleContainer</componentName>
-                <identifier>force_relatedListSingleContainer7</identifier>
+                <componentName>caseContactslist</componentName>
+                <identifier>c_caseContactslist</identifier>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>

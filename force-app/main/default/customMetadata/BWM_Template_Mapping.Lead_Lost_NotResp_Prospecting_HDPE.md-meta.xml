@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <label>Prospecting Lost Not Resp HDPE</label>
+    <label>Prospecting lost NR HDPE</label>
     <protected>false</protected>
     <values>
         <field>Brochure_Attachment_Mode__c</field>
@@ -28,7 +28,7 @@
     </values>
     <values>
         <field>Journey_Name__c</field>
-        <value xsi:type="xsd:string">prospecting_not_responding_lost_dept</value>
+        <value xsi:type="xsd:string">Prospecting_not_respond_lost_dept</value>
     </values>
     <values>
         <field>Lead_Source__c</field>
@@ -44,7 +44,7 @@
     </values>
     <values>
         <field>Object_Type__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">Lead</value>
     </values>
     <values>
         <field>Param1_Field__c</field>
@@ -72,7 +72,7 @@
     </values>
     <values>
         <field>Param7_Field__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">Department_Name__c</value>
     </values>
     <values>
         <field>Param8_Field__c</field>
@@ -88,7 +88,7 @@
     </values>
     <values>
         <field>RCS_Template_Name__c</field>
-        <value xsi:type="xsd:string">pr_not_resp_lost_gen</value>
+        <value xsi:type="xsd:string">prosting_lead_nt_res</value>
     </values>
     <values>
         <field>Recipient_Type__c</field>
@@ -116,6 +116,6 @@
     </values>
     <values>
         <field>WhatsApp_Template_Name__c</field>
-        <value xsi:type="xsd:string">prospect_not_responding</value>
+        <value xsi:type="xsd:string">prosting_lead_nt_resp_lost</value>
     </values>
 </CustomMetadata>

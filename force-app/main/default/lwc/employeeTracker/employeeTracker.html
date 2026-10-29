@@ -54,10 +54,12 @@
                                                 <div class="et-name">{emp.employeeName}</div>
                                                 <div class="et-phone">{emp.phone}</div>
                                             </div>
-                                            <div class="et-battery">
-                                                <lightning-icon icon-name="utility:battery" size="x-small"></lightning-icon>
-                                                <span>{emp.batteryPercentage}%</span>
-                                            </div>
+                                            <template if:true={emp.hasBattery}>
+                                                <div class="et-battery">
+                                                    <lightning-icon icon-name="utility:battery" size="x-small"></lightning-icon>
+                                                    <span>{emp.batteryPercentage}%</span>
+                                                </div>
+                                            </template>
                                         </div>
 
                                         <!-- Pending WFH/WFO Requests -->
@@ -116,7 +118,7 @@
                                             </div>
                                             <div class="et-stat">
                                                 <span class="et-stat-lbl">Hours</span>
-                                                <span class="et-stat-val">{emp.summary.totalHours}</span>
+                                                <span class="et-stat-val">{emp.formattedHours}</span>
                                             </div>
                                             <div class="et-stat">
                                                 <span class="et-stat-lbl">Visits</span>

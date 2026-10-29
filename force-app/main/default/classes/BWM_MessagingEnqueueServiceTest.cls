@@ -33,16 +33,16 @@ private class BWM_MessagingEnqueueServiceTest {
     );
     BWM_LeadMessagingTriggerHandler.skipEnqueueForTests = true;
     Lead leadRecord = new Lead(
-      LastName = 'Enqueue Lead',
-      Company = 'Enqueue Co',
-      Company_Name__c = 'Enqueue Co',
+      LastName = 'Enqueue Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Enqueue Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company_Name__c = 'Enqueue Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
       Department_Name__c = 'Enquiry',
       LeadSource = 'INBOUND EMAIL',
-      Phone = '9876543290',
-      Email = 'enqueue@example.com'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'enqueue+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
     );
-    insert leadRecord;
+    insert as system leadRecord;
 
     Test.startTest();
     BWM_MessagingEnqueueService.enqueue(
@@ -68,16 +68,16 @@ private class BWM_MessagingEnqueueServiceTest {
     );
     BWM_LeadMessagingTriggerHandler.skipEnqueueForTests = true;
     Lead leadRecord = new Lead(
-      LastName = 'Enqueue Create Lead',
-      Company = 'Enqueue Co',
-      Company_Name__c = 'Enqueue Co',
+      LastName = 'Enqueue Create Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Enqueue Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company_Name__c = 'Enqueue Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
       Department_Name__c = 'Enquiry',
       LeadSource = 'OUTBOUND PHONE CALL',
-      Phone = '9876543291',
-      Email = 'enqueue.create@example.com'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'enqueue.create+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
     );
-    insert leadRecord;
+    insert as system leadRecord;
 
     Test.startTest();
     BWM_MessagingEnqueueService.enqueueLeadCreate(new List<Id>{ leadRecord.Id });

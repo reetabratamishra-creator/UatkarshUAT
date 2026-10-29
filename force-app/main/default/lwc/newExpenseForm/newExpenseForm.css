@@ -79,6 +79,12 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
     width: 100%;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+.section-block:focus-within {
+    z-index: 10;
 }
 
 .section-header {
@@ -154,6 +160,12 @@
     background: #fff;
     width: 100%;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+.expense-group:focus-within {
+    z-index: 20;
 }
 
 .group-header {
@@ -186,6 +198,15 @@
     width: 100%;
 }
 
+/* Ensure inputs with open dropdowns/datepickers are elevated above neighboring elements */
+lightning-layout-item:focus-within,
+.uniform-input:focus-within,
+lightning-input:focus-within,
+lightning-combobox:focus-within {
+    position: relative;
+    z-index: 40;
+}
+
 /* Ensure consistent input height across all text, date, number, combobox inputs */
 .expense-card lightning-input input,
 .expense-card lightning-combobox input {
@@ -203,6 +224,10 @@
     overflow: visible;
     position: relative;
     z-index: 1;
+}
+
+.expense-row:focus-within {
+    z-index: 30;
 }
 
 .expense-row:last-of-type {
@@ -774,4 +799,45 @@
     .cell-mobile-label {
         display: inline-block;
     }
+}
+/* Edit mode (rejected expense resubmission) */
+.edit-banner {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid #ba0517;
+    border-radius: 0.25rem;
+    background: #fef1ee;
+    color: #3e3e3c;
+    font-size: 0.8125rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.edit-banner-status {
+    font-weight: 700;
+    color: #ba0517;
+    margin-bottom: 0.25rem;
+}
+
+.edit-banner-remark {
+    white-space: pre-line;
+    line-height: 1.4;
+}
+
+.edit-banner-label {
+    font-weight: 600;
+}
+
+/* Lodging overlapping dates warning */
+.overlap-message {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #fef2cd;
+    border-radius: 0.25rem;
+    color: #8c4b02;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.4;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }

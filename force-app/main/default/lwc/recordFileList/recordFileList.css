@@ -1,0 +1,68 @@
+:host {
+    display: block;
+    container-type: inline-size;
+}
+
+/* Rounded outer border, like the standard related list card */
+.files-card {
+    border: 1px solid #c9c9c9;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.files-card .slds-card__header {
+    margin-bottom: 0;
+    padding-top: 0.75rem;
+}
+
+.files-body {
+    padding-bottom: 0.5rem;
+}
+
+/* Full-width divider above "View All", centered link */
+.files-card .slds-card__footer {
+    margin: 0;
+    padding: 0.75rem 0;
+    border-top: 1px solid #c9c9c9;
+    text-align: center;
+}
+
+.file-row {
+    padding: 0.25rem 0;
+}
+
+.file-title {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-meta {
+    margin-top: 0.125rem;
+}
+
+/* Two columns of files */
+.files-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2rem;
+    row-gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.files-list li {
+    min-width: 0;
+    border: 0;
+}
+
+/* Fall back to a single column when the component is narrow (e.g. sidebar) */
+@container (max-width: 30rem) {
+    .files-list {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

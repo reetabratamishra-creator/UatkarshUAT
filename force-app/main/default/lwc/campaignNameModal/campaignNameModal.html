@@ -15,10 +15,8 @@
                             <lightning-icon icon-name="standard:campaign" size="small" variant="inverse"></lightning-icon>
                         </div>
                         <div class="journey-modal__title-wrap">
-                            <h2 class="journey-modal__title">Campaign Name</h2>
-                            <p class="journey-modal__subtitle">
-                                Enter a campaign name. A Campaign record and Custom Campaign Member records will be created for successfully sent recipients.
-                            </p>
+                            <h2 class="journey-modal__title">{modalTitle}</h2>
+                            <p class="journey-modal__subtitle">{modalSubtitle}</p>
                         </div>
                         <button
                             class="slds-button slds-button_icon journey-modal__close"
@@ -32,17 +30,43 @@
                     </header>
 
                     <div class="journey-modal__content">
-                        <lightning-input
-                            label="Campaign Name"
-                            value={campaignName}
-                            onchange={handleCampaignNameChange}
-                            required
-                            maxlength="255"
-                            disabled={isSending}
-                        ></lightning-input>
+                        <template if:true={isNameStep}>
+                            <lightning-input
+                                label="Campaign Name"
+                                value={campaignName}
+                                onchange={handleCampaignNameChange}
+                                required
+                                maxlength="255"
+                                disabled={isSending}
+                            ></lightning-input>
+                        </template>
+                        <template if:false={isNameStep}>
+                            <lightning-input
+                                type="date"
+                                label="Date"
+                                value={scheduleDate}
+                                onchange={handleScheduleDateChange}
+                                disabled={isSending}
+                            ></lightning-input>
+                            <lightning-input
+                                class="schedule-time"
+                                type="time"
+                                label="Time"
+                                value={scheduleTime}
+                                onchange={handleScheduleTimeChange}
+                                disabled={isSending}
+                            ></lightning-input>
+                        </template>
                     </div>
 
                     <footer class="journey-modal__footer">
+                        <template if:false={isNameStep}>
+                            <lightning-button
+                                label="Back"
+                                onclick={handleBack}
+                                disabled={isSending}
+                            ></lightning-button>
+                        </template>
                         <lightning-button
                             label="Cancel"
                             onclick={handleCancel}
@@ -50,8 +74,8 @@
                         ></lightning-button>
                         <lightning-button
                             variant="brand"
-                            label={sendButtonLabel}
-                            icon-name="utility:send"
+                            label={primaryLabel}
+                            icon-name={primaryIcon}
                             onclick={handleConfirm}
                             disabled={isConfirmDisabled}
                         ></lightning-button>

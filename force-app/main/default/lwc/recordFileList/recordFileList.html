@@ -1,0 +1,71 @@
+<template>
+    <article class="slds-card files-card" style="border:1px solid #c9c9c9;border-radius:0.75rem;box-shadow:none;background:#ffffff;overflow:hidden;">
+        <div class="slds-card__header slds-grid slds-grid_vertical-align-center" style="padding:0.75rem 1rem 0.5rem 1rem;margin:0;">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning-icon icon-name="standard:file" size="small" alternative-text="Files"></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-text-heading_small">Files ({totalCount})</span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+
+        <div class="slds-card__body files-body" style="padding:0 1rem 0.75rem 1rem;margin:0;">
+            <template lwc:if={isLoading}>
+                <div class="slds-is-relative slds-p-vertical_large">
+                    <lightning-spinner alternative-text="Loading files" size="small"></lightning-spinner>
+                </div>
+            </template>
+
+            <template lwc:elseif={error}>
+                <div class="slds-text-color_error slds-p-around_small">{error}</div>
+            </template>
+
+            <template lwc:elseif={hasFiles}>
+                <ul class="files-list">
+                    <template for:each={files} for:item="file">
+                        <li key={file.id} class="slds-item file-row">
+                            <div class="slds-media slds-media_center">
+                                <div class="slds-media__figure">
+                                    <lightning-icon
+                                        icon-name={file.iconName}
+                                        size="large"
+                                        alternative-text={file.fileExtension}
+                                    ></lightning-icon>
+                                </div>
+                                <div class="slds-media__body">
+                                    <a
+                                        href="#"
+                                        class="slds-truncate file-title"
+                                        title={file.title}
+                                        data-id={file.id}
+                                        onclick={handleOpenFile}
+                                        >{file.displayTitle}</a
+                                    >
+                                    <p class="slds-text-body_small slds-text-color_weak file-meta">
+                                        {file.modifiedDate}
+                                        <span class="slds-p-horizontal_xx-small">&bull;</span>{file.sizeLabel}
+                                        <span class="slds-p-horizontal_xx-small">&bull;</span>{file.fileExtension}
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+
+            <template lwc:else>
+                <div class="slds-text-color_weak slds-p-around_small">No files attached to this record.</div>
+            </template>
+        </div>
+
+        <template lwc:if={showViewAll}>
+            <footer class="slds-card__footer" style="margin:0;padding:0.75rem 0;border-top:1px solid #c9c9c9;text-align:center;">
+                <a class="slds-card__footer-action" href="#" onclick={handleViewAll}>View All</a>
+            </footer>
+        </template>
+    </article>
+</template>

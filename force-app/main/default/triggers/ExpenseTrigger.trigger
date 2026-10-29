@@ -20,10 +20,10 @@ trigger ExpenseTrigger on Expense__c (before insert, before update, before delet
         }
     } else if (Trigger.isAfter) {
         if (Trigger.isInsert) {
-            ExpenseTriggerHandler.afterInsert(Trigger.new);
+            // ExpenseTriggerHandler.afterInsert(Trigger.new);
             ExpenseNotificationHandler.handleAfterInsert(Trigger.new);
         } else if (Trigger.isUpdate) {
-            ExpenseTriggerHandler.afterUpdate(Trigger.new, Trigger.oldMap);
+            // ExpenseTriggerHandler.afterUpdate(Trigger.new, Trigger.oldMap);
             
             ExpenseNotificationHandler.handleAfterUpdate(Trigger.new, Trigger.oldMap);
         }

@@ -28,28 +28,28 @@ private class BWM_QuoteExpiryReminderBatchTest {
     String originalPhone = ownerUser.Phone;
     String originalMobile = ownerUser.MobilePhone;
     ownerUser.Phone = null;
-    ownerUser.MobilePhone = '6290459144';
-    update ownerUser;
+    ownerUser.MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10);
+    update as system ownerUser;
 
-    Account accountRecord = new Account(Name = 'Quote Expiry Batch Account', Phone = '6290459145');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'Quote Expiry Batch Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())), Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10));
+    insert as system accountRecord;
 
     Contact contactRecord = new Contact(
-      LastName = 'Quote Expiry',
+      LastName = 'Quote Expiry ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       FirstName = 'Batch',
       AccountId = accountRecord.Id
     );
-    insert contactRecord;
+    insert as system contactRecord;
 
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Quote Expiry Batch Opp',
+      Name = 'Quote Expiry Batch Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
       ContactId = contactRecord.Id,
       StageName = BWM_MessagingConstants.STAGE_NURTURE,
       CloseDate = Date.today().addDays(30),
       Quotation_Date__c = System.today().addDays(1)
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
 
     Test.startTest();
     new BWM_QuoteExpiryReminderBatch()
@@ -66,7 +66,7 @@ private class BWM_QuoteExpiryReminderBatchTest {
 
     ownerUser.Phone = originalPhone;
     ownerUser.MobilePhone = originalMobile;
-    update ownerUser;
+    update as system ownerUser;
   }
 
   /**

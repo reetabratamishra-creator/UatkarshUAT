@@ -479,6 +479,11 @@ public without sharing class BWM_EmailTemplateResolver {
           continue;
         }
         if (
+          mapping.Department_Mode__c == BWM_EmailConstants.DEPT_MODE_ENQUIRY_ONLY
+        ) {
+          continue;
+        }
+        if (
           leadForSourceCheck != null &&
           !matchesLeadSourceFilter(mapping, leadForSourceCheck)
         ) {

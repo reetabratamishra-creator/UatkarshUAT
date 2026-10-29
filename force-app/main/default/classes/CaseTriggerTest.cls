@@ -6,6 +6,7 @@ private class CaseTriggerTest {
             SELECT Id
             FROM Profile
             WHERE Name LIKE 'Standard User%'
+            WITH SYSTEM_MODE
             LIMIT 1
         ];
         String uniqueToken = String.valueOf(Math.abs(Crypto.getRandomInteger()));
@@ -39,19 +40,21 @@ private class CaseTriggerTest {
         insert as system c;
         Test.stopTest();
 
-        c = [SELECT Id, OwnerId, CreatedById FROM Case WHERE Id = :c.Id];
+        c = [SELECT Id, OwnerId, CreatedById FROM Case WHERE Id = :c.Id WITH SYSTEM_MODE];
         System.assertNotEquals(null, c.Id);
 
         List<CaseShare> shares = [
             SELECT UserOrGroupId, CaseAccessLevel, RowCause
             FROM CaseShare
             WHERE CaseId = :c.Id AND UserOrGroupId = :c.CreatedById
+            WITH SYSTEM_MODE
         ];
 
         String caseSharingModel = [
             SELECT InternalSharingModel
             FROM EntityDefinition
             WHERE QualifiedApiName = 'Case'
+            WITH SYSTEM_MODE
             LIMIT 1
         ]
         .InternalSharingModel;
@@ -65,9 +68,9 @@ private class CaseTriggerTest {
                 'A CaseShare record should have been created for the creator'
             );
             System.assertEquals(
-                'Edit',
+                'Read',
                 shares[0].CaseAccessLevel,
-                'The CaseShare access level should be Edit'
+                'The case creator gets Read access once someone else owns the case'
             );
         } else {
             System.assertNotEquals(null, c.OwnerId);

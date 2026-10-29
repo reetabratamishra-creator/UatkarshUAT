@@ -35,20 +35,20 @@ System.schedule(
 );
 
 // ================================================================
-// 7:30 PM - Daily recurring
+// 6:30 PM - Daily recurring
 // ================================================================
 System.schedule(
-    'Tender AI Summary Fetch - 7:30 PM',
-    '0 30 19 * * ?',
+    'Tender AI Summary Fetch - 6:30 PM',
+    '0 30 18 * * ?',
     new TenderAISummaryScheduler()
 );
 
 // ================================================================
-// 10:30 PM - Daily recurring
+// 9:30 PM - Daily recurring
 // ================================================================
 System.schedule(
-    'Tender AI Summary Fetch - 10:30 PM',
-    '0 30 22 * * ?',
+    'Tender AI Summary Fetch - 9:30 PM',
+    '0 30 21 * * ?',
     new TenderAISummaryScheduler()
 );
 

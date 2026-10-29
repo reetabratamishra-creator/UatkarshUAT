@@ -102,7 +102,7 @@ private class BWM_MessagePayloadBuilderTest {
     );
     BWM_Template_Mapping__mdt mapping =
       BWM_JourneyDefinitionService.findMappingByJourneyName(
-        'prospect_not_responding_dept'
+        'prospect_enq_dept'
       );
     System.assertNotEquals(null, mapping);
 
@@ -306,9 +306,9 @@ private class BWM_MessagePayloadBuilderTest {
     System.assertNotEquals(null, smsMappings, 'SMS node mappings required.');
     System.assertEquals('Opp Owner', String.valueOf(smsMappings.get('1')));
     System.assertEquals(
-      '',
+      ' ',
       smsMappings.get('2') == null ? null : String.valueOf(smsMappings.get('2')),
-      'Blank Owner Mobile/Phone must pass blank — not corporate.'
+      'Blank Owner Mobile/Phone must pass a space so Bluewave does not keep the sample text.'
     );
     System.assert(
       !payload.contains(BWM_MessagingConstants.CAMPAIGN_OWNER_CRM_MATCH_PHONE),

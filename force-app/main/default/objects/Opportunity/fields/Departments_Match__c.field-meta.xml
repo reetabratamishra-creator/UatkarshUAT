@@ -6,7 +6,7 @@
     $Profile.Name = &quot;Utkarsh Admin&quot;,
 
     AND(
-         Department_NameFormula__c = $User.Department,
+         CONTAINS($User.Department,Department_NameFormula__c),
         OR(
             OwnerId = $User.Id,
             $Profile.Name = &quot;CRM Head&quot;,

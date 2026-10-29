@@ -13,21 +13,21 @@ private class ContactManagementControllerTest {
 
   @TestSetup
   static void setupCommonData() {
-    Account accountRecord = new Account(Name = 'Contact Mgmt Account');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'Contact Mgmt Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())));
+    insert as system accountRecord;
 
-    insert new List<Contact>{
+    insert as system new List<Contact>{
       new Contact(
-        LastName = 'Contact Alpha',
+        LastName = 'Contact Alpha ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
         AccountId = accountRecord.Id,
-        Phone = '9876543230',
-        MobilePhone = '9876543230',
-        Email = 'contact.alpha@example.com'
+        Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+        MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+        Email = 'contact.alpha+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
       ),
       new Contact(
-        LastName = 'Contact NoPhone',
+        LastName = 'Contact NoPhone ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
         AccountId = accountRecord.Id,
-        Email = 'contact.nophone@example.com'
+        Email = 'contact.nophone+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
       )
     };
   }
@@ -40,7 +40,7 @@ private class ContactManagementControllerTest {
     Test.startTest();
     List<Contact> results = ContactManagementController.searchContacts(
       'Alpha',
-      '9876',
+      '9123',
       'contact.alpha',
       null,
       null
@@ -60,7 +60,7 @@ private class ContactManagementControllerTest {
     Contact contactRecord = [
       SELECT Id
       FROM Contact
-      WHERE LastName = 'Contact Alpha'
+      WHERE LastName LIKE 'Contact Alpha%'
       LIMIT 1
     ];
 
@@ -93,7 +93,7 @@ private class ContactManagementControllerTest {
     Contact contactRecord = [
       SELECT Id
       FROM Contact
-      WHERE LastName = 'Contact Alpha'
+      WHERE LastName LIKE 'Contact Alpha%'
       LIMIT 1
     ];
 
@@ -123,13 +123,13 @@ private class ContactManagementControllerTest {
     Contact withPhone = [
       SELECT Id
       FROM Contact
-      WHERE LastName = 'Contact Alpha'
+      WHERE LastName LIKE 'Contact Alpha%'
       LIMIT 1
     ];
     Contact noPhone = [
       SELECT Id
       FROM Contact
-      WHERE LastName = 'Contact NoPhone'
+      WHERE LastName LIKE 'Contact NoPhone%'
       LIMIT 1
     ];
 
@@ -224,7 +224,7 @@ private class ContactManagementControllerTest {
     return [
       SELECT Id
       FROM User
-      WHERE Profile.Name = 'System Administrator' AND IsActive = TRUE
+      WHERE Profile.Name LIKE 'System Administrator%' AND IsActive = TRUE
       LIMIT 1
     ];
   }
@@ -239,12 +239,12 @@ private class ContactManagementControllerTest {
     Contact contactRecord = [
       SELECT Id
       FROM Contact
-      WHERE LastName = 'Contact Alpha'
+      WHERE LastName LIKE 'Contact Alpha%'
       LIMIT 1
     ];
-    contactRecord.Phone = '9000011111';
-    contactRecord.MobilePhone = '9000011111';
-    update contactRecord;
+    contactRecord.Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10);
+    contactRecord.MobilePhone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10);
+    update as system contactRecord;
 
     Test.startTest();
     ContactManagementRcsService.SendRcsResult rcsResult =
@@ -288,5 +288,35 @@ private class ContactManagementControllerTest {
         }
       }
     );
+  }
+
+  @IsTest
+  static void testScheduledSends_RequireSelectionAndClearSchedule() {
+    Integer threwCount = 0;
+    Test.startTest();
+    try {
+      ContactManagementController.sendContactJourneyScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      ContactManagementController.sendContactRcsScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      ContactManagementController.sendContactSmsScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      ContactManagementController.sendContactCampaignEmailScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    Test.stopTest();
+
+    System.assertEquals(4, threwCount, 'Each scheduled send needs at least one record.');
+    System.assertEquals(null, BWM_CampaignScheduleContext.scheduledDateTime, 'Schedule must be cleared after the send.');
   }
 }

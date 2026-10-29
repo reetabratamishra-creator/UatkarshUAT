@@ -97,6 +97,20 @@ public with sharing class AccountManagementController {
         }
     }
 
+    @AuraEnabled
+    public static BWM_CampaignEmailService.SendCampaignEmailResult sendAccountCampaignEmailScheduled(
+        List<Id> accountIds,
+        String infobipTemplateId,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendAccountCampaignEmail(accountIds, infobipTemplateId);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
+    }
+
     /**
      * @description Loads Bluewave/Infobip email template options for the Account campaign UI.
      * @return List of TemplateOption values from BWM_InfobipEmailTemplateService.
@@ -131,6 +145,26 @@ public with sharing class AccountManagementController {
         String journeyName
     ) {
         return BWM_CampaignJourneyService.sendToAccounts(accountIds, journeyName);
+    }
+
+    /**
+     * @description Starts the selected campaign journey at the given UTC schedule time.
+     * @param accountIds Account Ids to enroll in the journey.
+     * @param journeyName Name of the journey definition to send.
+     * @param scheduledDateTime UTC timestamp yyyy-MM-ddTHH:mm:ssZ written to scheduledatetime.
+     * @return SendJourneyResult from BWM_CampaignJourneyService.
+     */
+    @AuraEnabled
+    public static BWM_JourneyDefinitionService.SendJourneyResult sendAccountJourneyScheduled(
+        List<Id> accountIds,
+        String journeyName,
+        String scheduledDateTime
+    ) {
+        return BWM_CampaignJourneyService.sendToAccounts(
+            accountIds,
+            journeyName,
+            scheduledDateTime
+        );
     }
 
     /**
@@ -179,6 +213,20 @@ public with sharing class AccountManagementController {
         return AccountManagementRcsService.sendToAccounts(accountIds, templateName);
     }
 
+    @AuraEnabled
+    public static AccountManagementRcsService.SendRcsResult sendAccountRcsScheduled(
+        List<Id> accountIds,
+        String templateName,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendAccountRcs(accountIds, templateName);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
+    }
+
     /**
      * @description Loads approved SMS template options for Account campaign sends.
      * @return List of SmsTemplateOption values.
@@ -200,6 +248,20 @@ public with sharing class AccountManagementController {
         String templateName
     ) {
         return AccountManagementSmsService.sendToAccounts(accountIds, templateName);
+    }
+
+    @AuraEnabled
+    public static AccountManagementSmsService.SendSmsResult sendAccountSmsScheduled(
+        List<Id> accountIds,
+        String templateName,
+        String scheduledDateTime
+    ) {
+        BWM_CampaignScheduleContext.setScheduledDateTime(scheduledDateTime);
+        try {
+            return sendAccountSms(accountIds, templateName);
+        } finally {
+            BWM_CampaignScheduleContext.clear();
+        }
     }
 
     private static List<PicklistOption> getPicklistOptions(Schema.SObjectField fieldToken) {

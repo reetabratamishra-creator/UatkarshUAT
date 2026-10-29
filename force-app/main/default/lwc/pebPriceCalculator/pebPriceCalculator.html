@@ -179,7 +179,7 @@
                                             <lightning-formatted-number value={row.totalWeight}
                                                 maximum-fraction-digits="2"></lightning-formatted-number>
                                         </td>
-                                        <td class="ctr">
+                                        <td class="rgt">
                                             <lightning-formatted-number value={row.rate} maximum-fraction-digits="2"></lightning-formatted-number>
                                         </td>
                                         <td class="rgt">
@@ -234,7 +234,7 @@
                                     <th class="ctr" style="width:7rem">Qty</th>
                                     <th class="ctr" style="width:7rem">Unit Wt.</th>
                                     <th class="rgt" style="width:8rem">Total Weight</th>
-                                    <th class="ctr" style="width:7rem">Rate</th>
+                                    <th class="rgt" style="width:7rem">Rate</th>
                                     <th class="rgt" style="width:8rem">Cost (Rs.)</th>
                                     <th style="width:3rem"></th>
                                 </tr>
@@ -256,7 +256,7 @@
                                             <lightning-formatted-number value={row.totalWeight}
                                                 maximum-fraction-digits="2"></lightning-formatted-number>
                                         </td>
-                                        <td class="ctr">
+                                        <td class="rgt">
                                             <lightning-formatted-number value={row.rate} maximum-fraction-digits="2"></lightning-formatted-number>
                                         </td>
                                         <td class="rgt">
@@ -307,9 +307,11 @@
                                 <tr class="slds-line-height_reset">
                                     <th>Description</th>
                                     <th class="ctr" style="width:7rem">Unit</th>
-                                    <th class="ctr" style="width:9rem">Qty / Weight</th>
-                                    <th class="ctr" style="width:8rem">Rate (manual)</th>
-                                    <th class="rgt" style="width:8rem">Cost (Rs.)</th>
+                                    <th class="ctr" style="width:7rem">Quantity</th>
+                                    <th class="ctr" style="width:7rem">Unit Wt</th>
+                                    <th class="rgt" style="width:8rem">Total Wt</th>
+                                    <th class="ctr" style="width:8rem">Rate</th>
+                                    <th class="rgt" style="width:9rem">Cost (Rs.)</th>
                                     <th style="width:3rem"></th>
                                 </tr>
                             </thead>
@@ -334,6 +336,16 @@
                                         </td>
                                         <td>
                                             <lightning-input type="number" variant="label-hidden" min="0" step="any"
+                                                value={row.unitWt} data-id={row.rowId} data-field="unitWt"
+                                                placeholder="Unit Wt"
+                                                onchange={handleSpecialChange}></lightning-input>
+                                        </td>
+                                        <td class="rgt">
+                                            <lightning-formatted-number value={row.totalWeight}
+                                                maximum-fraction-digits="2"></lightning-formatted-number>
+                                        </td>
+                                        <td>
+                                            <lightning-input type="number" variant="label-hidden" min="0" step="any"
                                                 value={row.rate} data-id={row.rowId} data-field="rate"
                                                 placeholder="Enter rate"
                                                 onchange={handleSpecialChange}></lightning-input>
@@ -350,7 +362,7 @@
                                     </tr>
                                 </template>
                                 <tr class="subtotal">
-                                    <td colspan="2" class="rgt">Sub Total of Special Items</td>
+                                    <td colspan="4" class="rgt">Sub Total of Special Items</td>
                                     <td class="rgt">
                                         <lightning-formatted-number value={totals.specialItemsTotalWeight}
                                             maximum-fraction-digits="2"></lightning-formatted-number>
@@ -570,6 +582,14 @@
                     <div class="tot-row strong">
                         <span>Total Price (Project Cost + Margin)</span>
                         <lightning-formatted-number value={totals.totalWithMargin} maximum-fraction-digits="0"></lightning-formatted-number>
+                    </div>
+                    <div class="tot-row">
+                        <span>Total Weight (Kg)</span>
+                        <lightning-formatted-number value={totals.totalWeightAll} maximum-fraction-digits="2"></lightning-formatted-number>
+                    </div>
+                    <div class="tot-row">
+                        <span>Benchmark Threshold Price (₹{benchmarkRate}/Kg)</span>
+                        <lightning-formatted-number value={totals.totalPriceCalc} maximum-fraction-digits="0"></lightning-formatted-number>
                     </div>
                     <div class="tot-row">
                         <span class="margin-label">

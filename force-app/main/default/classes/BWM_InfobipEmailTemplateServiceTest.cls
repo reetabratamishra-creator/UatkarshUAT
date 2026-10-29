@@ -137,4 +137,24 @@ private class BWM_InfobipEmailTemplateServiceTest {
       return response;
     }
   }
+
+  @IsTest
+  static void resolveTemplateIdsForSubjectAndBlankId() {
+    System.assertEquals(
+      new Set<String>(),
+      BWM_InfobipEmailTemplateService.resolveTemplateIdsForSubject(null)
+    );
+    System.assertEquals(null, BWM_InfobipEmailTemplateService.fetchTemplateMetadata(null));
+    Test.setMock(HttpCalloutMock.class, new TemplateListAndDetailMock());
+    Test.startTest();
+    Set<String> ids = BWM_InfobipEmailTemplateService.resolveTemplateIdsForSubject(
+      'Welcome to Utkarsh Steel'
+    );
+    BWM_InfobipEmailTemplateService.TemplateMetadata metadata =
+      BWM_InfobipEmailTemplateService.fetchTemplateMetadata('205000000067199');
+    Test.stopTest();
+    System.assertNotEquals(null, ids);
+    System.assertNotEquals(null, metadata);
+  }
+
 }

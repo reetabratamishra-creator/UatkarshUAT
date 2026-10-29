@@ -160,6 +160,47 @@ public with sharing class ExpenseTriggerHandler {
     }
 
     /**
+     * @description Checks if the running user is allowed to re-edit/re-submit a rejected expense via newExpenseForm LWC.
+     *              - Normal user: 'Rejected by HOD', 'Rejected by HR', 'Rejected by ED'
+     *              - Utkarsh HOD: 'Rejected by HR', 'Rejected by ED'
+     *              - Utkarsh HR: 'Rejected by ED'
+     *              - System Admin with role 'Utkarsh ED': 'Rejected by ED'
+     *              - Standard System Admin / Utkarsh Admin: 'Rejected by HOD', 'Rejected by HR', 'Rejected by ED'
+     * @param oldStatus The current (old) Status__c of the Expense__c record.
+     * @return Boolean True if eligible for re-edit, false otherwise.
+     */
+    public static Boolean isAllowedToReEditRejectedExpense(String oldStatus) {
+        if (String.isBlank(oldStatus)) {
+            return false;
+        }
+        String profileName = getCurrentUserProfile();
+        String roleName = getCurrentUserRole();
+
+        // 1. System Admin with role 'Utkarsh ED'
+        if (String.isNotBlank(roleName) && roleName.equalsIgnoreCase(CLIENT_ADMIN_ROLE)) {
+            return oldStatus == 'Rejected by ED';
+        }
+
+        // 2. HR User
+        if (String.isNotBlank(profileName) && profileName.equalsIgnoreCase(HR_PROFILE_NAME)) {
+            return oldStatus == 'Rejected by ED';
+        }
+
+        // 3. HOD User
+        if (String.isNotBlank(profileName) && profileName.equalsIgnoreCase(HOD_PROFILE_NAME)) {
+            return oldStatus == 'Rejected by HR' || oldStatus == 'Rejected by ED';
+        }
+
+        // 4. Standard System Admin / Utkarsh Admin (without Utkarsh ED role)
+        if (String.isNotBlank(profileName) && (profileName.equalsIgnoreCase('System Administrator') || profileName.equalsIgnoreCase('Utkarsh Admin'))) {
+            return oldStatus == 'Rejected by HOD' || oldStatus == 'Rejected by HR' || oldStatus == 'Rejected by ED';
+        }
+
+        // 5. Normal User (All other users/profiles)
+        return oldStatus == 'Rejected by HOD' || oldStatus == 'Rejected by HR' || oldStatus == 'Rejected by ED';
+    }
+
+    /**
      * @description Before Update trigger logic.
      *              Restricts updates on Expense__c records after creation:
      *              1. Roll-up summary changes (Total_Amount__c) are allowed in all cases.
@@ -168,7 +209,8 @@ public with sharing class ExpenseTriggerHandler {
      *                 - Utkarsh HOD: only when status is 'Pending HOD Approval'
      *                 - Utkarsh HR: only when status is 'Pending HR Approval'
      *                 - System Admin with role 'Utkarsh ED': only when status is 'Pending ED Approval'
-     *              3. Editing any other fields is strictly prohibited for all users.
+     *              3. Editing general fields is allowed for rejected expenses when submitted via newExpenseForm LWC.
+     *              4. Editing any other fields is strictly prohibited for all users.
      * @param newExpenses List of updated Expense__c records (Trigger.new)
      * @param oldExpensesMap Map of original Expense__c records (Trigger.oldMap)
      */
@@ -179,6 +221,11 @@ public with sharing class ExpenseTriggerHandler {
         for (Expense__c newExpense : newExpenses) {
             Expense__c oldExpense = oldExpensesMap.get(newExpense.Id);
             if (oldExpense == null) {
+                continue;
+            }
+
+            // Case: Resubmission of a rejected expense through newExpenseForm LWC
+            if (isLwcContext && isAllowedToReEditRejectedExpense(oldExpense.Status__c)) {
                 continue;
             }
 

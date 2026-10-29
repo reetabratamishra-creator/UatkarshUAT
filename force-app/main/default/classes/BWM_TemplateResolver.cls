@@ -5,6 +5,7 @@
  * @date          2026-08-06
  */
 public without sharing class BWM_TemplateResolver {
+  private static final String CRM_DEPT_SCOPE_PREFIX = 'CRM:';
   private static Map<String, List<BWM_Template_Mapping__mdt>> mappingsByTriggerPoint =
     new Map<String, List<BWM_Template_Mapping__mdt>>();
 
@@ -84,7 +85,8 @@ public without sharing class BWM_TemplateResolver {
       Lead leadRecord = (Lead) record;
       BWM_Template_Mapping__mdt mapping = selectLeadMapping(
         mappings,
-        leadRecord
+        leadRecord,
+        triggerPoint
       );
       if (mapping != null) {
         result.mapping = mapping;
@@ -99,7 +101,8 @@ public without sharing class BWM_TemplateResolver {
       Opportunity opportunityRecord = (Opportunity) record;
       BWM_Template_Mapping__mdt mapping = selectOpportunityMapping(
         mappings,
-        opportunityRecord
+        opportunityRecord,
+        triggerPoint
       );
       if (mapping != null) {
         result.mapping = mapping;
@@ -340,9 +343,14 @@ public without sharing class BWM_TemplateResolver {
         opportunityRecord,
         BWM_MessagingConstants.STAGE_NURTURE,
         stageAtAction
+      ) &&
+      !isOpportunityStageForCallbackTrigger(
+        opportunityRecord,
+        BWM_MessagingConstants.STAGE_NEGOTIATION,
+        stageAtAction
       )
     ) {
-      return 'Opportunity stage must be Nurture for callback messaging.';
+      return 'Opportunity stage must be Nurture or Negotiation for callback messaging.';
     }
 
     if (
@@ -492,13 +500,26 @@ public without sharing class BWM_TemplateResolver {
 
   private static BWM_Template_Mapping__mdt selectLeadMapping(
     List<BWM_Template_Mapping__mdt> mappings,
-    Lead leadRecord
+    Lead leadRecord,
+    String triggerPoint
   ) {
     String departmentName = leadRecord.Department_Name__c;
 
     if (shouldPreferGeneralTemplate(leadRecord, departmentName)) {
+      BWM_Template_Mapping__mdt scopedMapping = selectScopedCrmHeadMapping(
+        mappings,
+        departmentName,
+        triggerPoint,
+        leadRecord
+      );
+      if (scopedMapping != null) {
+        return scopedMapping;
+      }
       for (BWM_Template_Mapping__mdt mapping : mappings) {
-        if (isProductDeptMapping(mapping)) {
+        if (isProductDeptMapping(mapping) || isCrmDepartmentScopedMapping(mapping)) {
+          continue;
+        }
+        if (!stageApplies(triggerPoint, mapping, leadRecord)) {
           continue;
         }
         if (isGeneralMapping(mapping)) {
@@ -508,6 +529,9 @@ public without sharing class BWM_TemplateResolver {
     }
 
     for (BWM_Template_Mapping__mdt mapping : mappings) {
+      if (!stageApplies(triggerPoint, mapping, leadRecord)) {
+        continue;
+      }
       if (matchesDepartment(mapping, departmentName)) {
         return mapping;
       }
@@ -518,13 +542,26 @@ public without sharing class BWM_TemplateResolver {
 
   private static BWM_Template_Mapping__mdt selectOpportunityMapping(
     List<BWM_Template_Mapping__mdt> mappings,
-    Opportunity opportunityRecord
+    Opportunity opportunityRecord,
+    String triggerPoint
   ) {
     String departmentName = opportunityRecord.Department_Name__c;
 
     if (shouldPreferGeneralTemplateForOpportunity(opportunityRecord, departmentName)) {
+      BWM_Template_Mapping__mdt scopedMapping = selectScopedCrmHeadMapping(
+        mappings,
+        departmentName,
+        triggerPoint,
+        opportunityRecord
+      );
+      if (scopedMapping != null) {
+        return scopedMapping;
+      }
       for (BWM_Template_Mapping__mdt mapping : mappings) {
-        if (isProductDeptMapping(mapping)) {
+        if (isProductDeptMapping(mapping) || isCrmDepartmentScopedMapping(mapping)) {
+          continue;
+        }
+        if (!stageApplies(triggerPoint, mapping, opportunityRecord)) {
           continue;
         }
         if (isGeneralMapping(mapping)) {
@@ -534,12 +571,45 @@ public without sharing class BWM_TemplateResolver {
     }
 
     for (BWM_Template_Mapping__mdt mapping : mappings) {
+      if (!stageApplies(triggerPoint, mapping, opportunityRecord)) {
+        continue;
+      }
       if (matchesDepartment(mapping, departmentName)) {
         return mapping;
       }
     }
 
     return null;
+  }
+
+  /**
+   * Prospect and Prospecting share Lead_Details_Not_Received_Prospecting.
+   * Nurture and Negotiation share Opportunity_Task_Callback_Nurture.
+   * Lead_Stage__c is honored only on those two triggers, and only when it is set.
+   */
+  private static Boolean stageApplies(
+    String triggerPoint,
+    BWM_Template_Mapping__mdt mapping,
+    SObject record
+  ) {
+    if (
+      triggerPoint !=
+      BWM_MessagingConstants.TRIGGER_LEAD_DETAILS_NOT_RECEIVED_PROSPECTING &&
+      triggerPoint != BWM_MessagingConstants.TRIGGER_OPPORTUNITY_TASK_CALLBACK_NURTURE
+    ) {
+      return true;
+    }
+    if (mapping == null || String.isBlank(mapping.Lead_Stage__c)) {
+      return true;
+    }
+
+    String stageName;
+    if (record instanceof Lead) {
+      stageName = ((Lead) record).Status;
+    } else if (record instanceof Opportunity) {
+      stageName = ((Opportunity) record).StageName;
+    }
+    return mapping.Lead_Stage__c == stageName;
   }
 
   private static Boolean shouldPreferGeneralTemplate(
@@ -589,6 +659,47 @@ public without sharing class BWM_TemplateResolver {
 
   private static Boolean isGeneralMapping(BWM_Template_Mapping__mdt mapping) {
     return mapping.Department_Mode__c == BWM_MessagingConstants.DEPT_MODE_LIST;
+  }
+
+  /**
+   * CRM-head mappings scoped to named departments use Department_Value CRM:Dept|Dept.
+   * A plain LIST is still the fallback for every other product department.
+   */
+  private static BWM_Template_Mapping__mdt selectScopedCrmHeadMapping(
+    List<BWM_Template_Mapping__mdt> mappings,
+    String departmentName,
+    String triggerPoint,
+    SObject record
+  ) {
+    if (String.isBlank(departmentName)) {
+      return null;
+    }
+
+    for (BWM_Template_Mapping__mdt mapping : mappings) {
+      if (!isCrmDepartmentScopedMapping(mapping)) {
+        continue;
+      }
+      if (!stageApplies(triggerPoint, mapping, record)) {
+        continue;
+      }
+      String departmentList = mapping.Department_Value__c.substring(
+        CRM_DEPT_SCOPE_PREFIX.length()
+      );
+      if (matchesDepartmentList(departmentList.replace('|', ','), departmentName)) {
+        return mapping;
+      }
+    }
+
+    return null;
+  }
+
+  private static Boolean isCrmDepartmentScopedMapping(
+    BWM_Template_Mapping__mdt mapping
+  ) {
+    return mapping != null &&
+      isGeneralMapping(mapping) &&
+      String.isNotBlank(mapping.Department_Value__c) &&
+      mapping.Department_Value__c.startsWith(CRM_DEPT_SCOPE_PREFIX);
   }
 
   @TestVisible

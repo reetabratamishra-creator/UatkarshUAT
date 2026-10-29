@@ -76,6 +76,24 @@ public with sharing class BWM_JourneyDefinitionService {
     String phoneNumber,
     Boolean forCampaignSend
   ) {
+    return buildPayloadForRecord(
+      settings,
+      record,
+      journeyName,
+      phoneNumber,
+      forCampaignSend,
+      null
+    );
+  }
+
+  public static String buildPayloadForRecord(
+    BWM_Messaging_Settings__mdt settings,
+    SObject record,
+    String journeyName,
+    String phoneNumber,
+    Boolean forCampaignSend,
+    String scheduledDateTime
+  ) {
     if (settings == null) {
       throw new AuraHandledException('Messaging settings are not configured.');
     }
@@ -98,12 +116,15 @@ public with sharing class BWM_JourneyDefinitionService {
         forCampaignSend == true,
         forCampaignSend == true
       );
-      return finalizeCampaignBrochureHeaders(
-        settings,
-        record,
-        payloadJson,
-        mapping,
-        forCampaignSend == true
+      return applyScheduledDateTime(
+        finalizeCampaignBrochureHeaders(
+          settings,
+          record,
+          payloadJson,
+          mapping,
+          forCampaignSend == true
+        ),
+        scheduledDateTime
       );
     }
 
@@ -123,11 +144,19 @@ public with sharing class BWM_JourneyDefinitionService {
     List<String> resolvedParams = paramMapping != null
       ? BWM_FieldValueResolver.resolveParamsForRecord(record, paramMapping)
       : new List<String>();
-    if (forCampaignSend == true) {
-      resolvedParams = BWM_CampaignJourneyParamService.applyCampaignContactParamFixes(
+    if (paramMapping != null) {
+      resolvedParams = BWM_CampaignJourneyParamService.applyMessagingContactParamFixes(
         record,
-        resolvedParams
+        resolvedParams,
+        paramMapping
       );
+      if (forCampaignSend == true) {
+        resolvedParams = BWM_CampaignJourneyParamService.fillBlankSecondaryContactParams(
+          record,
+          resolvedParams,
+          paramMapping
+        );
+      }
     }
 
     Map<String, Object> dataPayload = (Map<String, Object>) JSON.deserializeUntyped(
@@ -138,6 +167,9 @@ public with sharing class BWM_JourneyDefinitionService {
       dataPayload,
       paramMapping,
       resolvedParams
+    );
+    resolvedPayload = BWM_MessagePayloadBuilder.blankMissingSmsAndRcsValues(
+      resolvedPayload
     );
     // Replace static DOCUMENT PDF links with department / corporate brochure URLs.
     resolvedPayload = BWM_MessagePayloadBuilder.applyDynamicDocumentHeaders(
@@ -152,7 +184,116 @@ public with sharing class BWM_JourneyDefinitionService {
       'to' => new List<String>{ phoneNumber },
       'content' => new Map<String, Object>{ 'data' => resolvedPayload }
     };
-    return JSON.serialize(payload);
+    return applyScheduledDateTime(JSON.serialize(payload), scheduledDateTime);
+  }
+
+  /**
+   * @description Inserts scheduledatetime immediately after to for campaign journey sends.
+   * @param payloadJson Serialized journey payload.
+   * @param scheduledDateTime UTC timestamp in yyyy-MM-ddTHH:mm:ssZ, or blank to leave the payload unchanged.
+   * @return Payload JSON with scheduledatetime when a value was provided.
+   */
+  public static String applyScheduledDateTime(
+    String payloadJson,
+    String scheduledDateTime
+  ) {
+    if (String.isBlank(payloadJson) || String.isBlank(scheduledDateTime)) {
+      return payloadJson;
+    }
+
+    String channelJson = extractTopLevelJsonValue(payloadJson, 'channel');
+    String toJson = extractTopLevelJsonValue(payloadJson, 'to');
+    String contentJson = extractTopLevelJsonValue(payloadJson, 'content');
+    if (channelJson == null || toJson == null || contentJson == null) {
+      return payloadJson;
+    }
+
+    String fromJson = extractTopLevelJsonValue(payloadJson, 'from');
+    String scheduledJson =
+      '{"channel":' +
+      channelJson +
+      ',"to":' +
+      toJson +
+      ',"scheduledatetime":' +
+      JSON.serialize(scheduledDateTime.trim());
+    if (fromJson != null) {
+      scheduledJson += ',"from":' + fromJson;
+    }
+    return scheduledJson + ',"content":' + contentJson + '}';
+  }
+
+  private static String extractTopLevelJsonValue(String jsonText, String key) {
+    String needle = '"' + key + '"';
+    Integer keyPos = jsonText.indexOf(needle);
+    if (keyPos < 0) {
+      return null;
+    }
+    Integer colon = jsonText.indexOf(':', keyPos + needle.length());
+    if (colon < 0) {
+      return null;
+    }
+    Integer start = colon + 1;
+    while (start < jsonText.length() && jsonText.substring(start, start + 1) == ' ') {
+      start++;
+    }
+    if (start >= jsonText.length()) {
+      return null;
+    }
+
+    String startChar = jsonText.substring(start, start + 1);
+    if (startChar == '"') {
+      for (Integer index = start + 1; index < jsonText.length(); index++) {
+        String current = jsonText.substring(index, index + 1);
+        if (current == '\\') {
+          index++;
+          continue;
+        }
+        if (current == '"') {
+          return jsonText.substring(start, index + 1);
+        }
+      }
+      return null;
+    }
+
+    if (startChar == '{' || startChar == '[') {
+      String close = startChar == '{' ? '}' : ']';
+      Integer depth = 0;
+      Boolean inString = false;
+      for (Integer index = start; index < jsonText.length(); index++) {
+        String current = jsonText.substring(index, index + 1);
+        if (inString) {
+          if (current == '\\') {
+            index++;
+            continue;
+          }
+          if (current == '"') {
+            inString = false;
+          }
+          continue;
+        }
+        if (current == '"') {
+          inString = true;
+        } else if (current == startChar) {
+          depth++;
+        } else if (current == close) {
+          depth--;
+          if (depth == 0) {
+            return jsonText.substring(start, index + 1);
+          }
+        }
+      }
+      return null;
+    }
+
+    Integer endIndex = start;
+    while (endIndex < jsonText.length()) {
+      String current = jsonText.substring(endIndex, endIndex + 1);
+      if (current == ',' || current == '}' || current == ']') {
+        break;
+      }
+      endIndex++;
+    }
+    return jsonText.substring(start, endIndex);
   }
 
   /**
@@ -412,6 +553,95 @@ public with sharing class BWM_JourneyDefinitionService {
     }
 
     return smsTemplateName.trim();
+  }
+
+  /**
+   * @description Campaign RCS/SMS lookup. Prefers a mapping for the same object,
+   *              then the lowest priority. Does not change auto-journey selection.
+   */
+  public static BWM_Template_Mapping__mdt findMappingByChannelTemplate(
+    String channel,
+    String templateName,
+    SObject record
+  ) {
+    if (String.isBlank(channel) || String.isBlank(templateName)) {
+      return null;
+    }
+
+    String normalizedTemplateName = normalizeName(templateName);
+    String objectName = record == null
+      ? ''
+      : record.getSObjectType().getDescribe().getName();
+    Boolean smsChannel = channel.trim().equalsIgnoreCase('SMS');
+    BWM_Template_Mapping__mdt objectMatch;
+    BWM_Template_Mapping__mdt anyMatch;
+
+    for (BWM_Template_Mapping__mdt mapping : [
+      SELECT
+        Trigger_Point__c,
+        Lead_Source__c,
+        Lead_Stage__c,
+        Department_Mode__c,
+        Department_Value__c,
+        WhatsApp_Template_Name__c,
+        Journey_Name__c,
+        RCS_Template_Name__c,
+        SMS_Template_Name__c,
+        SMS_Text_Template__c,
+        Include_Brochure_Header__c,
+        Is_Active__c,
+        Priority__c,
+        Param1_Field__c,
+        Param2_Field__c,
+        Param3_Field__c,
+        Param4_Field__c,
+        Param5_Field__c,
+        Param6_Field__c,
+        Param7_Field__c,
+        Param8_Field__c,
+        RCS_SMS_Param_Limit__c,
+        WhatsApp_Header_Format__c,
+        WhatsApp_Header_Value_Field__c,
+        Document_Header_URL__c,
+        Brochure_Attachment_Mode__c,
+        Object_Type__c,
+        Recipient_Type__c,
+        Lost_Reason__c
+      FROM BWM_Template_Mapping__mdt
+      WHERE Is_Active__c = TRUE
+    ]) {
+      String candidate = smsChannel
+        ? mapping.SMS_Template_Name__c
+        : mapping.RCS_Template_Name__c;
+      if (normalizeName(candidate) != normalizedTemplateName) {
+        continue;
+      }
+      anyMatch = preferMapping(mapping, anyMatch);
+      if (
+        String.isNotBlank(objectName) &&
+        objectName.equalsIgnoreCase(mapping.Object_Type__c)
+      ) {
+        objectMatch = preferMapping(mapping, objectMatch);
+      }
+    }
+
+    return objectMatch != null ? objectMatch : anyMatch;
+  }
+
+  private static BWM_Template_Mapping__mdt preferMapping(
+    BWM_Template_Mapping__mdt candidate,
+    BWM_Template_Mapping__mdt current
+  ) {
+    if (current == null) {
+      return candidate;
+    }
+    if (
+      candidate.Priority__c != null &&
+      (current.Priority__c == null || candidate.Priority__c < current.Priority__c)
+    ) {
+      return candidate;
+    }
+    return current;
   }
 
   public static BWM_Template_Mapping__mdt findMappingBySmsTemplateName(

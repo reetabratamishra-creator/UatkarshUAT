@@ -4,6 +4,7 @@
     <columns>NAME</columns>
     <columns>External_Tender_Id__c</columns>
     <columns>CREATED_DATE</columns>
+    <columns>Tender_Stage__c</columns>
     <columns>Product_Name__c</columns>
     <columns>Department_Name__c</columns>
     <columns>Tender_AI_Summary_status__c</columns>

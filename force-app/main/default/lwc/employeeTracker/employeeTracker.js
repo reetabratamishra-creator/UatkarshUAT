@@ -350,7 +350,9 @@ export default class EmployeeTracker extends LightningElement {
                 hasPunchedOut: hasPunchedOut,
                 attendanceBadgeClass: attendanceBadgeClass,
                 gpsBadgeClass: gpsBadgeClass,
-                formattedDistance: formattedDistance
+                formattedDistance: formattedDistance,
+                formattedHours: this.formatHours(summary.totalHours),
+                hasBattery: e.batteryPercentage !== null && e.batteryPercentage !== undefined
             };
         });
     }
@@ -683,6 +685,17 @@ export default class EmployeeTracker extends LightningElement {
         } catch (e) {
             return timeStr;
         }
+    }
+
+    // Converts "8.50 hrs (Active)" -> "08h 30m (Active)"; returns other values (e.g. "N/A") unchanged
+    formatHours(hoursStr) {
+        if (hoursStr == null) return '';
+        const match = String(hoursStr).match(/^\s*(\d+(?:\.\d+)?)\s*hrs(.*)$/);
+        if (!match) return hoursStr;
+        const totalMinutes = Math.round(parseFloat(match[1]) * 60);
+        const hh = String(Math.floor(totalMinutes / 60)).padStart(2, '0');
+        const mm = String(totalMinutes % 60).padStart(2, '0');
+        return `${hh}h ${mm}m${match[2]}`;
     }
 
     formatDateString(dateStr) {

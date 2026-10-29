@@ -10,14 +10,14 @@ public without sharing class EscalationMatrixScheduler implements Schedulable {
 
   public void execute(SchedulableContext context) {
     Database.executeBatch(new LeadProspectNotContacted48_96Batch(), BATCH_SIZE);
-    Database.executeBatch(new LeadProspectingNoActivityBatch(), BATCH_SIZE);
+    //Database.executeBatch(new LeadProspectingNoActivityBatch(), BATCH_SIZE);
     Database.executeBatch(new OpportunityQuotationPendingMatrixBatch(), BATCH_SIZE);
     Database.executeBatch(new OpportunityNurtureActiveMatrixBatch(), BATCH_SIZE);
     Database.executeBatch(new OpportunityNurtureTenderMatrixBatch(), BATCH_SIZE);
     Database.executeBatch(new OpportunityNurtureBudgetaryMatrixBatch(), BATCH_SIZE);
-    Database.executeBatch(new OpportunityNegotiationActiveMatrixBatch(), BATCH_SIZE);
-    Database.executeBatch(new OpportunityNegotiationTenderMatrixBatch(), BATCH_SIZE);
-    Database.executeBatch(new OppNegoBudgetaryMatrixBatch(), BATCH_SIZE);
-    Database.executeBatch(new TaskOverdueEscalationMatrixBatch(), BATCH_SIZE);
+    //Database.executeBatch(new OpportunityNegotiationActiveMatrixBatch(), BATCH_SIZE);
+    //Database.executeBatch(new OpportunityNegotiationTenderMatrixBatch(), BATCH_SIZE);
+    //Database.executeBatch(new OppNegoBudgetaryMatrixBatch(), BATCH_SIZE);
+    //Database.executeBatch(new TaskOverdueEscalationMatrixBatch(), BATCH_SIZE);
   }
 }

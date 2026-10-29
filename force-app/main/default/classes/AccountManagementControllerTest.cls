@@ -13,15 +13,15 @@ private class AccountManagementControllerTest {
 
   @TestSetup
   static void setupCommonData() {
-    insert new List<Account>{
+    insert as system new List<Account>{
       new Account(
-        Name = 'Acct Mgmt Alpha',
-        Phone = '9876543220',
+        Name = 'Acct Mgmt Alpha ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
         Email__c = 'acct.alpha@example.com',
         Department_Name__c = 'Crash Barrier'
       ),
       new Account(
-        Name = 'Acct Mgmt NoPhone',
+        Name = 'Acct Mgmt NoPhone ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
         Email__c = 'acct.nophone@example.com',
         Department_Name__c = 'Enquiry'
       )
@@ -36,7 +36,7 @@ private class AccountManagementControllerTest {
     Test.startTest();
     List<Account> results = AccountManagementController.searchAccounts(
       'Alpha',
-      '9876',
+      '9123',
       'acct.alpha',
       'Crash',
       null,
@@ -45,7 +45,7 @@ private class AccountManagementControllerTest {
     Test.stopTest();
 
     System.assertEquals(1, results.size());
-    System.assertEquals('Acct Mgmt Alpha', results[0].Name);
+    System.assert(results[0].Name.startsWith('Acct Mgmt Alpha'));
   }
 
   /**
@@ -58,7 +58,7 @@ private class AccountManagementControllerTest {
     Account accountRecord = [
       SELECT Id
       FROM Account
-      WHERE Name = 'Acct Mgmt Alpha'
+      WHERE Name LIKE 'Acct Mgmt Alpha%'
       LIMIT 1
     ];
 
@@ -139,7 +139,7 @@ private class AccountManagementControllerTest {
     Account noPhone = [
       SELECT Id
       FROM Account
-      WHERE Name = 'Acct Mgmt NoPhone'
+      WHERE Name LIKE 'Acct Mgmt NoPhone%'
       LIMIT 1
     ];
     Boolean emptyThrew = false;
@@ -259,8 +259,8 @@ private class AccountManagementControllerTest {
         '{"code":"200","message":"ok"}'
       )
     );
-    Account withPhone = [SELECT Id FROM Account WHERE Name = 'Acct Mgmt Alpha' LIMIT 1];
-    Account noPhone = [SELECT Id FROM Account WHERE Name = 'Acct Mgmt NoPhone' LIMIT 1];
+    Account withPhone = [SELECT Id FROM Account WHERE Name LIKE 'Acct Mgmt Alpha%' LIMIT 1];
+    Account noPhone = [SELECT Id FROM Account WHERE Name LIKE 'Acct Mgmt NoPhone%' LIMIT 1];
 
     Test.startTest();
     AccountManagementRcsService.SendRcsResult rcsOk = AccountManagementController.sendAccountRcs(
@@ -297,9 +297,9 @@ private class AccountManagementControllerTest {
 
   @IsTest
   static void testOfflineCampaignRcsAndSmsFromAccountTest() {
-    insert new Offline_Campaign__c(
-      Name = 'Acct Offline Cov',
-      Phone__c = '9876543299',
+    insert as system new Offline_Campaign__c(
+      Name = 'Acct Offline Cov ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'acct.offline@example.com',
       Department__c = 'Crash Barrier',
       Active__c = true
@@ -327,7 +327,7 @@ private class AccountManagementControllerTest {
       )
     );
     Offline_Campaign__c offlineRecord = [
-      SELECT Id FROM Offline_Campaign__c WHERE Name = 'Acct Offline Cov' LIMIT 1
+      SELECT Id FROM Offline_Campaign__c WHERE Name LIKE 'Acct Offline Cov%' LIMIT 1
     ];
     Test.startTest();
     OfflineCampaignManagementRcsService.SendRcsResult rcsResult =
@@ -345,4 +345,33 @@ private class AccountManagementControllerTest {
     System.assertNotEquals(null, smsResult);
   }
 
+  @IsTest
+  static void testScheduledSends_RequireSelectionAndClearSchedule() {
+    Integer threwCount = 0;
+    Test.startTest();
+    try {
+      AccountManagementController.sendAccountJourneyScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      AccountManagementController.sendAccountRcsScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      AccountManagementController.sendAccountSmsScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    try {
+      AccountManagementController.sendAccountCampaignEmailScheduled(new List<Id>(), 'tmpl', '2026-10-24T05:30:00Z');
+    } catch (AuraHandledException ex) {
+      threwCount++;
+    }
+    Test.stopTest();
+
+    System.assertEquals(4, threwCount, 'Each scheduled send needs at least one record.');
+    System.assertEquals(null, BWM_CampaignScheduleContext.scheduledDateTime, 'Schedule must be cleared after the send.');
+  }
 }

@@ -17,9 +17,17 @@ public with sharing class BWM_CampaignEmailService {
     @TestVisible
     private static Map<String, String> templateNameCache;
 
+    @TestVisible
+    private static Map<String, String> templateSenderCache;
+
+    @TestVisible
+    private static Map<String, String> templateReplyToCache;
+
     public class CampaignTemplateMetadata {
         public String subjectForLog;
         public String templateName;
+        public String senderEmail;
+        public String replyToEmail;
     }
 
     public class SendCampaignEmailResult {
@@ -45,10 +53,11 @@ public with sharing class BWM_CampaignEmailService {
         validateRequest(leadIds, infobipTemplateId);
 
         BWM_Email_Settings__mdt settings = getSettings();
-        String senderEmail = settings.Central_Sender_Email__c;
         CampaignTemplateMetadata templateMetadata = resolveCampaignTemplateMetadata(
             infobipTemplateId
         );
+        String senderEmail = resolveCampaignSender(settings, templateMetadata);
+        String replyToEmail = templateMetadata.replyToEmail;
         List<Lead> leads = [
             SELECT Id, Name, Email
             FROM Lead
@@ -72,7 +81,12 @@ public with sharing class BWM_CampaignEmailService {
                 );
                 continue;
             }
-            String payload = buildPayload(senderEmail, recipientEmail, infobipTemplateId);
+            String payload = buildPayload(
+                senderEmail,
+                recipientEmail,
+                infobipTemplateId,
+                replyToEmail
+            );
             String requestCurl = BWM_EmailCallout.buildRequestCurl(payload);
             try {
                 BWM_EmailApiResponse apiResponse = BWM_EmailApiResponse.parse(
@@ -145,10 +159,11 @@ public with sharing class BWM_CampaignEmailService {
         validateRequest(opportunityIds, infobipTemplateId);
 
         BWM_Email_Settings__mdt settings = getSettings();
-        String senderEmail = settings.Central_Sender_Email__c;
         CampaignTemplateMetadata templateMetadata = resolveCampaignTemplateMetadata(
             infobipTemplateId
         );
+        String senderEmail = resolveCampaignSender(settings, templateMetadata);
+        String replyToEmail = templateMetadata.replyToEmail;
 
         Map<Id, OpportunityContactRole> primaryContactByOpportunityId =
             queryPrimaryContactsByOpportunityId(new Set<Id>(opportunityIds));
@@ -187,7 +202,12 @@ public with sharing class BWM_CampaignEmailService {
                 );
                 continue;
             }
-            String payload = buildPayload(senderEmail, recipientEmail, infobipTemplateId);
+            String payload = buildPayload(
+                senderEmail,
+                recipientEmail,
+                infobipTemplateId,
+                replyToEmail
+            );
             String requestCurl = BWM_EmailCallout.buildRequestCurl(payload);
             try {
                 BWM_EmailApiResponse apiResponse = BWM_EmailApiResponse.parse(
@@ -260,10 +280,11 @@ public with sharing class BWM_CampaignEmailService {
         validateRequest(accountIds, infobipTemplateId);
 
         BWM_Email_Settings__mdt settings = getSettings();
-        String senderEmail = settings.Central_Sender_Email__c;
         CampaignTemplateMetadata templateMetadata = resolveCampaignTemplateMetadata(
             infobipTemplateId
         );
+        String senderEmail = resolveCampaignSender(settings, templateMetadata);
+        String replyToEmail = templateMetadata.replyToEmail;
         List<Account> accounts = [
             SELECT Id, Name, Email__c
             FROM Account
@@ -286,7 +307,12 @@ public with sharing class BWM_CampaignEmailService {
                 );
                 continue;
             }
-            String payload = buildPayload(senderEmail, recipientEmail, infobipTemplateId);
+            String payload = buildPayload(
+                senderEmail,
+                recipientEmail,
+                infobipTemplateId,
+                replyToEmail
+            );
             String requestCurl = BWM_EmailCallout.buildRequestCurl(payload);
             try {
                 BWM_EmailApiResponse apiResponse = BWM_EmailApiResponse.parse(
@@ -344,10 +370,11 @@ public with sharing class BWM_CampaignEmailService {
         validateRequest(contactIds, infobipTemplateId);
 
         BWM_Email_Settings__mdt settings = getSettings();
-        String senderEmail = settings.Central_Sender_Email__c;
         CampaignTemplateMetadata templateMetadata = resolveCampaignTemplateMetadata(
             infobipTemplateId
         );
+        String senderEmail = resolveCampaignSender(settings, templateMetadata);
+        String replyToEmail = templateMetadata.replyToEmail;
         List<Contact> contacts = [
             SELECT Id, Name, Email
             FROM Contact
@@ -370,7 +397,12 @@ public with sharing class BWM_CampaignEmailService {
                 );
                 continue;
             }
-            String payload = buildPayload(senderEmail, recipientEmail, infobipTemplateId);
+            String payload = buildPayload(
+                senderEmail,
+                recipientEmail,
+                infobipTemplateId,
+                replyToEmail
+            );
             String requestCurl = BWM_EmailCallout.buildRequestCurl(payload);
             try {
                 BWM_EmailApiResponse apiResponse = BWM_EmailApiResponse.parse(
@@ -428,10 +460,11 @@ public with sharing class BWM_CampaignEmailService {
         validateRequest(offlineCampaignIds, infobipTemplateId);
 
         BWM_Email_Settings__mdt settings = getSettings();
-        String senderEmail = settings.Central_Sender_Email__c;
         CampaignTemplateMetadata templateMetadata = resolveCampaignTemplateMetadata(
             infobipTemplateId
         );
+        String senderEmail = resolveCampaignSender(settings, templateMetadata);
+        String replyToEmail = templateMetadata.replyToEmail;
         List<Offline_Campaign__c> offlineCampaigns = [
             SELECT Id, Name, Email__c
             FROM Offline_Campaign__c
@@ -458,7 +491,12 @@ public with sharing class BWM_CampaignEmailService {
                 );
                 continue;
             }
-            String payload = buildPayload(senderEmail, recipientEmail, infobipTemplateId);
+            String payload = buildPayload(
+                senderEmail,
+                recipientEmail,
+                infobipTemplateId,
+                replyToEmail
+            );
             String requestCurl = BWM_EmailCallout.buildRequestCurl(payload);
             try {
                 BWM_EmailApiResponse apiResponse = BWM_EmailApiResponse.parse(
@@ -532,37 +570,84 @@ public with sharing class BWM_CampaignEmailService {
     }
 
     /**
+     * @description Uses the template from address when the template API returned one.
+     * @param settings Active email settings, used when the template has no from address.
+     * @param templateMetadata Template metadata loaded from Infobip.
+     * @return Sender value for the campaign email payload.
+     */
+    private static String resolveCampaignSender(
+        BWM_Email_Settings__mdt settings,
+        CampaignTemplateMetadata templateMetadata
+    ) {
+        if (templateMetadata != null && String.isNotBlank(templateMetadata.senderEmail)) {
+            return templateMetadata.senderEmail;
+        }
+        return settings.Central_Sender_Email__c;
+    }
+
+    /**
      * @description Builds the Infobip campaign email JSON payload for a single recipient.
-     * @param senderEmail Central sender email address.
+     * @param senderEmail Sender taken from the template from address when present.
      * @param recipientEmail Destination email address.
      * @param infobipTemplateId Infobip template identifier.
+     * @param replyToEmail Reply-to address from the template when present.
      * @return Serialized Infobip messages payload JSON.
      */
     private static String buildPayload(
         String senderEmail,
         String recipientEmail,
-        String infobipTemplateId
+        String infobipTemplateId,
+        String replyToEmail
     ) {
-        Map<String, Object> payload = new Map<String, Object>{
-            'messages' => new List<Object>{
+        Map<String, Object> message = new Map<String, Object>{
+            'sender' => senderEmail,
+            'destinations' => new List<Object>{
                 new Map<String, Object>{
-                    'sender' => senderEmail,
-                    'destinations' => new List<Object>{
+                    'to' => new List<Object>{
                         new Map<String, Object>{
-                            'to' => new List<Object>{
-                                new Map<String, Object>{
-                                    'destination' => recipientEmail
-                                }
-                            }
+                            'destination' => recipientEmail
                         }
-                    },
-                    'content' => new Map<String, Object>{
-                        'templateId' => infobipTemplateId.trim()
                     }
                 }
+            },
+            'content' => new Map<String, Object>{
+                'templateId' => infobipTemplateId.trim()
             }
         };
+        if (String.isNotBlank(replyToEmail)) {
+            message.put('replyTo', replyToEmail.trim());
+        }
+        Map<String, Object> payload = new Map<String, Object>{
+            'messages' => new List<Object>{ message }
+        };
+        String sendAt = toInfobipSendAt(BWM_CampaignScheduleContext.scheduledDateTime);
+        if (String.isNotBlank(sendAt)) {
+            payload.put(
+                'options',
+                new Map<String, Object>{
+                    'schedule' => new Map<String, Object>{ 'sendAt' => sendAt }
+                }
+            );
+        }
         return JSON.serialize(payload);
+    }
+
+    /**
+     * @description Converts the campaign schedule (UTC, yyyy-MM-ddTHH:mm:ssZ) to the
+     *              Infobip sendAt format yyyy-MM-ddTHH:mm:ss.000Z.
+     * @param scheduledDateTime UTC timestamp from the campaign schedule screen.
+     * @return Infobip sendAt value, or null when no schedule was chosen.
+     */
+    @TestVisible
+    private static String toInfobipSendAt(String scheduledDateTime) {
+        if (String.isBlank(scheduledDateTime)) {
+            return null;
+        }
+        String value = scheduledDateTime.trim();
+        if (Pattern.matches('\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z', value)) {
+            return value.removeEnd('Z') + '.000Z';
+        }
+        return value;
     }
 
     /**
@@ -595,6 +680,8 @@ public with sharing class BWM_CampaignEmailService {
     static void resetTemplateSubjectCacheForTests() {
         templateSubjectCache = null;
         templateNameCache = null;
+        templateSenderCache = null;
+        templateReplyToCache = null;
     }
 
     private static CampaignTemplateMetadata resolveCampaignTemplateMetadata(
@@ -611,12 +698,22 @@ public with sharing class BWM_CampaignEmailService {
         if (templateNameCache == null) {
             templateNameCache = new Map<String, String>();
         }
+        if (templateSenderCache == null) {
+            templateSenderCache = new Map<String, String>();
+        }
+        if (templateReplyToCache == null) {
+            templateReplyToCache = new Map<String, String>();
+        }
         if (
             templateSubjectCache.containsKey(infobipTemplateId) &&
-            templateNameCache.containsKey(infobipTemplateId)
+            templateNameCache.containsKey(infobipTemplateId) &&
+            templateSenderCache.containsKey(infobipTemplateId) &&
+            templateReplyToCache.containsKey(infobipTemplateId)
         ) {
             metadata.subjectForLog = templateSubjectCache.get(infobipTemplateId);
             metadata.templateName = templateNameCache.get(infobipTemplateId);
+            metadata.senderEmail = templateSenderCache.get(infobipTemplateId);
+            metadata.replyToEmail = templateReplyToCache.get(infobipTemplateId);
             return metadata;
         }
 
@@ -633,8 +730,12 @@ public with sharing class BWM_CampaignEmailService {
             ? null
             : templateMetadata.resolveSubjectForLog();
         metadata.templateName = templateMetadata == null ? null : templateMetadata.name;
+        metadata.senderEmail = templateMetadata == null ? null : templateMetadata.fromAddress;
+        metadata.replyToEmail = templateMetadata == null ? null : templateMetadata.replyTo;
         templateSubjectCache.put(infobipTemplateId, metadata.subjectForLog);
         templateNameCache.put(infobipTemplateId, metadata.templateName);
+        templateSenderCache.put(infobipTemplateId, metadata.senderEmail);
+        templateReplyToCache.put(infobipTemplateId, metadata.replyToEmail);
         return metadata;
     }
 

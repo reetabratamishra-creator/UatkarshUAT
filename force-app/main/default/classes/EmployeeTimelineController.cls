@@ -2100,6 +2100,12 @@ public class EmployeeTimelineController {
                 }
             }
 
+            // 9. Alert the department HOD when check-out is outside the geofence.
+            // Runs last so it only fires once every save above has succeeded.
+            if (isOutside) {
+                notifyHodOfGeofenceBreach(tl.Id, tl.Latitude__c, tl.Longitude__c, latitude, longitude);
+            }
+
             return res;
         } catch (Exception e) {
             Database.rollback(sp);
@@ -2107,6 +2113,183 @@ public class EmployeeTimelineController {
             AuraHandledException ex = new AuraHandledException(userFriendlyMessage);
             ex.setMessage(userFriendlyMessage);
             throw ex;
+        }
+    }
+
+    // ---------------- GEOFENCE BREACH ALERT ----------------
+
+    @TestVisible private static final String GEOFENCE_NOTIFICATION_TYPE = 'Geofence_Breach_Alert';
+    @TestVisible private static final String GEOFENCE_EMAIL_TEMPLATE = 'Geofence_Breach_HOD_Alert';
+    @TestVisible private static final String HOD_PROFILE_NAME = 'Utkarsh HOD';
+    @TestVisible private static final String GEOFENCE_SENDER_EMAIL = 'noreply@utkarshindialimited.in';
+
+    /**
+     * Sends a custom notification and an email to the HOD(s) of the running
+     * user's department (User.Department) when a visit is checked out outside
+     * the geofence. Never throws: a failed alert must not fail the checkout.
+     */
+    @TestVisible
+    private static void notifyHodOfGeofenceBreach(
+        Id taskLogId,
+        Decimal checkInLatitude,
+        Decimal checkInLongitude,
+        Decimal checkOutLatitude,
+        Decimal checkOutLongitude
+    ) {
+        try {
+            if (taskLogId == null) {
+                return;
+            }
+
+            User currentUser = [
+                SELECT Id, Name, Department
+                FROM User
+                WHERE Id = :UserInfo.getUserId()
+                LIMIT 1
+            ];
+            if (String.isBlank(currentUser.Department)) {
+                return;
+            }
+
+            List<User> hods = [
+                SELECT Id, Name, Email
+                FROM User
+                WHERE Profile.Name = :HOD_PROFILE_NAME
+                  AND Department = :currentUser.Department
+                  AND IsActive = true
+                WITH SYSTEM_MODE
+            ];
+            if (hods.isEmpty()) {
+                return;
+            }
+
+            Task_Log__c log = [
+                SELECT Id, Name, Justification__c,
+                       Opportunity__r.Name, Account__r.Name, Lead__r.Name, Client_Deatils__r.Name
+                FROM Task_Log__c
+                WHERE Id = :taskLogId
+                LIMIT 1
+            ];
+
+            String customerName = 'Unknown Customer';
+            if (log.Opportunity__r != null) {
+                customerName = log.Opportunity__r.Name;
+            } else if (log.Account__r != null) {
+                customerName = log.Account__r.Name;
+            } else if (log.Lead__r != null) {
+                customerName = log.Lead__r.Name;
+            } else if (log.Client_Deatils__r != null) {
+                customerName = log.Client_Deatils__r.Name;
+            }
+
+            String distanceText = '';
+            if (checkInLatitude != null && checkInLongitude != null
+                    && checkOutLatitude != null && checkOutLongitude != null) {
+                Decimal distanceKm = calculateDistanceKm(
+                    checkInLatitude, checkInLongitude, checkOutLatitude, checkOutLongitude
+                );
+                distanceText = ' ' + distanceKm.setScale(2) + ' km';
+            }
+
+            String justification = String.isNotBlank(log.Justification__c)
+                ? log.Justification__c
+                : 'Not provided';
+
+            String title = 'Geofence Breach Alert';
+            String body = currentUser.Name + ' checked out of the visit with ' + customerName
+                + distanceText + ' away from the check-in location. Justification: ' + justification;
+
+            Set<String> recipientIds = new Set<String>();
+            for (User hod : hods) {
+                recipientIds.add(hod.Id);
+            }
+
+            // Custom notification (bell + mobile push)
+            try {
+                List<CustomNotificationType> types = [
+                    SELECT Id
+                    FROM CustomNotificationType
+                    WHERE DeveloperName = :GEOFENCE_NOTIFICATION_TYPE
+                    LIMIT 1
+                ];
+                if (!types.isEmpty()) {
+                    Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                    notification.setTitle(title);
+                    notification.setBody(body);
+                    notification.setNotificationTypeId(types[0].Id);
+                    notification.setTargetId(log.Id);
+                    notification.send(recipientIds);
+                } else {
+                    System.debug('Custom notification type not found: ' + GEOFENCE_NOTIFICATION_TYPE);
+                }
+            } catch (Exception notifyEx) {
+                System.debug('Geofence custom notification failed: ' + notifyEx.getMessage());
+            }
+
+            // Email (Lightning email template, plain fallback if the template is missing)
+            try {
+                // Lightning templates built in the UI get a numeric suffix on
+                // their API name, so match on the prefix.
+                String templatePrefix = GEOFENCE_EMAIL_TEMPLATE + '%';
+                List<EmailTemplate> templates = [
+                    SELECT Id
+                    FROM EmailTemplate
+                    WHERE DeveloperName LIKE :templatePrefix
+                      AND IsActive = true
+                    ORDER BY CreatedDate DESC
+                    LIMIT 1
+                ];
+
+                List<OrgWideEmailAddress> owea = [
+                    SELECT Id
+                    FROM OrgWideEmailAddress
+                    WHERE Address = :GEOFENCE_SENDER_EMAIL
+                    LIMIT 1
+                ];
+                Id oweaId = owea.isEmpty() ? null : owea[0].Id;
+
+                List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
+                for (User hod : hods) {
+                    String subject = title + ': ' + currentUser.Name;
+                    String htmlBody = body.escapeHtml4();
+                    String textBody = body;
+
+                    if (!templates.isEmpty()) {
+                        // A User recipient cannot take a WhatId, so render with the
+                        // Task Log as context first and send the rendered content.
+                        Messaging.SingleEmailMessage rendered =
+                            Messaging.renderStoredEmailTemplate(templates[0].Id, hod.Id, log.Id);
+                        subject = rendered.getSubject();
+                        htmlBody = rendered.getHtmlBody();
+                        textBody = rendered.getPlainTextBody();
+                    } else {
+                        System.debug('Email template not found: ' + GEOFENCE_EMAIL_TEMPLATE);
+                    }
+
+                    Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+                    mail.setTargetObjectId(hod.Id);
+                    mail.setSaveAsActivity(false);
+                    if (oweaId != null) {
+                        mail.setOrgWideEmailAddressId(oweaId);
+                    }
+                    mail.setSubject(subject);
+                    if (String.isNotBlank(htmlBody)) {
+                        mail.setHtmlBody(htmlBody);
+                    }
+                    if (String.isNotBlank(textBody)) {
+                        mail.setPlainTextBody(textBody);
+                    }
+                    emails.add(mail);
+                }
+
+                if (!emails.isEmpty()) {
+                    Messaging.sendEmail(emails, false);
+                }
+            } catch (Exception emailEx) {
+                System.debug('Geofence email failed: ' + emailEx.getMessage());
+            }
+        } catch (Exception e) {
+            System.debug('Geofence HOD alert failed: ' + e.getMessage());
         }
     }
 

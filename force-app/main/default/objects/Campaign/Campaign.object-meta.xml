@@ -164,7 +164,7 @@
     <searchLayouts>
         <customTabListAdditionalFields>CAMPAIGN.NAME</customTabListAdditionalFields>
         <customTabListAdditionalFields>CAMPAIGN.STATUS</customTabListAdditionalFields>
-        <customTabListAdditionalFields>CAMPAIGN.START_DATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Scheduled_Date_Time__c</customTabListAdditionalFields>
         <listViewButtons>Fetch_Campaign_Stats</listViewButtons>
         <listViewButtons>Fetch_Email_Campaign_Report</listViewButtons>
         <lookupDialogsAdditionalFields>CAMPAIGN.NAME</lookupDialogsAdditionalFields>
@@ -173,8 +173,7 @@
         <searchResultsAdditionalFields>PARENT_NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CAMPAIGN.CAMPAIGN_TYPE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CAMPAIGN.STATUS</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CAMPAIGN.START_DATE</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>CAMPAIGN.END_DATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Scheduled_Date_Time__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CAMPAIGN.NUM_RESPONSES</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
     </searchLayouts>

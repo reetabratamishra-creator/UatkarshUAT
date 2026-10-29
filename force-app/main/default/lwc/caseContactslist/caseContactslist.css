@@ -1,0 +1,25 @@
+.card-title {
+    color: var(--slds-g-color-on-surface-1, #032d60);
+    font-weight: 400;
+}
+
+.table-wrapper {
+    margin: 0 0.75rem 0.75rem;
+    border: 1px solid var(--slds-g-color-border-base-2, #c9c9c9);
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.scroll-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Keep the column headings visible while the rows scroll */
+.scroll-container thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--slds-g-color-neutral-base-95, #f3f3f3);
+    box-shadow: inset 0 -1px 0 var(--slds-g-color-border-base-2, #c9c9c9);
+}

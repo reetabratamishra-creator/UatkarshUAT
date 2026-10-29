@@ -47,7 +47,48 @@ public without sharing class BWM_RcsDirectPayloadBuilder {
       return new Map<String, Object>();
     }
 
-    return buildParams(settings, templateName, record, requiredParamNames);
+    Map<String, Object> namedParams = buildParams(
+      settings,
+      templateName,
+      record,
+      requiredParamNames
+    );
+    return usePositionalKeysWhenTemplateHasNoVariableNames(
+      requiredParamNames,
+      namedParams
+    );
+  }
+
+  /**
+   * Prospect_enq_gen and DEALER_Enq_gen only carry Rudra and Bhagyashree numbers.
+   * Bluewave stores those as {{1}} and {{2}} with no variable name, so named keys
+   * are rejected.
+   */
+  private static Map<String, Object> usePositionalKeysWhenTemplateHasNoVariableNames(
+    List<String> requiredParamNames,
+    Map<String, Object> namedParams
+  ) {
+    if (namedParams == null || namedParams.isEmpty() || requiredParamNames == null) {
+      return namedParams;
+    }
+
+    for (String paramName : requiredParamNames) {
+      String normalized = paramName == null ? '' : paramName.trim().toLowerCase();
+      if (normalized != 'rudra_number' && normalized != 'bhagyashree_number') {
+        return namedParams;
+      }
+    }
+
+    Map<String, Object> positional = new Map<String, Object>();
+    Integer index = 1;
+    for (String paramName : requiredParamNames) {
+      positional.put(
+        '{{' + String.valueOf(index) + '}}',
+        namedParams.get(paramName)
+      );
+      index++;
+    }
+    return positional;
   }
 
   public static String buildPayload(
@@ -65,6 +106,20 @@ public without sharing class BWM_RcsDirectPayloadBuilder {
       record,
       requiredParamNames
     );
+    BWM_Template_Mapping__mdt mapping =
+      BWM_JourneyDefinitionService.findMappingByChannelTemplate(
+        'RCS',
+        templateName,
+        record
+      );
+    Map<String, Object> autoBody = BWM_MessagePayloadBuilder.rcsBodyForCampaign(
+      settings,
+      mapping,
+      record
+    );
+    if (autoBody != null && !autoBody.isEmpty()) {
+      params = autoBody;
+    }
 
     Map<String, Object> payload = new Map<String, Object>{
       'channel' => BWM_MessagingConstants.CHANNEL_RCS,
@@ -76,7 +131,10 @@ public without sharing class BWM_RcsDirectPayloadBuilder {
       }
     };
 
-    return JSON.serialize(payload);
+    return BWM_JourneyDefinitionService.applyScheduledDateTime(
+      JSON.serialize(payload),
+      BWM_CampaignScheduleContext.scheduledDateTime
+    );
   }
 
   private static void ensureTemplateCacheLoaded(
@@ -282,7 +340,10 @@ public without sharing class BWM_RcsDirectPayloadBuilder {
     if (normalized == 'lead_owner_email') {
       return ownerEmail;
     }
-    if (normalized == 'opportunity_owner_name') {
+    if (
+      normalized == 'opportunity_owner_name' ||
+      normalized == 'opportunity_owner'
+    ) {
       return ownerName;
     }
     if (
@@ -384,13 +445,14 @@ public without sharing class BWM_RcsDirectPayloadBuilder {
   }
 
   private static String rcsSafeValue(String rawValue, String paramName) {
-    if (String.isBlank(rawValue)) {
-      if (isPhoneParam(paramName)) {
-        return '';
+    if (String.isNotBlank(rawValue)) {
+      String paramToken = paramName == null ? '' : paramName.trim();
+      if (rawValue.trim().equalsIgnoreCase(paramToken)) {
+        return ' ';
       }
-      return 'NA';
+      return BWM_MessagePayloadBuilder.blankChannelSlot(rawValue);
     }
-    return rawValue.trim();
+    return isPhoneParam(paramName) ? ' ' : 'NA';
   }
 
   private static Boolean isPhoneParam(String paramName) {

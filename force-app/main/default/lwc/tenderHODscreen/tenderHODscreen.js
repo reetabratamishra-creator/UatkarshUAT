@@ -234,10 +234,10 @@ get tenderUserCommentList() {
                     label: 'Reject and Close',
                     value: 'CLOSE_TENDER'
                 },
-                {
+                /*{
                     label: 'Update Account Details',
                     value: 'UPDATE_ACCOUNT'
-                }
+                }*/
             ];
         }
 

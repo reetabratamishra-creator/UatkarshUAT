@@ -181,4 +181,26 @@ public without sharing class TenderSharingHandler {
         share.RowCause = Schema.Tender__Share.RowCause.Manual;
         return share;
     }
+
+    // ---------------- ayantika (getTenderDeptNames) -----------------
+    // Returns the raw Tender department names for the given normalized (user) departments.
+    // Example: 'Crash_Barrier_Department' -> 'CRASH BARRIER'
+    public static Set<String> getTenderDeptNames(Set<String> normalizedDepts) {
+        Set<String> result = new Set<String>();
+
+        if (normalizedDepts == null || normalizedDepts.isEmpty()) {
+            return result;
+        }
+
+        Map<String, String> deptMap = getDeptNormalizationMap();
+        for (String rawName : deptMap.keySet()) {
+            if (normalizedDepts.contains(deptMap.get(rawName))) {
+                result.add(rawName);
+            }
+        }
+
+        // Also match tenders whose department is already stored in normalized form
+        result.addAll(normalizedDepts);
+        return result;
+    }
 }

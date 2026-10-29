@@ -103,6 +103,79 @@ private class EmployeeTimelineControllerTest {
         return salesUser;
     }
 
+    private static User newGeofenceUser(String profileName, String department, String suffix) {
+        List<Profile> profiles = [SELECT Id FROM Profile WHERE Name = :profileName LIMIT 1];
+        if (profiles.isEmpty()) {
+            profiles = [SELECT Id FROM Profile WHERE Name = 'System Administrator' LIMIT 1];
+        }
+        String unique = String.valueOf(DateTime.now().getTime()) + suffix;
+        User u = new User(
+            Alias = ('geo' + suffix).left(8),
+            Email = 'geofence.' + unique + '@example.test',
+            EmailEncodingKey = 'UTF-8',
+            LastName = 'Geofence' + suffix,
+            LanguageLocaleKey = 'en_US',
+            LocaleSidKey = 'en_US',
+            ProfileId = profiles[0].Id,
+            TimeZoneSidKey = 'Asia/Kolkata',
+            UserName = 'geofence.' + unique + '@example.test',
+            Department = department
+        );
+        insert u;
+        return u;
+    }
+
+    @isTest
+    static void geofenceBreachAlertsDepartmentHod() {
+        User salesUser = newGeofenceUser('System Administrator', 'Geofence Test Dept', 'sls');
+        newGeofenceUser(EmployeeTimelineController.HOD_PROFILE_NAME, 'Geofence Test Dept', 'hod');
+
+        System.runAs(salesUser) {
+            Task_Log__c task = new Task_Log__c(
+                Description__c = 'Geofence visit',
+                Latitude__c = 12.9716,
+                Longitude__c = 77.5946,
+                Justification__c = 'Customer moved the meeting to a nearby office'
+            );
+            insert task;
+
+            Test.startTest();
+            EmployeeTimelineController.notifyHodOfGeofenceBreach(
+                task.Id, 12.9716, 77.5946, 12.9800, 77.6000
+            );
+            Test.stopTest();
+
+            // The alert must never alter or fail the visit itself
+            Task_Log__c after = [SELECT Justification__c FROM Task_Log__c WHERE Id = :task.Id];
+            System.assertEquals('Customer moved the meeting to a nearby office', after.Justification__c);
+        }
+    }
+
+    @isTest
+    static void geofenceBreachAlertSkipsUserWithoutDepartment() {
+        User salesUser = newGeofenceUser('System Administrator', null, 'nod');
+
+        System.runAs(salesUser) {
+            Task_Log__c task = new Task_Log__c(
+                Description__c = 'Geofence visit no dept',
+                Latitude__c = 12.9716,
+                Longitude__c = 77.5946
+            );
+            insert task;
+
+            Test.startTest();
+            EmployeeTimelineController.notifyHodOfGeofenceBreach(
+                task.Id, 12.9716, 77.5946, 12.9800, 77.6000
+            );
+            // Null task id is ignored without error
+            EmployeeTimelineController.notifyHodOfGeofenceBreach(null, null, null, null, null);
+            Integer emailsSent = Limits.getEmailInvocations();
+            Test.stopTest();
+
+            System.assertEquals(0, emailsSent, 'No HOD lookup or email when the user has no Department');
+        }
+    }
+
     private static String firstActivePicklist(Schema.SObjectField fieldToken) {
         for (Schema.PicklistEntry entry : fieldToken.getDescribe().getPicklistValues()) {
             if (entry.isActive()) {

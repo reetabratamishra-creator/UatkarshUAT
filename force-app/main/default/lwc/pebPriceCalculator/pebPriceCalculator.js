@@ -7,7 +7,8 @@ import getEstimationFileBase64 from '@salesforce/apex/PEBPriceCalcController.get
 import getBuildingDescriptionFileBase64 from '@salesforce/apex/PEBPriceCalcController.getBuildingDescriptionFileBase64';
 import saveCalculation from '@salesforce/apex/PEBPriceCalcController.saveCalculation';
 import generatePdf from '@salesforce/apex/PEBPriceCalcController.generatePdf';
-import { parseUniversalBuildingPdf } from 'c/pebBuildingParser';
+import { parseBuildingPdfV2 as parseUniversalBuildingPdf } from 'c/pebBuildingParserV2';
+import { parseEstimationPdf } from 'c/pebEstimationParser';
 
 
 const UNIT_OPTIONS = ['Sq.M', 'Kg', 'No.s', 'RM', 'Mtr', 'Ltr', 'Piece'].map((u) => ({ label: u, value: u }));
@@ -59,11 +60,6 @@ const VARIABLE_COST_ROWS = [
     { key: 'contingency', description: 'Contingency' }
 ];
 
-// B2 Buyouts: cost is normally (Qty x Unit Wt) x Rate, same as Accessories.
-// A few buyouts are priced flat instead - Cost = Qty x Rate, ignoring weight.
-// Total Weight still shows/feeds Section C "design" weight as before; only
-// the Cost formula changes for keys listed here.
-const QTY_ONLY_BUYOUT_KEYS = ['turbovent'];
 
 // delivery option
 const DELIVERY_TERM_OPTIONS = [
@@ -142,6 +138,7 @@ handleApplyToQuote() {
     @track totals = {};
     @track marginPercent = 10;
     @track gstPercent = 18;
+    @track benchmarkRate = 90;
 
     // PAYMENT TERMS - Deepanjan (31st July 2026)
     // Three free-text periods typed on the Summary screen. They take NO part in
@@ -328,27 +325,32 @@ handleApplyToQuote() {
         }
     }
 
-    /** Runs pdf.js on raw bytes and returns { totals, specialItems }. */
+    /** Runs extraction using pebEstimationParser on raw bytes and returns structured estimation result. */
     async extractFromBytes(uint8) {
-        const pdf = await window.pdfjsLib.getDocument({ data: uint8 }).promise;
-        const words = [];
-        for (let n = 1; n <= pdf.numPages; n++) {
-            const page = await pdf.getPage(n);
-            const viewport = page.getViewport({ scale: 1 });
-            const tc = await page.getTextContent();
-            for (const it of tc.items) {
-                const str = (it.str || '').replace(/\s+/g, ' ').trim();
-                if (!str) {
-                    continue;
+        try {
+            return await parseEstimationPdf(uint8);
+        } catch (e) {
+            console.warn('pebEstimationParser fallback:', e);
+            const pdf = await window.pdfjsLib.getDocument({ data: uint8 }).promise;
+            const words = [];
+            for (let n = 1; n <= pdf.numPages; n++) {
+                const page = await pdf.getPage(n);
+                const viewport = page.getViewport({ scale: 1 });
+                const tc = await page.getTextContent();
+                for (const it of tc.items) {
+                    const str = (it.str || '').replace(/\s+/g, ' ').trim();
+                    if (!str) {
+                        continue;
+                    }
+                    words.push({
+                        x: it.transform[4],
+                        top: viewport.height - it.transform[5],
+                        str
+                    });
                 }
-                words.push({
-                    x: it.transform[4],
-                    top: viewport.height - it.transform[5], // bottom-origin y -> top-origin
-                    str
-                });
             }
+            return this.extractFromWords(words);
         }
-        return this.extractFromWords(words);
     }
 
     // new change
@@ -356,6 +358,9 @@ handleApplyToQuote() {
         const data = prefetched || (await getCalculatorData({ opportunityId: this.recordId }));
         this.rateConfig = JSON.parse(data.rateConfigJson);
         this.gstPercent = data.gstPercent != null ? data.gstPercent : 18;
+        if (this.rateConfig && this.rateConfig.benchmarkRate != null) {
+            this.benchmarkRate = this.toNum(this.rateConfig.benchmarkRate);
+        }
         this.estimationFileName = data.estimationFileName;
         this.estimationReadable = !!data.estimationReadable;
         this.hasEstimationFile = !!data.estimationFileName;
@@ -363,7 +368,7 @@ handleApplyToQuote() {
         this.buildFreshRows(data.sectionTotals || {});
         if (Array.isArray(data.specialItems) && data.specialItems.length) {
             this.specialItems = data.specialItems.map((s) =>
-                this.mkSpecialItem(s.description, s.unit, s.qty, 0)
+                this.mkSpecialItem(s.description, s.unit, s.qty, 0, 0)
             );
         }
 
@@ -403,34 +408,124 @@ handleApplyToQuote() {
     }
 
     /**
-     * Coordinate-aware extraction for the revised estimation layout.
+     * Dynamically determines column bounds by finding the table header row
+     * ("Sr.No.", "Description", "Qty", "Unit", "Unit weight", "Total weight").
+     * Falls back to COL if no header row is recognized.
+     */
+    detectColumns(words) {
+        const sorted = [...words].sort((a, b) => a.top - b.top || a.x - b.x);
+        const rows = [];
+        let cur = null;
+        for (const w of sorted) {
+            if (!cur || Math.abs(w.top - cur.top) > ROW_TOL) {
+                cur = { top: w.top, items: [] };
+                rows.push(cur);
+            }
+            cur.items.push(w);
+        }
+
+        let headerRow = null;
+        for (const r of rows) {
+            const text = r.items.map((i) => i.str).join(' ').toLowerCase();
+            if (text.includes('description') && (text.includes('total') || text.includes('qty') || text.includes('sr'))) {
+                headerRow = r;
+                break;
+            }
+        }
+
+        if (!headerRow) {
+            return COL;
+        }
+
+        const items = headerRow.items;
+        const findItem = (re) => items.find((i) => re.test(i.str));
+        const srItem = findItem(/^sr/i);
+        const descItem = findItem(/^desc/i);
+        const qtyItem = findItem(/^qty/i);
+        const unitWtItem = findItem(/unit\s*weight/i);
+        const unitItem = items.find((i) => /^unit\b/i.test(i.str) && !/weight/i.test(i.str));
+        const totalItem = findItem(/total/i);
+
+        const srEnd = srItem ? Math.min(90, srItem.x + 20) : 78;
+
+        let totalStart = 340;
+        if (totalItem) {
+            const prev = unitWtItem || unitItem || qtyItem;
+            totalStart = prev ? (prev.x + totalItem.x) / 2 : totalItem.x - 30;
+        }
+
+        let qtyStart = 230;
+        let qtyEnd = 280;
+        let unitStart = 280;
+        let unitEnd = 310;
+        let unitWtStart = 310;
+
+        if (qtyItem) {
+            qtyStart = Math.max(srEnd + 50, qtyItem.x - 20);
+        }
+        const descEnd = qtyItem ? qtyStart : (totalItem ? totalItem.x - 50 : 230);
+
+        if (qtyItem && unitItem) {
+            const mid = (qtyItem.x + unitItem.x) / 2;
+            qtyEnd = mid;
+            unitStart = mid;
+        }
+        if (unitItem && unitWtItem) {
+            const mid = (unitItem.x + unitWtItem.x) / 2;
+            unitEnd = mid;
+            unitWtStart = mid;
+        } else if (unitItem && totalItem) {
+            const mid = (unitItem.x + totalItem.x) / 2;
+            unitEnd = mid;
+        }
+
+        return {
+            SR: [0, srEnd],
+            DESC: [srEnd, descEnd],
+            QTY: [qtyStart, qtyEnd],
+            UNIT: [unitStart, unitEnd],
+            UNIT_WT: [unitWtStart, totalStart],
+            TOTAL: [totalStart, 9999]
+        };
+    }
+
+    /**
+     * Coordinate-aware extraction for the estimation layout (handles both landscape
+     * and portrait formats dynamically).
      *
      * Every row is grouped by vertical position, then read column by column:
      *   - a single letter in the Sr.No band starts a new section
      *   - a section's value is the number in the Total-weight band (falling back
      *     to the Qty band, which is where an area-based section may print it)
-     *   - Section C keeps the original itemised handling:
+     *   - Section C keeps the itemised handling:
      *       C1    = the Anchor-bolts line value
-     *       CRest = hardware TOTAL - C1
-     *   - Notes/accessories are ignored (special items are not auto-parsed from PDF)
+     *       CRest = hardware connection bolts (TOTAL - C1, or TOTAL directly if <= C1)
+     *   - Notes/accessories are ignored from section raw material totals
      */
     extractFromWords(words) {
+        const col = this.detectColumns(words);
         const rows = this.groupRows(words);
 
         const sections = [];
+        let inNotesOrAccessories = false;
 
         for (const row of rows) {
-            const desc = this.textIn(row, COL.DESC);
-            // Ignore notes and accessories sections from PDF
-            if (/^(note[s]?|accessories)\b/i.test(desc.trim())) {
+            const rowText = row.items.map((i) => i.str).join(' ').trim();
+            // Ignore notes and accessories sections from PDF (stop accumulating into section rows)
+            if (/^(note[s]?|accessories)\b/i.test(rowText)) {
+                inNotesOrAccessories = true;
                 continue;
             }
-            const letter = this.sectionLetter(row);
+            if (inNotesOrAccessories) {
+                continue;
+            }
+            const desc = this.textIn(row, col.DESC);
+            const letter = this.sectionLetter(row, col);
             if (letter) {
                 sections.push({
                     letter,
                     desc,
-                    value: this.valueOf(row),
+                    value: this.valueOf(row, col),
                     rows: []
                 });
             } else if (sections.length) {
@@ -450,7 +545,7 @@ handleApplyToQuote() {
                 continue;
             }
             if (match.key === 'HW') {
-                const hw = this.hardwareTotals(sec);
+                const hw = this.hardwareTotals(sec, col);
                 totals.C1 = hw.c1;
                 totals.CRest = hw.rest;
             } else if (sec.value !== null) {
@@ -507,53 +602,62 @@ handleApplyToQuote() {
     }
 
     /** A row's value: Rightmost number in Total-weight column, else the Qty column. */
-    valueOf(row) {
+    valueOf(row, col = COL) {
         // Always pick the rightmost number in the TOTAL band to ensure we get the Total Weight
-        // instead of Qty/Unit Wt if they all shifted massively into this expanded band.
-        const t = this.numAt(row, COL.TOTAL, true);
-        return t !== null ? t : this.numAt(row, COL.QTY, true);
+        const t = this.numAt(row, col.TOTAL, true);
+        return t !== null ? t : this.numAt(row, col.QTY, true);
     }
 
     /** Returns the section letter when the row opens a new section. */
-    sectionLetter(row) {
-        const hit = row.items.find((i) => i.x >= COL.SR[0] && i.x < COL.SR[1] && /^[A-Za-z]$/.test(i.str));
+    sectionLetter(row, col = COL) {
+        const hit = row.items.find((i) => i.x >= col.SR[0] && i.x < col.SR[1] && /^[A-Za-z]$/.test(i.str));
         return hit ? hit.str : null;
     }
 
     /**
      * Section C: C1 is the Anchor-bolts line, CRest is the remainder of the
-     * hardware TOTAL. Unchanged from the previous estimation format.
+     * hardware TOTAL (or TOTAL directly when TOTAL only represents connection bolts).
      */
-    hardwareTotals(sec) {
+    hardwareTotals(sec, col = COL) {
         let c1 = null;
         let total = null;
-        let sum = 0;
-        let sumSeen = false;
+        let sumNonC1 = 0;
+        let sumNonC1Seen = false;
 
         for (const row of sec.rows) {
-            const desc = this.textIn(row, COL.DESC).toLowerCase();
-            const val = this.valueOf(row);
+            const desc = this.textIn(row, col.DESC).toLowerCase();
+            const val = this.valueOf(row, col);
             if (/total/.test(desc)) {
                 if (total === null && val !== null) {
                     total = val;
                 }
                 continue;
             }
-            if (val !== null) {
-                sum += val;
-                sumSeen = true;
-            }
-            if (c1 === null && desc.indexOf('anchor') >= 0 && desc.indexOf('bolt') >= 0 && desc.indexOf('non-standard') < 0) {
+            const isAnchor = desc.indexOf('anchor') >= 0 && desc.indexOf('bolt') >= 0 && desc.indexOf('non-standard') < 0;
+            if (isAnchor && c1 === null) {
                 c1 = val;
+            } else if (val !== null) {
+                sumNonC1 += val;
+                sumNonC1Seen = true;
             }
         }
 
-        // No itemisation? Then the section row itself carries the hardware total.
-        if (total === null) {
-            total = sumSeen ? sum : sec.value;
-        }
+        // If no explicit TOTAL row, use the sum of connection bolts or the section value
         const c1v = c1 === null ? 0 : c1;
-        const rest = total === null ? 0 : total - c1v;
+        let rest = 0;
+        if (total !== null) {
+            if (total > c1v) {
+                rest = total - c1v;
+            } else {
+                // When document TOTAL row is <= c1, the document's TOTAL represents ONLY connection bolts
+                rest = total;
+            }
+        } else if (sumNonC1Seen) {
+            rest = sumNonC1;
+        } else if (sec.value !== null) {
+            rest = sec.value > c1v ? sec.value - c1v : sec.value;
+        }
+
         return { c1: c1v, rest: rest > 0 ? rest : 0 };
     }
 
@@ -562,11 +666,11 @@ handleApplyToQuote() {
      * Description, unit and weight come from the document; the rate is entered
      * on screen.
      */
-    toSpecialItem(row) {
+    toSpecialItem(row, col = COL) {
         // Note rows often print the serial and the description as one token that
         // starts left of the Description column ("1Example"), so read everything
         // to the left of the Qty column as the description.
-        let description = this.textIn(row, [COL.SR[0], COL.QTY[0]]);
+        let description = this.textIn(row, [col.SR[0], col.QTY[0]]);
         if (!description) {
             return null;
         }
@@ -576,8 +680,8 @@ handleApplyToQuote() {
             return null;
         }
 
-        let qty = this.valueOf(row);
-        let unit = this.normaliseUnit(this.textIn(row, COL.UNIT));
+        let qty = this.valueOf(row, col);
+        let unit = this.normaliseUnit(this.textIn(row, col.UNIT));
 
         // Inline fallback: "... @ 360m"
         if (qty === null) {
@@ -641,7 +745,7 @@ handleApplyToQuote() {
 
         const found = (parsed && parsed.specialItems) || [];
         if (found.length && !(keepSaved && this.specialItems.length)) {
-            this.specialItems = found.map((s) => this.mkSpecialItem(s.description, s.unit, s.qty, 0));
+            this.specialItems = found.map((s) => this.mkSpecialItem(s.description, s.unit, s.qty, 0, 0));
         }
 
         this.recompute();
@@ -843,6 +947,9 @@ handleApplyToQuote() {
         if (s.gstPercent != null) {
             this.gstPercent = s.gstPercent;
         }
+        if (s.benchmarkRate != null) {
+            this.benchmarkRate = this.toNum(s.benchmarkRate);
+        }
         if (s.paymentTerms) {
             this.consignmentPeriod = s.paymentTerms.consignmentPeriod || '';
             //this.erectionPeriod = s.paymentTerms.erectionPeriod || '';
@@ -879,7 +986,7 @@ handleApplyToQuote() {
         }
         if (Array.isArray(s.specialItems)) {
             this.specialItems = s.specialItems.map((x) =>
-                this.mkSpecialItem(x.description, x.unit, x.qty, x.rate)
+                this.mkSpecialItem(x.description, x.unit, x.qty, x.rate, x.unitWt)
             );
         }
         // Conversion selections
@@ -944,12 +1051,14 @@ handleApplyToQuote() {
 }
 
     /** B3 row: description/unit/qty come from the Note section, rate is manual. */
-    mkSpecialItem(description, unit, qty, rate) {
+    mkSpecialItem(description, unit, qty, rate, unitWt) {
         return {
             rowId: 'spc-' + this.rowSeq++,
             description: description || '',
             unit: unit || 'No.s',
             qty: this.toNum(qty),
+            unitWt: this.toNum(unitWt),
+            totalWeight: 0,
             rate: this.toNum(rate),
             cost: 0
         };
@@ -984,7 +1093,7 @@ handleApplyToQuote() {
         let accCost = 0;
         this.accessories = this.accessories.map((r) => {
             const tw = this.toNum(r.qty) * this.toNum(r.unitWt);
-            const cost = tw * this.toNum(r.rate);
+            const cost = this.toNum(r.qty) * this.toNum(r.rate);
             accW += tw;
             accCost += cost;
             return { ...r, totalWeight: tw, cost };
@@ -994,9 +1103,7 @@ handleApplyToQuote() {
         let buyCost = 0;
         this.buyouts = this.buyouts.map((r) => {
             const tw = this.toNum(r.qty) * this.toNum(r.unitWt);
-            const cost = QTY_ONLY_BUYOUT_KEYS.indexOf(r.key) >= 0
-                ? this.toNum(r.qty) * this.toNum(r.rate)
-                : tw * this.toNum(r.rate);
+            const cost = this.toNum(r.qty) * this.toNum(r.rate);
             buyW += tw;
             buyCost += cost;
             return { ...r, totalWeight: tw, cost };
@@ -1006,10 +1113,11 @@ handleApplyToQuote() {
         let specCost = 0;
         let specWeight = 0; 
         this.specialItems = this.specialItems.map((r) => {
+            const tw = this.toNum(r.qty) * this.toNum(r.unitWt);
             const cost = this.toNum(r.qty) * this.toNum(r.rate);
             specCost += cost;
-            specWeight += this.toNum(r.qty);
-            return { ...r, cost };
+            specWeight += tw;
+            return { ...r, totalWeight: tw, cost };
         });
 
         // Conversion weights (per spec formulas)
@@ -1059,8 +1167,12 @@ handleApplyToQuote() {
         const gPct = this.toNum(this.gstPercent);
         const gstRs = (withMargin * gPct) / 100;
         // ── APPROVAL GUARD (A + B1 + B2 weight benchmark) ──
-        const totalWeightAll = secAWeight + accW + buyW;
-        const totalPriceCalc = totalWeightAll * 90;
+        const bRate = (this.benchmarkRate != null && this.benchmarkRate > 0)
+            ? this.toNum(this.benchmarkRate)
+            : ((this.rateConfig && this.rateConfig.benchmarkRate != null) ? this.toNum(this.rateConfig.benchmarkRate) : 90);
+        this.benchmarkRate = bRate;
+        const totalWeightAll = Math.round((secAWeight + accW + buyW) * 100) / 100;
+        const totalPriceCalc = Math.round(totalWeightAll * bRate);
         const needsUtkarshApproval = withMargin < totalPriceCalc;
 
         this.totals = {
@@ -1087,6 +1199,7 @@ handleApplyToQuote() {
             gstPercent: gPct,
             gstRs,
             totalWeightAll,
+            benchmarkRate: bRate,
             totalPriceCalc,
             needsUtkarshApproval,
             grandTotal: withMargin + gstRs
@@ -1162,7 +1275,7 @@ handleApplyToQuote() {
     }
 
     handleAddSpecialItem() {
-        this.specialItems = [...this.specialItems, this.mkSpecialItem('', 'No.s', 0, 0)];
+        this.specialItems = [...this.specialItems, this.mkSpecialItem('', 'No.s', 0, 0, 0)];
         this.recompute();
     }
 
@@ -1395,6 +1508,7 @@ handleApplyToQuote() {
         return {
             marginPercent: this.toNum(this.marginPercent),
             gstPercent: this.toNum(this.gstPercent),
+            benchmarkRate: this.toNum(this.benchmarkRate),
             paymentTerms: {
                 consignmentPeriod: (this.consignmentPeriod || '').trim(),
                 erectionPeriod: (this.erectionPeriod || '').trim(),

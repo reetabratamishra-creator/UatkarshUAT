@@ -8,7 +8,7 @@
     </values>
     <values>
         <field>Brochure_URL__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">https://portal.bluewavesmedia.in/WhatsAppMedia/Template/Document/Utkarsh/railway_electrification_structures.pdf</value>
     </values>
     <values>
         <field>Content_File_Title__c</field>
@@ -20,7 +20,7 @@
     </values>
     <values>
         <field>Product_Brief__c</field>
-        <value xsi:type="xsd:string">CORE-approved electrification structures for railway OHE systems, built for strength, durability, and reliable performance. Types: RSJ Masts | BFB Masts | B-Series Masts | TTC Masts | Portals | ERC, SPS &amp; OHE Structures etc.</value>
+        <value xsi:type="xsd:string">We provide CORE-approved structures for railway OHE systems, designed for strength and reliable performance. Types: RSJ Masts | BFB Masts | B-Series Masts | TTC Masts | Portals | ERC, SPS &amp; OHE Structures.</value>
     </values>
     <values>
         <field>Static_Resource_Name__c</field>

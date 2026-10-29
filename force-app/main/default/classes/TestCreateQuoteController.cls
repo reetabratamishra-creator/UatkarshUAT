@@ -907,7 +907,7 @@ public class TestCreateQuoteController {
             'The opportunity should start with no linked files');
 
         Test.startTest();
-        CreateQuoteController.finalizeQuoteAndAttachDocs(opp.Id, q.Id);
+        CreateQuoteController.finalizeQuoteAndAttachDocs(opp.Id, q.Id,'finalizeQuoteButton');
         Test.stopTest();
 
         Opportunity updated = [
@@ -947,7 +947,7 @@ public class TestCreateQuoteController {
             'The stale file link should exist before finalization');
 
         Test.startTest();
-        CreateQuoteController.finalizeQuoteAndAttachDocs(opp.Id, q.Id);
+        CreateQuoteController.finalizeQuoteAndAttachDocs(opp.Id, q.Id, 'finalizeQuoteButton');
         Test.stopTest();
 
         Assert.areEqual(0, [SELECT COUNT() FROM ContentDocument WHERE Id = :oldDocId],
@@ -958,7 +958,7 @@ public class TestCreateQuoteController {
     static void finalizeQuoteWrapsFailuresAsAuraHandledException() {
         Test.startTest();
         try {
-            CreateQuoteController.finalizeQuoteAndAttachDocs(null, null);
+            CreateQuoteController.finalizeQuoteAndAttachDocs(null, null,'');
             Assert.fail('Finalizing a null quote should have thrown');
         } catch (AuraHandledException e) {
             Assert.isNotNull(e, 'The controller should wrap failures for the LWC');
@@ -1696,7 +1696,7 @@ static void captureQuoteTotalWritesOnlyTheQuoteField() {
         
         Test.startTest();
         try {
-            CreateQuoteController.finalizeQuoteAndAttachDocs(opp.Id, q.Id);
+            CreateQuoteController.finalizeQuoteAndAttachDocs(opp.Id, q.Id, 'finalizeQuoteButton');
         } catch (Exception e) {
             // Expected to handle gracefully or throw an AuraHandledException wrapper
         }

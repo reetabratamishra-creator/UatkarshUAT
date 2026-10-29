@@ -30,6 +30,8 @@ public with sharing class BWM_InfobipEmailTemplateService {
   public class TemplateMetadata {
     public String subject;
     public String name;
+    public String fromAddress;
+    public String replyTo;
 
     public String resolveSubjectForLog() {
       return sanitizeSubjectForLog(subject);
@@ -187,6 +189,8 @@ public with sharing class BWM_InfobipEmailTemplateService {
     TemplateMetadata metadata = new TemplateMetadata();
     metadata.subject = normalizeTemplateText((String) payload.get('subject'));
     metadata.name = normalizeTemplateText((String) payload.get('name'));
+    metadata.fromAddress = trimAddress((String) payload.get('from'));
+    metadata.replyTo = trimAddress((String) payload.get('replyTo'));
     return metadata;
   }
 
@@ -231,6 +235,10 @@ public with sharing class BWM_InfobipEmailTemplateService {
 
   private static String normalizeTemplateText(String rawValue) {
     return sanitizeSubjectForLog(rawValue);
+  }
+
+  private static String trimAddress(String rawValue) {
+    return String.isBlank(rawValue) ? null : rawValue.trim();
   }
 
   @TestVisible

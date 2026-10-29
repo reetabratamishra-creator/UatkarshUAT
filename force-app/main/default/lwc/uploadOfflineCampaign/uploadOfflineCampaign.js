@@ -98,6 +98,52 @@ export default class UploadOfflineCampaign extends LightningElement {
     return this.insertSummary != null;
   }
 
+  /**
+   * @description Comma-separated department values customers must copy into the CSV.
+   * @returns {string} Department names, or a short fallback while options load.
+   */
+  get departmentNames() {
+    const names = (this.departmentOptions || [])
+      .map((option) => option.value)
+      .filter((value) => value);
+    return names.length ? names.join(', ') : 'loading department list';
+  }
+
+  /**
+   * Downloads a CSV template with the columns this upload accepts and one sample row.
+   * @returns {void} Nothing.
+   */
+  handleDownloadFormat() {
+    const sampleDepartment = this.csvEscape(
+      (this.departmentOptions &&
+        this.departmentOptions[0] &&
+        this.departmentOptions[0].value) ||
+        'Enquiry'
+    );
+    const csv = [
+      'Name,Email,Phone,Department',
+      `Sample Customer,sample.customer@example.com,9876543210,${sampleDepartment}`
+    ].join('\r\n');
+    const link = document.createElement('a');
+    link.href =
+      'data:text/csv;charset=utf-8,' + encodeURIComponent('\uFEFF' + csv);
+    link.download = 'Offline_Campaign_Upload_Format.csv';
+    link.click();
+  }
+
+  /**
+   * @description Quotes a CSV value when it contains a comma, quote, or line break.
+   * @param {string} value Cell value.
+   * @returns {string} CSV-safe value.
+   */
+  csvEscape(value) {
+    const text = value == null ? '' : String(value);
+    if (/[",\r\n]/.test(text)) {
+      return `"${text.replace(/"/g, '""')}"`;
+    }
+    return text;
+  }
+
   handleGroupListChange(event) {
     this.groupList = event.detail.value ?? '';
   }

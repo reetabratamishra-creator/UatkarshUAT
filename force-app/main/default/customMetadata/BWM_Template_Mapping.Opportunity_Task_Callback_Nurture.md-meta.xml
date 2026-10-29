@@ -60,15 +60,15 @@
     </values>
     <values>
         <field>Param4_Field__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">CRM_User_Name_Formula__c</value>
     </values>
     <values>
         <field>Param5_Field__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">CRM_User_Contact_No_Formula__c</value>
     </values>
     <values>
         <field>Param6_Field__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">CRM_User_Email_Formula__c</value>
     </values>
     <values>
         <field>Param7_Field__c</field>

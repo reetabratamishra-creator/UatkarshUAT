@@ -164,7 +164,7 @@
                         <valueListItems>
                             <value>Delete</value>
                             <visibilityRule>
-                                <booleanFilter>1 OR 2</booleanFilter>
+                                <booleanFilter>1 AND 2</booleanFilter>
                                 <criteria>
                                     <leftValue>{!$User.Profile.Name}</leftValue>
                                     <operator>EQUAL</operator>
@@ -208,7 +208,7 @@
                                     <rightValue>Open</rightValue>
                                 </criteria>
                                 <criteria>
-                                    <leftValue>{!Record.Department_Match_without_Owner__c}</leftValue>
+                                    <leftValue>{!Record.Departments_Match__c}</leftValue>
                                     <operator>EQUAL</operator>
                                     <rightValue>true</rightValue>
                                 </criteria>
@@ -243,10 +243,17 @@
                 </componentInstanceProperties>
                 <componentInstanceProperties>
                     <name>numVisibleActions</name>
-                    <value>5</value>
+                    <value>3</value>
                 </componentInstanceProperties>
                 <componentName>force:highlightsPanel</componentName>
                 <identifier>force_highlightsPanel</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!$Client.formFactor}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Large</rightValue>
+                    </criteria>
+                </visibilityRule>
             </componentInstance>
         </itemInstances>
         <mode>Replace</mode>
@@ -444,6 +451,212 @@
     <sobjectType>Task</sobjectType>
     <template>
         <name>flexipage:recordHomeSingleColTemplateDesktop</name>
+        <properties>
+            <name>actionNames</name>
+            <valueList>
+                <valueListItems>
+                    <value>Task.Qualified</value>
+                    <visibilityRule>
+                        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
+                        <criteria>
+                            <leftValue>{!Record.Who_ID_Type__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Lead</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Stage__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Lost</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Stage__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Qualified</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Status}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Open</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Departments_Match__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>true</rightValue>
+                        </criteria>
+                    </visibilityRule>
+                </valueListItems>
+                <valueListItems>
+                    <value>Task.Callback_Call_Connected</value>
+                    <visibilityRule>
+                        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
+                        <criteria>
+                            <leftValue>{!Record.Who_ID_Type__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Lead</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Stage__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Lost</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Stage__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Qualified</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Status}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Open</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Departments_Match__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>true</rightValue>
+                        </criteria>
+                    </visibilityRule>
+                </valueListItems>
+                <valueListItems>
+                    <value>Task.Callback_Call_Not_Connected</value>
+                    <visibilityRule>
+                        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
+                        <criteria>
+                            <leftValue>{!Record.Who_ID_Type__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Lead</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Stage__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Lost</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Stage__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Qualified</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Status}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Open</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Departments_Match__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>true</rightValue>
+                        </criteria>
+                    </visibilityRule>
+                </valueListItems>
+                <valueListItems>
+                    <value>Task.Lost_Call_Connected</value>
+                    <visibilityRule>
+                        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
+                        <criteria>
+                            <leftValue>{!Record.Who_ID_Type__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Lead</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Stage__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Lost</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Stage__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Qualified</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Status}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Open</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Departments_Match__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>true</rightValue>
+                        </criteria>
+                    </visibilityRule>
+                </valueListItems>
+                <valueListItems>
+                    <value>Task.Lost_Call_Not_Connected</value>
+                    <visibilityRule>
+                        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
+                        <criteria>
+                            <leftValue>{!Record.Who_ID_Type__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Lead</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Stage__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Qualified</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Stage__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Lost</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Status}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Open</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Departments_Match__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>true</rightValue>
+                        </criteria>
+                    </visibilityRule>
+                </valueListItems>
+                <valueListItems>
+                    <value>Task.Mark_as_Complete</value>
+                    <visibilityRule>
+                        <booleanFilter>1 AND 2 AND 3</booleanFilter>
+                        <criteria>
+                            <leftValue>{!Record.Who_ID_Type__c}</leftValue>
+                            <operator>NE</operator>
+                            <rightValue>Lead</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Status}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Open</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Departments_Match__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>true</rightValue>
+                        </criteria>
+                    </visibilityRule>
+                </valueListItems>
+                <valueListItems>
+                    <value>Task.Change_Owner</value>
+                    <visibilityRule>
+                        <booleanFilter>1 AND 2 AND 3</booleanFilter>
+                        <criteria>
+                            <leftValue>{!Record.Status}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Open</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Departments_Match__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>true</rightValue>
+                        </criteria>
+                        <criteria>
+                            <leftValue>{!Record.Who_ID_Type__c}</leftValue>
+                            <operator>EQUAL</operator>
+                            <rightValue>Opportunity</rightValue>
+                        </criteria>
+                    </visibilityRule>
+                </valueListItems>
+            </valueList>
+        </properties>
+        <properties>
+            <name>enablePageActionConfig</name>
+            <value>true</value>
+        </properties>
     </template>
     <type>RecordPage</type>
 </FlexiPage>

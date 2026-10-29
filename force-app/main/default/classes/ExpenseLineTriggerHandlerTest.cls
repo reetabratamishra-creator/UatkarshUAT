@@ -442,4 +442,133 @@ private class ExpenseLineTriggerHandlerTest {
         }
         Test.stopTest();
     }
+
+    @IsTest
+    static void testReEditLineForRejectedExpenseInLwcContext_NormalUser() {
+        Expense__c rejectedExp = new Expense__c(
+            Employee__c = UserInfo.getUserId(),
+            Status__c = 'Rejected by HOD',
+            Purpose__c = 'Rejected Expense'
+        );
+        insert rejectedExp;
+
+        Expense_Line__c line = new Expense_Line__c(
+            Expense__c = rejectedExp.Id,
+            Expense_Type__c = 'Fooding',
+            City_Tier__c = 'Tier 1',
+            Amount__c = 500,
+            Approved_Amount__c = 500,
+            Date__c = Date.today()
+        );
+        insert line;
+
+        ExpenseLineTriggerHandler.currentUserProfileNameOverride = 'Standard User';
+        ExpenseLineTriggerHandler.isLwcContext = true;
+
+        line.Amount__c = 700;
+        line.Approved_Amount__c = 700;
+        line.City_Tier__c = 'Tier 2';
+
+        Test.startTest();
+        try {
+            update line;
+        } finally {
+            ExpenseLineTriggerHandler.currentUserProfileNameOverride = null;
+            ExpenseLineTriggerHandler.isLwcContext = false;
+        }
+        Test.stopTest();
+
+        Expense_Line__c updated = [SELECT Amount__c, Approved_Amount__c, City_Tier__c FROM Expense_Line__c WHERE Id = :line.Id];
+        System.assertEquals(700, updated.Amount__c);
+        System.assertEquals(700, updated.Approved_Amount__c);
+        System.assertEquals('Tier 2', updated.City_Tier__c);
+    }
+
+    @IsTest
+    static void testReEditLineForRejectedExpenseOutsideLwcBlocked_NormalUser() {
+        Expense__c rejectedExp = new Expense__c(
+            Employee__c = UserInfo.getUserId(),
+            Status__c = 'Rejected by HOD',
+            Purpose__c = 'Rejected Expense'
+        );
+        insert rejectedExp;
+
+        Expense_Line__c line = new Expense_Line__c(
+            Expense__c = rejectedExp.Id,
+            Expense_Type__c = 'Fooding',
+            City_Tier__c = 'Tier 1',
+            Amount__c = 500,
+            Approved_Amount__c = 500,
+            Date__c = Date.today()
+        );
+        insert line;
+
+        ExpenseLineTriggerHandler.currentUserProfileNameOverride = 'Standard User';
+        ExpenseLineTriggerHandler.isLwcContext = false;
+
+        line.Amount__c = 700;
+
+        Test.startTest();
+        try {
+            update line;
+            System.assert(false, 'Expected DmlException when updating line outside LWC context even if rejected');
+        } catch (DmlException e) {
+            System.assert(e.getMessage().contains(ExpenseLineTriggerHandler.EDIT_RESTRICTED_MSG));
+        } finally {
+            ExpenseLineTriggerHandler.currentUserProfileNameOverride = null;
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void testReEditLineForHodAndHrRejectedScenarios() {
+        Expense__c expRejectedByHR = new Expense__c(
+            Employee__c = UserInfo.getUserId(),
+            Status__c = 'Rejected by HR',
+            Purpose__c = 'Rejected by HR'
+        );
+        Expense__c expRejectedByHOD = new Expense__c(
+            Employee__c = UserInfo.getUserId(),
+            Status__c = 'Rejected by HOD',
+            Purpose__c = 'Rejected by HOD'
+        );
+        insert new List<Expense__c>{ expRejectedByHR, expRejectedByHOD };
+
+        Expense_Line__c line1 = new Expense_Line__c(
+            Expense__c = expRejectedByHR.Id,
+            Expense_Type__c = 'Fooding',
+            Amount__c = 500,
+            Date__c = Date.today()
+        );
+        Expense_Line__c line2 = new Expense_Line__c(
+            Expense__c = expRejectedByHOD.Id,
+            Expense_Type__c = 'Fooding',
+            Amount__c = 500,
+            Date__c = Date.today()
+        );
+        insert new List<Expense_Line__c>{ line1, line2 };
+
+        ExpenseLineTriggerHandler.currentUserProfileNameOverride = 'Utkarsh HOD';
+        ExpenseLineTriggerHandler.isLwcContext = true;
+
+        Test.startTest();
+        try {
+            // HOD can re-edit line when parent is Rejected by HR
+            line1.Amount__c = 600;
+            update line1;
+
+            // HOD cannot re-edit line when parent is Rejected by HOD
+            line2.Amount__c = 600;
+            try {
+                update line2;
+                System.assert(false, 'Expected DmlException when HOD re-edits line for Rejected by HOD expense');
+            } catch (DmlException e) {
+                System.assert(e.getMessage().contains(ExpenseLineTriggerHandler.EDIT_RESTRICTED_MSG));
+            }
+        } finally {
+            ExpenseLineTriggerHandler.currentUserProfileNameOverride = null;
+            ExpenseLineTriggerHandler.isLwcContext = false;
+        }
+        Test.stopTest();
+    }
 }

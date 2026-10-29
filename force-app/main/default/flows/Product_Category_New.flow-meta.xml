@@ -66,44 +66,9 @@
             <stringValue>{&quot;location&quot;:&quot;top&quot;,&quot;type&quot;:&quot;simple&quot;}</stringValue>
         </value>
     </customProperties>
-    <decisions>
-        <name>Check_Product_category_Avalabiliy</name>
-        <label>Check Product category  Avalabiliy</label>
-        <locationX>1212</locationX>
-        <locationY>715</locationY>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Record_Found</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Product_Category.Id</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Record_already_exsist</targetReference>
-            </connector>
-            <label>Record Found</label>
-        </rules>
-        <rules>
-            <name>Record_Not_found</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Product_Category.Id</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assignment_1</targetReference>
-            </connector>
-            <label>Record Not found</label>
-        </rules>
-    </decisions>
-    <description>v7-created from v6 made product category mandatory for creating
+    <description>created from v8 - removed duplicate Product Category check, same product can now be added multiple times
+created from v7 - removed status from the table
+v7-created from v6 made product category mandatory for creating
 Success Screen as viewonly
 Status set to Active in the assignment
 Removed Name as datatype changed to auto number
@@ -135,7 +100,7 @@ Changing the design</description>
         <collectionReference>Product_category_Repeater.AllItems</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
-            <targetReference>Get_Product_Category</targetReference>
+            <targetReference>Assignment_1</targetReference>
         </nextValueConnector>
         <noMoreValuesConnector>
             <targetReference>Create_Product_category</targetReference>
@@ -228,44 +193,6 @@ Changing the design</description>
         <object>Lead</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
-    <recordLookups>
-        <name>Get_Product_Category</name>
-        <label>Get Product Category</label>
-        <locationX>1027</locationX>
-        <locationY>554</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Check_Product_category_Avalabiliy</targetReference>
-        </connector>
-        <faultConnector>
-            <targetReference>Fault_Screen</targetReference>
-        </faultConnector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Lead__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Lead.Id</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>Status__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Active</stringValue>
-            </value>
-        </filters>
-        <filters>
-            <field>Product_Category__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Loop_1.DepartmentName.middleValue</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Product_Category__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <recordRollbacks>
         <name>Roll_Back</name>
         <label>Roll Back</label>
@@ -279,7 +206,7 @@ Changing the design</description>
         <name>Create_New_Product_Category</name>
         <label>Create New Product Category</label>
         <locationX>782</locationX>
-        <locationY>335</locationY>
+        <locationY>336</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -334,13 +261,13 @@ Changing the design</description>
             <inputParameters>
                 <name>columns</name>
                 <value>
-                    <stringValue>[{&quot;apiName&quot;:&quot;Product_Category__c&quot;,&quot;guid&quot;:&quot;column-8618&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:0,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Product Category&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;UOM__c&quot;,&quot;guid&quot;:&quot;column-9a1b&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:1,&quot;sortable&quot;:false,&quot;label&quot;:&quot;UOM&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;Quantity__c&quot;,&quot;guid&quot;:&quot;column-77e7&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:2,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;number&quot;},{&quot;apiName&quot;:&quot;Status__c&quot;,&quot;guid&quot;:&quot;column-d7eb&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:3,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Status&quot;,&quot;type&quot;:&quot;text&quot;}]</stringValue>
+                    <stringValue>[{&quot;apiName&quot;:&quot;Product_Category__c&quot;,&quot;guid&quot;:&quot;column-8618&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:0,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Product Category&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;UOM__c&quot;,&quot;guid&quot;:&quot;column-9a1b&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:1,&quot;sortable&quot;:false,&quot;label&quot;:&quot;UOM&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;Quantity__c&quot;,&quot;guid&quot;:&quot;column-77e7&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:2,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;number&quot;}]</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
                 <name>columnReferences</name>
                 <value>
-                    <complexValue>{&quot;dataType&quot;:&quot;SObject&quot;,&quot;objectType&quot;:&quot;Product_Category__c&quot;,&quot;fieldReferences&quot;:[&quot;Product_Category__c&quot;,&quot;UOM__c&quot;,&quot;Quantity__c&quot;,&quot;Status__c&quot;],&quot;elementReference&quot;:&quot;Get_All_Product_Category&quot;}</complexValue>
+                    <complexValue>{&quot;dataType&quot;:&quot;SObject&quot;,&quot;objectType&quot;:&quot;Product_Category__c&quot;,&quot;fieldReferences&quot;:[&quot;Product_Category__c&quot;,&quot;UOM__c&quot;,&quot;Quantity__c&quot;],&quot;elementReference&quot;:&quot;Get_All_Product_Category&quot;}</complexValue>
                     <complexValueType>ComplexObjectFieldDetails</complexValueType>
                 </value>
             </inputParameters>
@@ -506,31 +433,6 @@ Changing the design</description>
         <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>Record_already_exsist</name>
-        <label>Record already exsist</label>
-        <locationX>1450</locationX>
-        <locationY>729</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>Error_message</name>
-            <fieldText>&lt;p&gt;&lt;strong style=&quot;color: rgb(221, 10, 10);&quot;&gt;Product Category you entered already exist for this Lead. Please verify and try again.&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;color: rgb(221, 10, 10);&quot;&gt;{!Get_Product_Category.Product_Category__c}&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;color: rgb(221, 10, 10);&quot;&gt;﻿&lt;/strong&gt;&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-            <styleProperties>
-                <verticalAlignment>
-                    <stringValue>top</stringValue>
-                </verticalAlignment>
-                <width>
-                    <stringValue>12</stringValue>
-                </width>
-            </styleProperties>
-        </fields>
-        <nextOrFinishButtonLabel>Ok</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
-        <showHeader>false</showHeader>
-    </screens>
-    <screens>
         <name>Successs_Screen</name>
         <label>Successs Screen</label>
         <locationX>796</locationX>
@@ -626,13 +528,13 @@ Changing the design</description>
             <inputParameters>
                 <name>columns</name>
                 <value>
-                    <stringValue>[{&quot;apiName&quot;:&quot;Product_Category__c&quot;,&quot;guid&quot;:&quot;column-aa9d&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:0,&quot;sortable&quot;:true,&quot;label&quot;:&quot;Product Category&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;UOM__c&quot;,&quot;guid&quot;:&quot;column-5f6d&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:1,&quot;sortable&quot;:false,&quot;label&quot;:&quot;UOM&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;Quantity__c&quot;,&quot;guid&quot;:&quot;column-b5dd&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:2,&quot;sortable&quot;:true,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;number&quot;},{&quot;apiName&quot;:&quot;Status__c&quot;,&quot;guid&quot;:&quot;column-5055&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:3,&quot;sortable&quot;:false,&quot;label&quot;:&quot;Status&quot;,&quot;type&quot;:&quot;text&quot;}]</stringValue>
+                    <stringValue>[{&quot;apiName&quot;:&quot;Product_Category__c&quot;,&quot;guid&quot;:&quot;column-aa9d&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:0,&quot;sortable&quot;:true,&quot;label&quot;:&quot;Product Category&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;UOM__c&quot;,&quot;guid&quot;:&quot;column-5f6d&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:1,&quot;sortable&quot;:false,&quot;label&quot;:&quot;UOM&quot;,&quot;type&quot;:&quot;text&quot;},{&quot;apiName&quot;:&quot;Quantity__c&quot;,&quot;guid&quot;:&quot;column-b5dd&quot;,&quot;editable&quot;:false,&quot;hasCustomHeaderLabel&quot;:false,&quot;customHeaderLabel&quot;:&quot;&quot;,&quot;wrapText&quot;:true,&quot;order&quot;:2,&quot;sortable&quot;:true,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;number&quot;}]</stringValue>
                 </value>
             </inputParameters>
             <inputParameters>
                 <name>columnReferences</name>
                 <value>
-                    <complexValue>{&quot;dataType&quot;:&quot;SObject&quot;,&quot;objectType&quot;:&quot;Product_Category__c&quot;,&quot;fieldReferences&quot;:[&quot;Product_Category__c&quot;,&quot;UOM__c&quot;,&quot;Quantity__c&quot;,&quot;Status__c&quot;],&quot;elementReference&quot;:&quot;collvar&quot;}</complexValue>
+                    <complexValue>{&quot;dataType&quot;:&quot;SObject&quot;,&quot;objectType&quot;:&quot;Product_Category__c&quot;,&quot;fieldReferences&quot;:[&quot;Product_Category__c&quot;,&quot;UOM__c&quot;,&quot;Quantity__c&quot;],&quot;elementReference&quot;:&quot;collvar&quot;}</complexValue>
                     <complexValueType>ComplexObjectFieldDetails</complexValueType>
                 </value>
             </inputParameters>

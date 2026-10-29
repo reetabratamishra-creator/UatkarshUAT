@@ -457,7 +457,8 @@
             <label>Restricted Profiles</label>
         </rules>
     </decisions>
-    <description>v27-zone dependency on country
+    <description>v29- Copied from v27- Added New Department picklist values for HDPE CRM Head
+v27-zone dependency on country
 v26- addition of search instead of dropdown in parent account selection 
 v25-removed pin validation
 v24-account required fields and source changes, added custom metadata for creation permission
@@ -1726,6 +1727,13 @@ LOWER({!Account_Website}),
                                 <elementReference>Dealer</elementReference>
                             </rightValue>
                         </conditions>
+                        <conditions>
+                            <leftValueReference>currentUserRole</leftValueReference>
+                            <operator>NotEqualTo</operator>
+                            <rightValue>
+                                <stringValue>HDPE CRM Head</stringValue>
+                            </rightValue>
+                        </conditions>
                     </visibilityRule>
                 </fields>
                 <fields>
@@ -1915,6 +1923,48 @@ LOWER({!Account_Website}),
                             <operator>Contains</operator>
                             <rightValue>
                                 <stringValue>Railway Electrification Structure</stringValue>
+                            </rightValue>
+                        </conditions>
+                        <conditions>
+                            <leftValueReference>isAdmin</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <booleanValue>false</booleanValue>
+                            </rightValue>
+                        </conditions>
+                        <conditions>
+                            <leftValueReference>getDealerRecordType.Name</leftValueReference>
+                            <operator>NotEqualTo</operator>
+                            <rightValue>
+                                <elementReference>Dealer</elementReference>
+                            </rightValue>
+                        </conditions>
+                    </visibilityRule>
+                </fields>
+                <fields>
+                    <name>Department_Name_HDPE_CRMHead</name>
+                    <choiceReferences>HDPE</choiceReferences>
+                    <choiceReferences>Solar_Structure</choiceReferences>
+                    <dataType>String</dataType>
+                    <fieldText>Department Name</fieldText>
+                    <fieldType>DropdownBox</fieldType>
+                    <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+                    <isRequired>false</isRequired>
+                    <styleProperties>
+                        <verticalAlignment>
+                            <stringValue>top</stringValue>
+                        </verticalAlignment>
+                        <width>
+                            <stringValue>12</stringValue>
+                        </width>
+                    </styleProperties>
+                    <visibilityRule>
+                        <conditionLogic>and</conditionLogic>
+                        <conditions>
+                            <leftValueReference>currentUserRole</leftValueReference>
+                            <operator>EqualTo</operator>
+                            <rightValue>
+                                <stringValue>HDPE CRM Head</stringValue>
                             </rightValue>
                         </conditions>
                         <conditions>
@@ -2677,7 +2727,7 @@ LOWER({!Account_Website}),
             <targetReference>get_Allowed_Profile</targetReference>
         </connector>
     </start>
-    <status>Active</status>
+    <status>Draft</status>
     <variables>
         <name>addressRecordCollection</name>
         <dataType>SObject</dataType>

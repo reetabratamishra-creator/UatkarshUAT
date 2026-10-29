@@ -9,9 +9,16 @@ private class BWM_CampaignEmailServiceTest {
   private static final String SUCCESS_BODY = '{"messages":[{"status":"PENDING_ACCEPTED"}]}';
   private static final String TEMPLATE_ID = '205000000067199';
   private static final String TEMPLATE_SUBJECT = 'Welcome to Utkarsh Steel';
+  private static final String TEMPLATE_FROM =
+    'Subhajit Ghosh <subhajit.ghosh@utkarshbharath.com>';
+  private static final String TEMPLATE_REPLY_TO = 'sougata.das@utkarshindia.in';
   private static final String TEMPLATE_DETAIL_BODY =
     '{"id":205000000067199,"name":"NABL_HIGH_MAST_2026","subject":"' +
     TEMPLATE_SUBJECT +
+    '","from":"' +
+    TEMPLATE_FROM +
+    '","replyTo":"' +
+    TEMPLATE_REPLY_TO +
     '"}';
 
   private static HttpCalloutMock buildCampaignEmailMock(
@@ -31,70 +38,70 @@ private class BWM_CampaignEmailServiceTest {
     BWM_EmailLeadTriggerHandler.skipEnqueueForTests = true;
 
     Lead leadWithEmail = new Lead(
-      LastName = 'Campaign Email Lead',
-      Company = 'Test Co',
-      Company_Name__c = 'Test Co',
+      LastName = 'Campaign Email Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company_Name__c = 'Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
       Department_Name__c = 'Crash Barrier',
-      Phone = '9876543210',
-      Email = 'campaign.lead@example.com'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'campaign.lead+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
     );
     Lead leadNoEmail = new Lead(
-      LastName = 'No Email Lead',
-      Company = 'Test Co',
-      Company_Name__c = 'Test Co',
+      LastName = 'No Email Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company = 'Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Company_Name__c = 'Test Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       Status = 'Prospect',
       Department_Name__c = 'Crash Barrier',
-      Phone = '9876543211'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert new List<Lead>{ leadWithEmail, leadNoEmail };
+    insert as system new List<Lead>{ leadWithEmail, leadNoEmail };
 
     Account accountRecord = new Account(
-      Name = 'Campaign Email Account',
-      Phone = '9876543212',
+      Name = 'Campaign Email Account ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'campaign.account@example.com'
     );
-    insert accountRecord;
+    insert as system accountRecord;
 
     Contact contactWithEmail = new Contact(
-      LastName = 'Campaign Email Contact',
+      LastName = 'Campaign Email Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
-      Phone = '9876543213',
-      Email = 'campaign.contact@example.com'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+      Email = 'campaign.contact+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
     );
     Contact contactNoEmail = new Contact(
-      LastName = 'No Email Contact',
+      LastName = 'No Email Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
-      Phone = '9876543214'
+      Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10)
     );
-    insert new List<Contact>{ contactWithEmail, contactNoEmail };
+    insert as system new List<Contact>{ contactWithEmail, contactNoEmail };
 
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'Campaign Email Opp',
+      Name = 'Campaign Email Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
       StageName = 'Nurture',
       CloseDate = Date.today().addDays(30),
       Department_Name__c = 'Crash Barrier'
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
 
-    insert new OpportunityContactRole(
+    insert as system new OpportunityContactRole(
       OpportunityId = opportunityRecord.Id,
       ContactId = contactWithEmail.Id,
       IsPrimary = true,
       Role = 'Decision Maker'
     );
 
-    insert new Offline_Campaign__c(
-      Name = 'Campaign Email Offline',
-      Phone__c = '9876543215',
+    insert as system new Offline_Campaign__c(
+      Name = 'Campaign Email Offline ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Email__c = 'campaign.offline@example.com',
       Department__c = 'Crash Barrier',
       Active__c = true
     );
-    insert new Offline_Campaign__c(
-      Name = 'No Email Offline',
-      Phone__c = '9876543216',
+    insert as system new Offline_Campaign__c(
+      Name = 'No Email Offline ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+      Phone__c = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
       Department__c = 'Crash Barrier',
       Active__c = true
     );
@@ -152,7 +159,12 @@ private class BWM_CampaignEmailServiceTest {
     System.assert(!result.messages.isEmpty());
 
     List<Email_Log__c> logs = [
-      SELECT Campaign_Email_Subject__c, Template_Name__c, Status__c
+      SELECT
+        Campaign_Email_Subject__c,
+        Template_Name__c,
+        Status__c,
+        From_Email__c,
+        Request_Payload__c
       FROM Email_Log__c
       WHERE Related_Record_Id__c = :String.valueOf(withEmail.Id)
     ];
@@ -160,6 +172,82 @@ private class BWM_CampaignEmailServiceTest {
     System.assertEquals('NABL_HIGH_MAST_2026', logs[0].Template_Name__c);
     System.assertEquals(TEMPLATE_SUBJECT, logs[0].Campaign_Email_Subject__c);
     System.assertEquals('Sent', logs[0].Status__c);
+    System.assertEquals(TEMPLATE_FROM, logs[0].From_Email__c);
+    System.assert(logs[0].Request_Payload__c.contains(TEMPLATE_FROM));
+    System.assert(logs[0].Request_Payload__c.contains(TEMPLATE_REPLY_TO));
+  }
+
+  /**
+   * Scenario: A scheduled campaign email sends options.schedule.sendAt in Infobip format.
+   */
+  @IsTest
+  static void testScheduledLeadEmailAddsSendAt() {
+    BWM_CampaignEmailService.resetTemplateSubjectCacheForTests();
+    Test.setMock(
+      HttpCalloutMock.class,
+      buildCampaignEmailMock(SUCCESS_BODY, 200)
+    );
+    Lead withEmail = [SELECT Id FROM Lead WHERE Email != null WITH SYSTEM_MODE LIMIT 1];
+
+    Test.startTest();
+    BWM_CampaignEmailService.SendCampaignEmailResult result =
+      LeadManagementController.sendLeadCampaignEmailScheduled(
+        new List<Id>{ withEmail.Id },
+        TEMPLATE_ID,
+        '2026-10-26T13:20:00Z'
+      );
+    Test.stopTest();
+
+    System.assertEquals(1, result.sentCount);
+    System.assertEquals(null, BWM_CampaignScheduleContext.scheduledDateTime, 'Schedule must be cleared.');
+    Email_Log__c log = [
+      SELECT Request_Payload__c
+      FROM Email_Log__c
+      WHERE Related_Record_Id__c = :String.valueOf(withEmail.Id)
+      WITH SYSTEM_MODE
+      LIMIT 1
+    ];
+    System.assert(
+      log.Request_Payload__c.contains('"sendAt":"2026-10-26T13:20:00.000Z"'),
+      log.Request_Payload__c
+    );
+  }
+
+  /**
+   * Scenario: An unscheduled campaign email has no schedule option, and sendAt keeps the Infobip format.
+   */
+  @IsTest
+  static void testSendAtFormatAndUnscheduledEmailHasNoSchedule() {
+    System.assertEquals(null, BWM_CampaignEmailService.toInfobipSendAt(null));
+    System.assertEquals(null, BWM_CampaignEmailService.toInfobipSendAt(' '));
+    System.assertEquals(
+      '2026-10-26T13:20:00.000Z',
+      BWM_CampaignEmailService.toInfobipSendAt('2026-10-26T13:20:00Z')
+    );
+    System.assertEquals(
+      '2026-10-26T13:20:00.000Z',
+      BWM_CampaignEmailService.toInfobipSendAt('2026-10-26T13:20:00.000Z')
+    );
+
+    BWM_CampaignEmailService.resetTemplateSubjectCacheForTests();
+    Test.setMock(
+      HttpCalloutMock.class,
+      buildCampaignEmailMock(SUCCESS_BODY, 200)
+    );
+    Lead withEmail = [SELECT Id FROM Lead WHERE Email != null WITH SYSTEM_MODE LIMIT 1];
+
+    Test.startTest();
+    BWM_CampaignEmailService.sendToLeads(new List<Id>{ withEmail.Id }, TEMPLATE_ID);
+    Test.stopTest();
+
+    Email_Log__c log = [
+      SELECT Request_Payload__c
+      FROM Email_Log__c
+      WHERE Related_Record_Id__c = :String.valueOf(withEmail.Id)
+      WITH SYSTEM_MODE
+      LIMIT 1
+    ];
+    System.assert(!log.Request_Payload__c.contains('sendAt'), log.Request_Payload__c);
   }
 
   /**
@@ -175,7 +263,7 @@ private class BWM_CampaignEmailServiceTest {
     Opportunity opportunityRecord = [
       SELECT Id
       FROM Opportunity
-      WHERE Name = 'Campaign Email Opp'
+      WHERE Name LIKE 'Campaign Email Opp%'
       LIMIT 1
     ];
 
@@ -204,7 +292,7 @@ private class BWM_CampaignEmailServiceTest {
     Account accountRecord = [
       SELECT Id
       FROM Account
-      WHERE Name = 'Campaign Email Account'
+      WHERE Name LIKE 'Campaign Email Account%'
       LIMIT 1
     ];
 
@@ -234,13 +322,13 @@ private class BWM_CampaignEmailServiceTest {
     Contact withEmail = [
       SELECT Id
       FROM Contact
-      WHERE LastName = 'Campaign Email Contact'
+      WHERE LastName LIKE 'Campaign Email Contact%'
       LIMIT 1
     ];
     Contact noEmail = [
       SELECT Id
       FROM Contact
-      WHERE LastName = 'No Email Contact'
+      WHERE LastName LIKE 'No Email Contact%'
       LIMIT 1
     ];
 
@@ -271,13 +359,13 @@ private class BWM_CampaignEmailServiceTest {
     Offline_Campaign__c withOfflineEmail = [
       SELECT Id
       FROM Offline_Campaign__c
-      WHERE Name = 'Campaign Email Offline'
+      WHERE Name LIKE 'Campaign Email Offline%'
       LIMIT 1
     ];
     Offline_Campaign__c noOfflineEmail = [
       SELECT Id
       FROM Offline_Campaign__c
-      WHERE Name = 'No Email Offline'
+      WHERE Name LIKE 'No Email Offline%'
       LIMIT 1
     ];
 
@@ -323,7 +411,7 @@ private class BWM_CampaignEmailServiceTest {
     Lead withEmail = [
       SELECT Id
       FROM Lead
-      WHERE LastName = 'Campaign Email Lead'
+      WHERE LastName LIKE 'Campaign Email Lead%'
       LIMIT 1
     ];
 
@@ -340,16 +428,16 @@ private class BWM_CampaignEmailServiceTest {
   @IsTest
   static void testSendToOpportunities_SkipsWhenNoPrimaryContact() {
     BWM_CampaignEmailService.resetTemplateSubjectCacheForTests();
-    Account accountRecord = new Account(Name = 'Opp Without Primary Contact');
-    insert accountRecord;
+    Account accountRecord = new Account(Name = 'Opp Without Primary Contact ' + String.valueOf(Math.abs(Crypto.getRandomInteger())));
+    insert as system accountRecord;
     Opportunity opportunityRecord = new Opportunity(
-      Name = 'No Primary Contact Opp',
+      Name = 'No Primary Contact Opp ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
       AccountId = accountRecord.Id,
       StageName = 'Nurture',
       CloseDate = Date.today().addDays(30),
       Department_Name__c = 'Crash Barrier'
     );
-    insert opportunityRecord;
+    insert as system opportunityRecord;
 
     Test.startTest();
     BWM_CampaignEmailService.SendCampaignEmailResult result =
@@ -384,7 +472,7 @@ private class BWM_CampaignEmailServiceTest {
     Account accountRecord = [
       SELECT Id
       FROM Account
-      WHERE Name = 'Campaign Email Account'
+      WHERE Name LIKE 'Campaign Email Account%'
       LIMIT 1
     ];
 
@@ -419,7 +507,7 @@ private class BWM_CampaignEmailServiceTest {
     return [
       SELECT Id
       FROM User
-      WHERE Profile.Name = 'System Administrator' AND IsActive = TRUE
+      WHERE Profile.Name LIKE 'System Administrator%' AND IsActive = TRUE
       LIMIT 1
     ];
   }

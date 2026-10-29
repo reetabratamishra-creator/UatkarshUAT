@@ -1,3 +1,8 @@
+/**
+ * @description   Maps Opportunity lost reason to email trigger points.
+ * @author        Anshita Chanda
+ * @date          2026-08-06
+ */
 public with sharing class BWM_EmailOpportunityLostReasonRouter {
   public static String resolveTriggerPoint(String stageName, String lostReason) {
     return resolveTriggerPoint(stageName, null, lostReason);
@@ -128,6 +133,9 @@ public with sharing class BWM_EmailOpportunityLostReasonRouter {
       isInGroup(lostReason, BWM_EmailConstants.OPP_LOST_GROUP_PRICE_OR_EXISTING)
     ) {
       return BWM_EmailConstants.TRIGGER_OPP_LOST_PRICE_NEGOTIATION;
+    }
+    if (lostReason == 'Internal Problem' || lostReason == 'Internal problem') {
+      return BWM_EmailConstants.TRIGGER_OPP_LOST_OPERATIONAL_NEGOTIATION;
     }
     return null;
   }

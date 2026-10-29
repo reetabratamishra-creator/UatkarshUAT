@@ -1,0 +1,13 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+    <apex:includeLightning />
+    <div id="accountCreationLex"></div>
+    <script>
+        $Lightning.use("c:accountCreationOutApp", function () {
+            $Lightning.createComponent(
+                "c:accountCreationOverride",
+                {},
+                "accountCreationLex"
+            );
+        });
+    </script>
+</apex:page>

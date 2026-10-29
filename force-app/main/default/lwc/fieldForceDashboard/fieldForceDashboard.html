@@ -325,16 +325,13 @@
                                             <th>Reason</th>
                                             <th>HOD Remarks</th>
                                             <th>Status / Actions</th>
+                                            <th class="req-view-col">View Details</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <template for:each={teamWfhRequests} for:item="req">
                                             <tr key={req.requestId}>
-                                                <td class="req-user-name">
-                                                    <a href="javascript:void(0);" data-id={req.userId} onclick={handleUserClickInTable} class="req-user-link">
-                                                        {req.userName}
-                                                    </a>
-                                                </td>
+                                                <td class="req-user-name">{req.userName}</td>
                                                 <td>
                                                     <span class={req.typeBadgeClass}>{req.type}</span>
                                                 </td>
@@ -379,6 +376,11 @@
                                                         <span class={req.statusBadgeClass}>{req.status}</span>
                                                     </template>
                                                 </td>
+                                                <td class="req-view-col">
+                                                    <template if:true={req.isCompleted}>
+                                                        <lightning-button-icon icon-name="utility:preview" variant="border-filled" data-id={req.requestId} onclick={handleViewActivityDetails} title="View Details" alternative-text="View Details" size="small"></lightning-button-icon>
+                                                    </template>
+                                                </td>
                                             </tr>
                                         </template>
                                     </tbody>
@@ -387,16 +389,19 @@
 
                             <!-- Mobile cards -->
                             <div class="mobile-only-cards">
-                                <div class="mobile-card-list">
+                                <div class="mobile-card-list req-mobile-card-list">
                                     <template for:each={teamWfhRequests} for:item="req">
                                         <div key={req.requestId} class="mobile-data-card">
                                             <div class={req.typeBorderClass}></div>
                                             <div class="wfh-card-content">
                                                 <div class="wfh-card-header">
-                                                    <a href="javascript:void(0);" data-id={req.userId} onclick={handleUserClickInTable} class="req-user-link mobile-card-title">
-                                                        {req.userName}
-                                                    </a>
-                                                    <span class={req.statusBadgeClass}>{req.status}</span>
+                                                    <span class="mobile-card-title req-card-title">{req.userName}</span>
+                                                    <div class="table-action-row req-card-actions">
+                                                        <template if:true={req.isCompleted}>
+                                                            <lightning-button-icon icon-name="utility:preview" variant="border-filled" data-id={req.requestId} onclick={handleViewActivityDetailsMobile} title="View Details" alternative-text="View Details"></lightning-button-icon>
+                                                        </template>
+                                                        <span class={req.statusBadgeClass}>{req.status}</span>
+                                                    </div>
                                                 </div>
                                                 <div class="mobile-card-meta">
                                                     <div class="mobile-meta-item">
@@ -449,6 +454,50 @@
                                                         </div>
                                                     </div>
                                                 </template>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <!-- Day Activity Log: opens over the tapped card (mobile) -->
+                                    <template if:true={showActivityOverlay}>
+                                        <div class="activity-overlay-backdrop" onclick={closeActivityOverlay}></div>
+                                        <div class="activity-overlay-panel" style={activityOverlayStyle} onclick={stopBubble}>
+                                            <header class="modal-header">
+                                                <h2>{activityModalTitle}</h2>
+                                                <button class="modal-close-btn" onclick={closeActivityOverlay}>&times;</button>
+                                            </header>
+                                            <div class="activity-modal-body">
+                                                <div class="activity-modal-subtitle">
+                                                    <span class={activityDetails.typeBadgeClass}>{activityDetails.type}</span>
+                                                    <span class="mobile-meta-value">{activityDetails.formattedDate}</span>
+                                                </div>
+                                                <div class="mobile-card-meta">
+                                                    <div class="mobile-meta-item">
+                                                        <span class="mobile-meta-label">No. of Emails</span>
+                                                        <span class="mobile-meta-value">{activityDetails.emailsDisplay}</span>
+                                                    </div>
+                                                    <div class="mobile-meta-item">
+                                                        <span class="mobile-meta-label">No. of Meetings</span>
+                                                        <span class="mobile-meta-value">{activityDetails.meetingsDisplay}</span>
+                                                    </div>
+                                                    <div class="mobile-meta-item">
+                                                        <span class="mobile-meta-label">No. of Offers Sent</span>
+                                                        <span class="mobile-meta-value">{activityDetails.offersDisplay}</span>
+                                                    </div>
+                                                    <div class="mobile-meta-item">
+                                                        <span class="mobile-meta-label">No. of Phone Calls</span>
+                                                        <span class="mobile-meta-value">{activityDetails.callsDisplay}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="wfh-remarks-display">
+                                                    <span class="wfh-remarks-label">Open Notes</span>
+                                                    <template if:true={activityDetails.hasOpenNotes}>
+                                                        <span class="wfh-remarks-text">{activityDetails.openNotes}</span>
+                                                    </template>
+                                                    <template if:false={activityDetails.hasOpenNotes}>
+                                                        <span class="wfh-remarks-text req-remarks-empty">—</span>
+                                                    </template>
+                                                </div>
                                             </div>
                                         </div>
                                     </template>
@@ -1031,6 +1080,20 @@
                                                             <template if:false={item.reasonForVisit}>
                                                                 <p class="node-description">{item.description}</p>
                                                             </template>
+
+                                                            <template if:true={item.isVisitType}>
+                                                                <template if:true={item.is100mOutside}>
+                                                                    <div class="pt-warning-banner">
+                                                                        <div class="pt-warning-header">
+                                                                            <lightning-icon icon-name="utility:warning" size="xx-small" variant="warning" class="slds-m-right_xx-small"></lightning-icon>
+                                                                            <strong>Check-out Outside Check-in Location</strong>
+                                                                        </div>
+                                                                        <template if:true={item.justification}>
+                                                                            <p class="pt-warning-text"><strong>Justification:</strong> {item.justification}</p>
+                                                                        </template>
+                                                                    </div>
+                                                                </template>
+                                                            </template>
                                                         </div>
 
                                                         <template if:true={item.isExpanded}>
@@ -1111,15 +1174,6 @@
                                                                                     </div>
                                                                                 </template>
                                                                             </div>
-
-                                                                            <template if:true={item.is100mOutside}>
-                                                                                <div class="pt-warning-banner animate-fade-in">
-                                                                                    <div class="pt-warning-header">
-                                                                                        <lightning-icon icon-name="utility:warning" size="xx-small" variant="warning" class="slds-m-right_xx-small"></lightning-icon>
-                                                                                        <strong>Outside Boundary (&gt;300m)</strong>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </template>
                                                                         </template>
                                                                     </div>
                                                                 </template>
@@ -1247,6 +1301,50 @@
                 </header>
                 <div class="modal-body">
                     <img src={modalImageUrl} alt="Full screen preview" class="modal-full-img" />
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template if:true={showActivityModal}>
+        <section class="modal-backdrop animate-fade-in" onclick={closeActivityDetails}>
+            <div class="modal-content activity-modal-content" onclick={stopBubble}>
+                <header class="modal-header">
+                    <h2>{activityModalTitle}</h2>
+                    <button class="modal-close-btn" onclick={closeActivityDetails}>&times;</button>
+                </header>
+                <div class="activity-modal-body">
+                    <div class="activity-modal-subtitle">
+                        <span class={activityDetails.typeBadgeClass}>{activityDetails.type}</span>
+                        <span class="mobile-meta-value">{activityDetails.formattedDate}</span>
+                    </div>
+                    <div class="mobile-card-meta">
+                        <div class="mobile-meta-item">
+                            <span class="mobile-meta-label">No. of Emails</span>
+                            <span class="mobile-meta-value">{activityDetails.emailsDisplay}</span>
+                        </div>
+                        <div class="mobile-meta-item">
+                            <span class="mobile-meta-label">No. of Meetings</span>
+                            <span class="mobile-meta-value">{activityDetails.meetingsDisplay}</span>
+                        </div>
+                        <div class="mobile-meta-item">
+                            <span class="mobile-meta-label">No. of Offers Sent</span>
+                            <span class="mobile-meta-value">{activityDetails.offersDisplay}</span>
+                        </div>
+                        <div class="mobile-meta-item">
+                            <span class="mobile-meta-label">No. of Phone Calls</span>
+                            <span class="mobile-meta-value">{activityDetails.callsDisplay}</span>
+                        </div>
+                    </div>
+                    <div class="wfh-remarks-display">
+                        <span class="wfh-remarks-label">Open Notes</span>
+                        <template if:true={activityDetails.hasOpenNotes}>
+                            <span class="wfh-remarks-text">{activityDetails.openNotes}</span>
+                        </template>
+                        <template if:false={activityDetails.hasOpenNotes}>
+                            <span class="wfh-remarks-text req-remarks-empty">—</span>
+                        </template>
+                    </div>
                 </div>
             </div>
         </section>

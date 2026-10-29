@@ -11,23 +11,23 @@ private class LeadManagementRcsServiceTest {
     BWM_LeadMessagingTriggerHandler.skipEnqueueForTests = true;
     BWM_EmailLeadTriggerHandler.skipEnqueueForTests = true;
 
-    insert new List<Lead>{
+    insert as system new List<Lead>{
       new Lead(
-        LastName = 'RCS Lead',
-        Company = 'RCS Co',
-        Company_Name__c = 'RCS Co',
+        LastName = 'RCS Lead ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Company = 'RCS Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Company_Name__c = 'RCS Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
         Status = 'Prospect',
         Department_Name__c = 'Crash Barrier',
-        Phone = '9876543270',
-        Email = 'rcs.lead@example.com'
+        Phone = (String.valueOf(Math.abs(Crypto.getRandomInteger())) + '9123456789').right(10),
+        Email = 'rcs.lead+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
       ),
       new Lead(
-        LastName = 'RCS No Phone',
-        Company = 'RCS Co',
-        Company_Name__c = 'RCS Co',
+        LastName = 'RCS No Phone ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Company = 'RCS Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
+        Company_Name__c = 'RCS Co ' + String.valueOf(Math.abs(Crypto.getRandomInteger())),
         Status = 'Prospect',
         Department_Name__c = 'Crash Barrier',
-        Email = 'rcs.nophone@example.com'
+        Email = 'rcs.nophone+' + String.valueOf(Math.abs(Crypto.getRandomInteger())) + '@example.com'
       )
     };
   }
@@ -39,7 +39,7 @@ private class LeadManagementRcsServiceTest {
   static void testSendToLeads_EmptyIdsOrBlankTemplate_ThrowsError() {
     Boolean emptyThrew = false;
     Boolean blankThrew = false;
-    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName = 'RCS Lead' LIMIT 1];
+    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName LIKE 'RCS Lead%' LIMIT 1];
 
     Test.startTest();
     try {
@@ -63,7 +63,7 @@ private class LeadManagementRcsServiceTest {
    */
   @IsTest
   static void testSendToLeads_NoPhone_Skipped() {
-    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName = 'RCS No Phone' LIMIT 1];
+    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName LIKE 'RCS No Phone%' LIMIT 1];
 
     Test.startTest();
     LeadManagementRcsService.SendRcsResult result = LeadManagementRcsService.sendToLeads(
@@ -96,7 +96,7 @@ private class LeadManagementRcsServiceTest {
         }
       }
     );
-    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName = 'RCS Lead' LIMIT 1];
+    Lead leadRecord = [SELECT Id FROM Lead WHERE LastName LIKE 'RCS Lead%' LIMIT 1];
 
     Test.startTest();
     LeadManagementRcsService.SendRcsResult result = LeadManagementRcsService.sendToLeads(

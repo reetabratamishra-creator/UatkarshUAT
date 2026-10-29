@@ -5,7 +5,7 @@
     <name>Polymer Queue</name>
     <queueMembers>
         <users>
-            <user>subhrajyoti.dasgupta@gmail.com</user>
+            <user>subhrajyoti.dasgupta@utkarshpipes.in.uat</user>
         </users>
     </queueMembers>
     <queueSobject>
@@ -16,9 +16,6 @@
     </queueSobject>
     <queueSobject>
         <sobjectType>Tender_Ai_Summary_Json__c</sobjectType>
-    </queueSobject>
-    <queueSobject>
-        <sobjectType>Tender_Docoment_Details__c</sobjectType>
     </queueSobject>
     <queueSobject>
         <sobjectType>Tender__c</sobjectType>

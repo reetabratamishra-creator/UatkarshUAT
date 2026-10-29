@@ -12,11 +12,11 @@
     </values>
     <values>
         <field>Department_Value__c</field>
-        <value xsi:type="xsd:string">Enquiry,Transmission &amp; Telecom Tower,Pre Engineering Building,Railway Electrification Structure</value>
+        <value xsi:type="xsd:string">Transmission &amp; Telecom Tower,Pre Engineering Building,Railway Electrification Structure</value>
     </values>
     <values>
         <field>Document_Header_URL__c</field>
-        <value xsi:type="xsd:string">https://portal.bluewavesmedia.in/WhatsAppMedia/Template/Document/Utkarsh/corporate_brochure_2026(13).pdf</value>
+        <value xsi:nil="true"/>
     </values>
     <values>
         <field>Include_Brochure_Header__c</field>

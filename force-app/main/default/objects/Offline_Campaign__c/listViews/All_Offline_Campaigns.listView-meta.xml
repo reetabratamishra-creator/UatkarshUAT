@@ -7,5 +7,10 @@
     <columns>Phone__c</columns>
     <columns>Department__c</columns>
     <filterScope>Everything</filterScope>
+    <filters>
+        <field>Group_List__c</field>
+        <operation>contains</operation>
+        <value>trial</value>
+    </filters>
     <label>All Offline Campaigns</label>
 </ListView>

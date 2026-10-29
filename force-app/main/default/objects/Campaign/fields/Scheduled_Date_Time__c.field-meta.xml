@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Scheduled_Date_Time__c</fullName>
+    <description>Date and time chosen on the Campaign Management schedule screen. Status changes from Scheduled to Completed when this time is reached.</description>
+    <inlineHelpText>When the campaign messages are scheduled to be sent.</inlineHelpText>
+    <label>Scheduled Date and Time</label>
+    <required>false</required>
+    <type>DateTime</type>
+</CustomField>

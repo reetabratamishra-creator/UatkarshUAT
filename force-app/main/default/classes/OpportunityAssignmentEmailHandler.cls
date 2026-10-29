@@ -4,38 +4,31 @@
  * @author Rani Mate
  * @date 2026-08-14
  *
- * ASSUMPTIONS (verify / adjust to match your org):
- *  - Recipient ("Employee") = OwnerId (standard User lookup on Opportunity)
- *  - "New Project Opportunity Assigned" fires:
- *      - on insert (new Opportunity created with an owner), and
- *      - on update, whenever OwnerId changes (re-assignment)
- *  - "L1 Bidder Declared" fires when StageName changes to 'L1 Bidder Declared'.
- *    If L1 Bidder is actually tracked via a custom field
- *    (e.g. L1_Bidder_Declared__c Checkbox, or a different picklist value),
- *    swap the check in getTemplateForChange() accordingly.
  */
 public without sharing class OpportunityAssignmentEmailHandler {
     // ===== Stage value for L1 Bidder Declared (adjust if this is a custom field instead) =====
-    public static final String STAGE_L1_BIDDER_DECLARED = 'L1 Bidder Declared';
+    // COMMENTED OUT (not required): L1 Bidder Declared
+    // public static final String STAGE_L1_BIDDER_DECLARED = 'L1 Bidder Declared';
     // ===== Templates (DeveloperName) =====
     public static final String TEMPLATE_NEW_OPPORTUNITY_ASSIGNED =
         'New_Project_Opportunity_Assigned_1786616028589';
-    public static final String TEMPLATE_L1_BIDDER_DECLARED =
-        'L1_Bidder_Declared_1786616437038';
+    // COMMENTED OUT (not required): Owner L1 Bidder Declared template
+    // public static final String TEMPLATE_L1_BIDDER_DECLARED =
+    //     'L1_Bidder_Declared_1786616437038';
     public static final String ORG_WIDE_SENDER_EMAIL = 'noreply@utkarshindialimited.in';
     // ===== ADDED: Department CRM Head templates (DeveloperName) =====
-    // "Created" fires only on insert (unlike TEMPLATE_NEW_OPPORTUNITY_ASSIGNED,
-    // which also covers reassignment for the Owner). L1 Bidder Declared mirrors
-    // the same transition as the Owner-facing template, just a second recipient.
+    // "Created" now goes out ONCE A DAY (digest), see ProjectOpportunityCreatedDigestBatch.
     public static final String TEMPLATE_CRM_HEAD_OPPORTUNITY_CREATED =
         'Project_Opportunity_Created_1786620843232';
-    public static final String TEMPLATE_CRM_HEAD_L1_BIDDER_DECLARED =
-        'L1_Bidder_Declared_Confirmed_Opportunity_1786621328010';
-    // ===== ADDED: Department HOD templates (Project record type only) =====
+    // COMMENTED OUT (not required): CRM Head L1 Bidder Declared template
+    // public static final String TEMPLATE_CRM_HEAD_L1_BIDDER_DECLARED =
+    //     'L1_Bidder_Declared_Confirmed_Opportunity_1786621328010';
+    // "Created" now goes out ONCE A DAY (digest), see ProjectOpportunityCreatedDigestBatch.
     public static final String TEMPLATE_HOD_PROJECT_CREATED =
         'New_Project_Opportunity_Created_1786620185112';
-    public static final String TEMPLATE_HOD_L1_BIDDER_DECLARED =
-        'L1_Bidder_Declared_1786620559286';
+    // COMMENTED OUT (not required): HOD L1 Bidder Declared template
+    // public static final String TEMPLATE_HOD_L1_BIDDER_DECLARED =
+    //     'L1_Bidder_Declared_1786620559286';
     public static final String PROJECT_RECORD_TYPE_DEVELOPER_NAME = 'Project_Opportunity';
     private static Id projectRecordTypeId;
     private static Map<String, String> crmEmailByDepartment;
@@ -82,6 +75,11 @@ public without sharing class OpportunityAssignmentEmailHandler {
                 new EmailSendRequest('OWNER', oppsByTemplate.get(templateName), templateName)
             );
         }
+        // COMMENTED OUT: CRM Head and HOD notifications from the trigger.
+        //  - "Project Opportunity Created" (CRM Head + HOD): now sent ONCE A DAY, one
+        //    consolidated email per recipient, by ProjectOpportunityCreatedDigestBatch.
+        //  - "L1 Bidder Declared" (CRM Head + HOD): not required.
+        /*
         // ADDED: parallel notification to the Department CRM Head.
         // Detected separately (not reused from oppsByTemplate) because
         // "Created" must exclude reassignments, which share
@@ -144,6 +142,7 @@ public without sharing class OpportunityAssignmentEmailHandler {
                 )
             );
         }
+        */
         enqueueEmailSends(emailSendRequests);
     }
     private static void enqueueEmailSends(List<EmailSendRequest> emailSendRequests) {
@@ -208,6 +207,8 @@ public without sharing class OpportunityAssignmentEmailHandler {
             }
         }
     }
+    // COMMENTED OUT (not required): L1 Bidder Declared detection
+    /*
     // ADDED: mirrors branch 3 of getTemplateForChange(), extracted so it can be
     // reused here without altering the existing method.
     @TestVisible
@@ -218,6 +219,7 @@ public without sharing class OpportunityAssignmentEmailHandler {
         return opp.StageName == STAGE_L1_BIDDER_DECLARED
             && oldOpp.StageName != STAGE_L1_BIDDER_DECLARED;
     }
+    */
     // ADDED
     @TestVisible
     private static List<Opportunity> filterProjectOpportunities(List<Opportunity> opps) {
@@ -274,11 +276,14 @@ public without sharing class OpportunityAssignmentEmailHandler {
         if (opp.OwnerId != oldOpp.OwnerId) {
             return TEMPLATE_NEW_OPPORTUNITY_ASSIGNED;
         }
+        // 3) COMMENTED OUT (not required): L1 Bidder Declared (Owner)
+        /*
         // 3) L1 Bidder Declared - StageName transitioned into the L1 Bidder stage
         if (opp.StageName == STAGE_L1_BIDDER_DECLARED
             && oldOpp.StageName != STAGE_L1_BIDDER_DECLARED) {
             return TEMPLATE_L1_BIDDER_DECLARED;
         }
+        */
         return null;
     }
     private static void sendEmails(List<Opportunity> opps, String templateDeveloperName) {
@@ -317,6 +322,7 @@ public without sharing class OpportunityAssignmentEmailHandler {
     // ADDED: sends to the Department CRM Head. Recipient isn't a Salesforce
     // Contact/Lead/User, so setTargetObjectId isn't usable - the email comes
     // directly from CRM_User_Email_Formula__c on Opportunity itself.
+    // NOTE: no longer called by the trigger flow ("Created" is now a daily digest).
     private static void sendCrmHeadEmails(List<Opportunity> opps, String templateDeveloperName) {
         Id templateId = resolveTemplateId(templateDeveloperName);
         if (templateId == null) {
@@ -359,6 +365,7 @@ public without sharing class OpportunityAssignmentEmailHandler {
         sendMessageBatch(messages, 'Opportunity CRM Head');
     }
     // ADDED: sends to the Department HOD resolved via HOD_User_Email_Formula__c.
+    // NOTE: no longer called by the trigger flow ("Created" is now a daily digest).
     private static void sendHodEmails(List<Opportunity> opps, String templateDeveloperName) {
         Id templateId = resolveTemplateId(templateDeveloperName);
         if (templateId == null) {
@@ -532,5 +539,172 @@ public without sharing class OpportunityAssignmentEmailHandler {
             LIMIT 1
         ];
         return owea.isEmpty() ? null : owea[0].Id;
+    }
+
+    
+
+    /**
+     * NEW: Groups opportunities by the HOD email resolved with the EXISTING logic
+     * (resolveHodEmail: HOD_User_Email_Formula__c, else Department_HOD_Person__mdt).
+     * Opportunities with no resolvable email are skipped (retried on the next run).
+     */
+    public static Map<String, List<Opportunity>> groupByHodEmail(List<Opportunity> opps) {
+        return groupByRecipientEmail(opps, true);
+    }
+
+    /**
+     * NEW: Same for the CRM Head (resolveCrmHeadEmail: CRM_User_Email_Formula__c,
+     * else Department_CRM_Person__mdt).
+     */
+    public static Map<String, List<Opportunity>> groupByCrmHeadEmail(List<Opportunity> opps) {
+        return groupByRecipientEmail(opps, false);
+    }
+
+    private static Map<String, List<Opportunity>> groupByRecipientEmail(
+        List<Opportunity> opps,
+        Boolean forHod
+    ) {
+        Map<String, List<Opportunity>> oppsByEmail = new Map<String, List<Opportunity>>();
+        if (opps == null) {
+            return oppsByEmail;
+        }
+        for (Opportunity opp : opps) {
+            String email = forHod ? resolveHodEmail(opp) : resolveCrmHeadEmail(opp);
+            if (String.isBlank(email)) {
+                System.debug(
+                    (forHod ? 'HOD' : 'CRM Head') +
+                    ' email not resolved for Opportunity ' +
+                    opp.Id +
+                    ' (Department_Name__c=' +
+                    opp.Department_Name__c +
+                    ')'
+                );
+                continue;
+            }
+            String key = email.trim().toLowerCase();
+            if (!oppsByEmail.containsKey(key)) {
+                oppsByEmail.put(key, new List<Opportunity>());
+            }
+            oppsByEmail.get(key).add(opp);
+        }
+        return oppsByEmail;
+    }
+
+    /**
+     * NEW: Sends ONE email to one recipient (HOD or CRM Head) listing all the new Project
+     * Opportunities. Subject / intro come from the given existing template (rendered
+     * against the first opportunity); a table of ALL opportunities is appended, with
+     * department and owner per row.
+     * Returns true only when Salesforce accepted the email (the caller then sets the
+     * "sent" checkbox on those opportunities).
+     */
+    public static Boolean sendCreatedDigest(
+        List<Opportunity> opps,
+        String recipientEmail,
+        String templateDeveloperName
+    ) {
+        if (
+            opps == null ||
+            opps.isEmpty() ||
+            String.isBlank(recipientEmail) ||
+            String.isBlank(templateDeveloperName)
+        ) {
+            return false;
+        }
+        Id templateId = resolveTemplateId(templateDeveloperName);
+        if (templateId == null) {
+            System.debug('Digest template not found: ' + templateDeveloperName);
+            return false;
+        }
+
+        Messaging.SingleEmailMessage mail = buildFormulaRecipientMessage(
+            templateId,
+            opps[0].Id,
+            recipientEmail.trim(),
+            getOrgWideEmailAddressId()
+        );
+        if (mail == null) {
+            return false;
+        }
+
+        String baseSubject = String.isBlank(mail.getSubject())
+            ? 'Project Opportunity Created'
+            : mail.getSubject();
+        mail.setSubject(baseSubject + ' (' + opps.size() + ' Opportunities)');
+
+        String introHtml = String.isNotBlank(mail.getHtmlBody())
+            ? mail.getHtmlBody()
+            : (String.isNotBlank(mail.getPlainTextBody())
+                ? mail.getPlainTextBody().replace('\n', '<br/>')
+                : '');
+        mail.setHtmlBody(
+            introHtml +
+            '<br/><p><b>New Project Opportunities (' + opps.size() + '):</b></p>' +
+            buildCreatedDigestHtml(opps)
+        );
+        mail.setPlainTextBody(
+            (String.isNotBlank(mail.getPlainTextBody()) ? mail.getPlainTextBody() : '') +
+            '\n\nNew Project Opportunities (' + opps.size() + '):\n' +
+            buildCreatedDigestText(opps)
+        );
+
+        try {
+            List<Messaging.SendEmailResult> results = Messaging.sendEmail(
+                new List<Messaging.SingleEmailMessage>{ mail },
+                false
+            );
+            if (!results[0].isSuccess()) {
+                System.debug(LoggingLevel.ERROR, 'Digest send failed: ' + results[0].getErrors());
+            }
+            return results[0].isSuccess();
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'Digest send error: ' + e.getMessage());
+            return false;
+        }
+    }
+
+    // NEW: HTML table listing every opportunity of the digest.
+    private static String buildCreatedDigestHtml(List<Opportunity> opps) {
+        String baseUrl = URL.getOrgDomainUrl().toExternalForm();
+        String html =
+            '<table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;font-size:13px;">' +
+            '<tr style="background:#f3f3f3;">' +
+            '<th>#</th><th>Opportunity</th><th>Department</th><th>Assigned To</th><th>Created</th>' +
+            '</tr>';
+        Integer rowNumber = 1;
+        for (Opportunity opp : opps) {
+            String oppName = String.isBlank(opp.Name) ? String.valueOf(opp.Id) : opp.Name;
+            String department = opp.Department_Name__c != null ? opp.Department_Name__c : '';
+            String ownerName = opp.Owner != null && opp.Owner.Name != null ? opp.Owner.Name : '';
+            String createdOn = opp.CreatedDate != null ? opp.CreatedDate.format('dd MMM yyyy HH:mm') : '';
+            html +=
+                '<tr>' +
+                '<td>' + rowNumber + '</td>' +
+                '<td><a href="' + baseUrl + '/' + opp.Id + '">' + oppName.escapeHtml4() + '</a></td>' +
+                '<td>' + department.escapeHtml4() + '</td>' +
+                '<td>' + ownerName.escapeHtml4() + '</td>' +
+                '<td>' + createdOn + '</td>' +
+                '</tr>';
+            rowNumber++;
+        }
+        return html + '</table>';
+    }
+
+    // NEW: plain-text version of the same list.
+    private static String buildCreatedDigestText(List<Opportunity> opps) {
+        String baseUrl = URL.getOrgDomainUrl().toExternalForm();
+        List<String> lines = new List<String>();
+        Integer rowNumber = 1;
+        for (Opportunity opp : opps) {
+            lines.add(
+                rowNumber + '. ' + opp.Name + ' | ' +
+                (opp.Department_Name__c != null ? opp.Department_Name__c : '') + ' | assigned to ' +
+                (opp.Owner != null ? opp.Owner.Name : '') + ' | ' +
+                (opp.CreatedDate != null ? opp.CreatedDate.format('dd MMM yyyy HH:mm') : '') + ' | ' +
+                baseUrl + '/' + opp.Id
+            );
+            rowNumber++;
+        }
+        return String.join(lines, '\n');
     }
 }
